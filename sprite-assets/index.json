@@ -1,0 +1,43 @@
+{
+  "generated": "2026-03-20T07:39:12.819Z",
+  "sourceFile": "js/sprites.js",
+  "characters": [
+    "anai",
+    "bull",
+    "carretastar",
+    "clarisa",
+    "don_alvaro",
+    "don_carlos",
+    "el_indio",
+    "gringo",
+    "hitmena",
+    "karen",
+    "michiquito",
+    "panzaeperra",
+    "persefone",
+    "player",
+    "skin"
+  ],
+  "animationNames": [
+    "block",
+    "charge",
+    "hurt",
+    "idle",
+    "idle2",
+    "ko",
+    "punch_left",
+    "punch_right",
+    "recovery",
+    "sig_combo",
+    "sig_counter",
+    "sig_grab",
+    "sig_ground",
+    "sig_rush",
+    "sig_swing",
+    "sig_throw",
+    "special",
+    "taunt",
+    "windup_left",
+    "windup_right"
+  ]
+}

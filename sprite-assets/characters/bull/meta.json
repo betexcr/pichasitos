@@ -1,0 +1,11 @@
+{
+  "id": "BULL",
+  "slug": "bull",
+  "parts": {
+    "head": true,
+    "torso": false,
+    "body": true,
+    "fist": false
+  },
+  "note": "ASCII grids: one character = one palette key. Dot (.) is empty."
+}

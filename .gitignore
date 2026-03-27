@@ -1,0 +1,6 @@
+.DS_Store
+*.env
+*.pem
+*.key
+node_modules/
+index 10.11.01*

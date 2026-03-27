@@ -1,0 +1,11 @@
+{
+  "id": "HITMENA",
+  "slug": "hitmena",
+  "parts": {
+    "head": true,
+    "torso": true,
+    "body": false,
+    "fist": true
+  },
+  "note": "ASCII grids: one character = one palette key. Dot (.) is empty."
+}

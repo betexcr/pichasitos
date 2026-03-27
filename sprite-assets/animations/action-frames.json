@@ -1,0 +1,924 @@
+{
+  "idle": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "leftArmOffset": {
+        "x": -1,
+        "y": -1
+      },
+      "rightArmOffset": {
+        "x": 1,
+        "y": -1
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "idle2": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "windup_left": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": -1,
+        "y": 1
+      },
+      "torsoOffset": {
+        "x": -1,
+        "y": 1
+      },
+      "leftArmOffset": {
+        "x": -6,
+        "y": 4
+      },
+      "rightArmOffset": {
+        "x": 2,
+        "y": 0
+      },
+      "leftFistExtension": -2,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": -2,
+        "y": 2
+      },
+      "torsoOffset": {
+        "x": -2,
+        "y": 2
+      },
+      "leftArmOffset": {
+        "x": -8,
+        "y": 6
+      },
+      "rightArmOffset": {
+        "x": 3,
+        "y": 0
+      },
+      "leftFistExtension": -4,
+      "rightFistExtension": 0
+    }
+  ],
+  "windup_right": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 1,
+        "y": 1
+      },
+      "torsoOffset": {
+        "x": 1,
+        "y": 1
+      },
+      "leftArmOffset": {
+        "x": -2,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 6,
+        "y": 4
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": -2
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 2,
+        "y": 2
+      },
+      "torsoOffset": {
+        "x": 2,
+        "y": 2
+      },
+      "leftArmOffset": {
+        "x": -3,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 8,
+        "y": 6
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": -4
+    }
+  ],
+  "punch_left": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 2,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 2,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 8,
+        "y": -10
+      },
+      "rightArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftFistExtension": 22,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 6,
+        "y": -8
+      },
+      "rightArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftFistExtension": 18,
+      "rightFistExtension": 0
+    }
+  ],
+  "punch_right": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": -2,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": -2,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": -8,
+        "y": -10
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 22
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": -6,
+        "y": -8
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 18
+    }
+  ],
+  "recovery": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 1
+      },
+      "leftArmOffset": {
+        "x": -2,
+        "y": 2
+      },
+      "rightArmOffset": {
+        "x": 2,
+        "y": 2
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -1,
+        "y": 1
+      },
+      "rightArmOffset": {
+        "x": 1,
+        "y": 1
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "hurt": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 3
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 2
+      },
+      "leftArmOffset": {
+        "x": 2,
+        "y": 3
+      },
+      "rightArmOffset": {
+        "x": -2,
+        "y": 3
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 5
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 4
+      },
+      "leftArmOffset": {
+        "x": 3,
+        "y": 5
+      },
+      "rightArmOffset": {
+        "x": -3,
+        "y": 5
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "block": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 1
+      },
+      "leftArmOffset": {
+        "x": 10,
+        "y": -14
+      },
+      "rightArmOffset": {
+        "x": -10,
+        "y": -14
+      },
+      "leftFistExtension": 14,
+      "rightFistExtension": 14
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 1
+      },
+      "leftArmOffset": {
+        "x": 9,
+        "y": -13
+      },
+      "rightArmOffset": {
+        "x": -9,
+        "y": -13
+      },
+      "leftFistExtension": 13,
+      "rightFistExtension": 13
+    }
+  ],
+  "special": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "leftArmOffset": {
+        "x": 0,
+        "y": -10
+      },
+      "rightArmOffset": {
+        "x": 0,
+        "y": -10
+      },
+      "leftFistExtension": 10,
+      "rightFistExtension": 10
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 2,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 4,
+        "y": -8
+      },
+      "rightArmOffset": {
+        "x": -4,
+        "y": -8
+      },
+      "leftFistExtension": 14,
+      "rightFistExtension": 14
+    }
+  ],
+  "ko": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 8
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 6
+      },
+      "leftArmOffset": {
+        "x": 4,
+        "y": 10
+      },
+      "rightArmOffset": {
+        "x": -4,
+        "y": 10
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 14
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 10
+      },
+      "leftArmOffset": {
+        "x": 6,
+        "y": 16
+      },
+      "rightArmOffset": {
+        "x": -6,
+        "y": 16
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 2,
+      "headOffset": {
+        "x": 0,
+        "y": 20
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 16
+      },
+      "leftArmOffset": {
+        "x": 8,
+        "y": 22
+      },
+      "rightArmOffset": {
+        "x": -8,
+        "y": 22
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "taunt": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -4,
+        "y": -4
+      },
+      "rightArmOffset": {
+        "x": 6,
+        "y": -8
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 6
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -4,
+        "y": -2
+      },
+      "rightArmOffset": {
+        "x": 6,
+        "y": -6
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 8
+    }
+  ],
+  "charge": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -4
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "leftArmOffset": {
+        "x": -2,
+        "y": -2
+      },
+      "rightArmOffset": {
+        "x": 2,
+        "y": -2
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "sig_swing": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 2,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 10,
+        "y": -6
+      },
+      "rightArmOffset": {
+        "x": -8,
+        "y": -4
+      },
+      "leftFistExtension": 20,
+      "rightFistExtension": 6
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": -2,
+        "y": 1
+      },
+      "torsoOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -8,
+        "y": -4
+      },
+      "rightArmOffset": {
+        "x": 10,
+        "y": -6
+      },
+      "leftFistExtension": 6,
+      "rightFistExtension": 20
+    }
+  ],
+  "sig_rush": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -6
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -4
+      },
+      "leftArmOffset": {
+        "x": -3,
+        "y": -4
+      },
+      "rightArmOffset": {
+        "x": 3,
+        "y": -4
+      },
+      "leftFistExtension": 8,
+      "rightFistExtension": 8
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "leftArmOffset": {
+        "x": -2,
+        "y": -2
+      },
+      "rightArmOffset": {
+        "x": 2,
+        "y": -2
+      },
+      "leftFistExtension": 6,
+      "rightFistExtension": 6
+    }
+  ],
+  "sig_throw": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -3
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "leftArmOffset": {
+        "x": 2,
+        "y": -12
+      },
+      "rightArmOffset": {
+        "x": 6,
+        "y": -10
+      },
+      "leftFistExtension": 14,
+      "rightFistExtension": 18
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 0,
+        "y": -8
+      },
+      "rightArmOffset": {
+        "x": 4,
+        "y": -6
+      },
+      "leftFistExtension": 10,
+      "rightFistExtension": 14
+    }
+  ],
+  "sig_grab": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "leftArmOffset": {
+        "x": 8,
+        "y": -10
+      },
+      "rightArmOffset": {
+        "x": -8,
+        "y": -10
+      },
+      "leftFistExtension": 16,
+      "rightFistExtension": 16
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 6,
+        "y": -8
+      },
+      "rightArmOffset": {
+        "x": -6,
+        "y": -8
+      },
+      "leftFistExtension": 12,
+      "rightFistExtension": 12
+    }
+  ],
+  "sig_ground": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": 2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 3
+      },
+      "leftArmOffset": {
+        "x": -4,
+        "y": 6
+      },
+      "rightArmOffset": {
+        "x": 4,
+        "y": 6
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 4
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 5
+      },
+      "leftArmOffset": {
+        "x": -6,
+        "y": 8
+      },
+      "rightArmOffset": {
+        "x": 6,
+        "y": 8
+      },
+      "leftFistExtension": 0,
+      "rightFistExtension": 0
+    }
+  ],
+  "sig_combo": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 1,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 6,
+        "y": -6
+      },
+      "rightArmOffset": {
+        "x": -2,
+        "y": 0
+      },
+      "leftFistExtension": 16,
+      "rightFistExtension": 4
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": -1,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -2,
+        "y": 0
+      },
+      "rightArmOffset": {
+        "x": -6,
+        "y": -6
+      },
+      "leftFistExtension": 4,
+      "rightFistExtension": 16
+    },
+    {
+      "frameIndex": 2,
+      "headOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": 4,
+        "y": -8
+      },
+      "rightArmOffset": {
+        "x": -4,
+        "y": -8
+      },
+      "leftFistExtension": 14,
+      "rightFistExtension": 14
+    }
+  ],
+  "sig_counter": [
+    {
+      "frameIndex": 0,
+      "headOffset": {
+        "x": 0,
+        "y": -2
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": -1
+      },
+      "leftArmOffset": {
+        "x": 6,
+        "y": -4
+      },
+      "rightArmOffset": {
+        "x": -6,
+        "y": -4
+      },
+      "leftFistExtension": 8,
+      "rightFistExtension": 8
+    },
+    {
+      "frameIndex": 1,
+      "headOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "torsoOffset": {
+        "x": 0,
+        "y": 0
+      },
+      "leftArmOffset": {
+        "x": -4,
+        "y": -6
+      },
+      "rightArmOffset": {
+        "x": 4,
+        "y": -6
+      },
+      "leftFistExtension": 6,
+      "rightFistExtension": 6
+    }
+  ]
+}
