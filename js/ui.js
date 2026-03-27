@@ -343,7 +343,7 @@ class UIManager {
     }
   }
 
-  drawFightWin(oppName, stateTick, score, winLine, koLine) {
+  drawFightWin(oppName, stateTick, score, winLine, koLine, defeatQuote) {
     const ctx = this.r.ctx;
     const W = this.r.W;
     const H = this.r.H;
@@ -373,17 +373,25 @@ class UIManager {
 
     if (stateTick > 30 && winLine) {
       ctx.fillStyle = CONST.COLORS.WHITE;
-      this.r._drawText(winLine, W / 2, 86, 'center', 1.1);
+      this.r._drawText(winLine, W / 2, 82, 'center', 1.1);
     }
 
     if (stateTick > 50 && koLine) {
       ctx.fillStyle = CONST.COLORS.NEON_GREEN;
-      this.r._drawText(koLine, W / 2, 108, 'center', 1);
+      this.r._drawText(koLine, W / 2, 100, 'center', 1);
+    }
+
+    if (stateTick > 70 && defeatQuote) {
+      const alpha = Math.min(1, (stateTick - 70) / 20);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
+      this.r._drawText('"' + defeatQuote + '"', W / 2, 122, 'center', 0.9);
+      ctx.globalAlpha = 1;
     }
 
     if (score !== undefined) {
       ctx.fillStyle = CONST.COLORS.GOLD;
-      this.r._drawText('PUNTOS: ' + score, W / 2, 136, 'center', 1.4);
+      this.r._drawText('PUNTOS: ' + score, W / 2, 146, 'center', 1.4);
     }
 
     this.r._updateParticles(ctx);

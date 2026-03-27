@@ -14,10 +14,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:38,attackFrames:16,recoveryFrames:32,damage:26,stun:true},
     ],
     signatures:[
-      {name:'SERENATA MORTAL',phrase:'TOMESE ESTA SERENATA, PERRO!',type:'signature',side:'both',tellFrames:32,attackFrames:16,recoveryFrames:28,damage:24,stun:true,anim:'sig_swing',effect:'mic_trail'},
-      {name:'PANZAZO',phrase:'PANZAZO DE CAMPEON!',type:'signature',side:'both',tellFrames:28,attackFrames:14,recoveryFrames:26,damage:20,unblockable:true,anim:'sig_rush',effect:'shockwave'},
+      {name:'SERENATA MORTAL',phrases:['TOMESE ESTA SERENATA, PERRO!','LE CANTO SU ULTIMO BOLERO!','ESTA CANCION SE LLAMA DOLOR!','REQUIEM PA USTED, MAE!','MELODIA DE PICHAZOS!'],type:'signature',side:'both',tellFrames:32,attackFrames:16,recoveryFrames:28,damage:24,stun:true,anim:'sig_swing',effect:'mic_trail'},
+      {name:'PANZAZO',phrases:['PANZAZO DE CAMPEON!','TOME PANZA, MALCRIADO!','ESTA PANZA ES DE ACERO!','LE VOY A APLASTAR, MAE!','BARRIGA CONTRA CARA!'],type:'signature',side:'both',tellFrames:28,attackFrames:14,recoveryFrames:26,damage:20,unblockable:true,anim:'sig_rush',effect:'shockwave'},
     ],
-    taunts:['YO CANTO Y PEGO, MAE!','ESTA VA CON DEDICATORIA!','COMO DICE LA CANCION: LE DOY!','APPLAUSE APPLAUSE!','MAS FUERTE QUE NOTA DE BAJO!'],
+    taunts:['YO CANTO Y PEGO, MAE!','ESTA VA CON DEDICATORIA!','COMO DICE LA CANCION: LE DOY!','APPLAUSE APPLAUSE!','MAS FUERTE QUE NOTA DE BAJO!','AFINE BIEN PORQUE VOY!','YO SOY EL ARTISTA AQUI!','LE CANTO EN EL OIDO, MAE!','EL KARAOKE NO PERDONA!','ESTA VA EN DO DE PECHO!','ME APLAUDEN HASTA LOS PUNOS!','USTED NO TIENE NI RITMO!'],
+    defeatQuotes:['AL MENOS ME DEJO... CANTAR EL ULTIMO VERSO...','DIAY... SE ACABO LA SERENATA...','NI EL MICROFONO ME SALVO...','ME CALLARON... PERO VOLVERE CON ENCORE!','YA NO PUEDO NI TARAREAR...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.35,
   },
   {
@@ -35,10 +36,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'left',tellFrames:40,attackFrames:16,recoveryFrames:32,damage:22},
     ],
     signatures:[
-      {name:'SAY CHEESE',phrase:'SAY CHEESE BRO! SELFIE TIME!',type:'signature',side:'both',tellFrames:26,attackFrames:8,recoveryFrames:30,damage:12,stun:true,anim:'sig_throw',effect:'flash'},
-      {name:'FANNY WHACK',phrase:'TAKE THIS AMIGO! USA! USA!',type:'signature',side:'right',tellFrames:22,attackFrames:12,recoveryFrames:24,damage:18,anim:'sig_swing',effect:'dust_cloud'},
+      {name:'SAY CHEESE',phrases:['SAY CHEESE BRO! SELFIE TIME!','HOLD STILL FOR THE GRAM!','THIS IS GOING VIRAL BRO!','SMILE FOR THE CAMERA AMIGO!','CONTENT IS KING, BRO!'],type:'signature',side:'both',tellFrames:26,attackFrames:8,recoveryFrames:30,damage:12,stun:true,anim:'sig_throw',effect:'flash'},
+      {name:'FANNY WHACK',phrases:['TAKE THIS AMIGO! USA! USA!','FREEDOM PUNCH!','MANIFEST DESTINY, BRO!','LIKE AND SUBSCRIBE TO THIS!','PATRIOT SMASH!'],type:'signature',side:'right',tellFrames:22,attackFrames:12,recoveryFrames:24,damage:18,anim:'sig_swing',effect:'dust_cloud'},
     ],
-    taunts:['BRO THIS IS NOT COOL!','MY UBER RATING IS 4.9!','IM CALLING THE EMBASSY!','I KNOW KARATE... KINDA!','WAIT LET ME VLOG THIS!'],
+    taunts:['BRO THIS IS NOT COOL!','MY UBER RATING IS 4.9!','IM CALLING THE EMBASSY!','I KNOW KARATE... KINDA!','WAIT LET ME VLOG THIS!','DUDE WHERE IS THE WIFI?!','THIS WASNT IN THE BROCHURE!','MY FOLLOWERS WONT LIKE THIS!','IM A LOVER NOT A FIGHTER BRO!','WAIT IS THIS GLUTEN FREE?!','MY CHIROPRACTOR WILL HEAR ABOUT THIS!','I HAVE TRAVEL INSURANCE BRO!'],
+    defeatQuotes:['BRO... MY TRIP ADVISOR REVIEW... WILL BE... BRUTAL...','I JUST WANTED... A CERVEZA...','TELL MY MOM... I DIED DOING CONTENT...','THIS COUNTRY... IS TOO INTENSE BRO...','IM GOING BACK... TO OHIO...'],
     tellAnim:'taunt', enrageThreshold:0.35, enrageSpeedMult:1.4,
   },
   {
@@ -56,10 +58,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'right',tellFrames:30,attackFrames:12,recoveryFrames:24,damage:22,stun:true},
     ],
     signatures:[
-      {name:'UNAS DE GATA',phrase:'UNAS DE GATA GUCCI, BEBE!',type:'signature',side:'both',tellFrames:18,attackFrames:16,recoveryFrames:22,damage:9,hits:4,anim:'sig_combo',effect:'nail_slash'},
-      {name:'NI ME TOQUES',phrase:'NI ME TOQUES, PIOJOSO!',type:'signature',side:'right',tellFrames:22,attackFrames:10,recoveryFrames:26,damage:16,anim:'sig_throw',effect:'phone_throw'},
+      {name:'UNAS DE GATA',phrases:['UNAS DE GATA GUCCI, BEBE!','ESTAS UNAS CUESTAN MAS QUE USTED!','ARANAZO DE DISENADOR!','LE VOY A DEJAR MARCA, NACO!','MANICURE DE COMBATE!'],type:'signature',side:'both',tellFrames:18,attackFrames:16,recoveryFrames:22,damage:9,hits:4,anim:'sig_combo',effect:'nail_slash'},
+      {name:'NI ME TOQUES',phrases:['NI ME TOQUES, PIOJOSO!','EWWW NO ME TOQUE!','ALEJESE DE MI, CORRIENTE!','USTED NO ESTA A MI NIVEL!','FUERA DE MI ESPACIO PERSONAL!'],type:'signature',side:'right',tellFrames:22,attackFrames:10,recoveryFrames:26,damage:16,anim:'sig_throw',effect:'phone_throw'},
     ],
-    taunts:['AY QUE HORROR!','OSEA, HELLO?! NACO!','LO VOY A SUBIR A INSTA!','LITERAL QUE ASCO!','MI DADDY SE VA A ENTERAR!'],
+    taunts:['AY QUE HORROR!','OSEA, HELLO?! NACO!','LO VOY A SUBIR A INSTA!','LITERAL QUE ASCO!','MI DADDY SE VA A ENTERAR!','OSEA NI LO PUBLICO, CRINGE TOTAL!','ME VA A DESPELUCAAR!','ESTO NO ES LO QUE YO PEDI!','AY NO, MIS EXTENSIONES!','USTED HUELE A POBRE!','NI MI PERRO LE LADRA!','HASHTAG QUE CORRIENTE!'],
+    defeatQuotes:['MIS UNAS... SE ME QUEBRARON TODAS...','DADDY... VEN POR MI...','OSEA NO... MI CARA... ERA MI MEJOR FEATURE...','NI SIQUIERA PUDE... TOMAR FOTO...','ESTO VA A SALIR... EN MIS STORIES... EDITADO...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.3,
   },
   // === CIRCUITO DE LA FERIA ===
@@ -79,10 +82,11 @@ const OPPONENT_DATA = [
       {type:'feint',side:'left',tellFrames:12,attackFrames:0,recoveryFrames:6,damage:0},
     ],
     signatures:[
-      {name:'POLVAZO',phrase:'TOME POLVO, PERRO MALPARIDO!',type:'signature',side:'both',tellFrames:16,attackFrames:10,recoveryFrames:22,damage:10,stun:true,anim:'sig_throw',effect:'dust_cloud',condition:'health_below_50'},
-      {name:'CABEZAZO CALLEJERO',phrase:'CABEZAZO DE LA CALLE!',type:'signature',side:'both',tellFrames:14,attackFrames:8,recoveryFrames:20,damage:26,unblockable:true,anim:'sig_rush',effect:'shockwave'},
+      {name:'POLVAZO',phrases:['TOME POLVO, PERRO MALPARIDO!','TRAGUESE ESTA TIERRA!','POLVO DE LA CALLE PA USTED!','LE LLENO LOS OJOS, PLAYO!','POLVAZOOOO!'],type:'signature',side:'both',tellFrames:16,attackFrames:10,recoveryFrames:22,damage:10,stun:true,anim:'sig_throw',effect:'dust_cloud',condition:'health_below_50'},
+      {name:'CABEZAZO CALLEJERO',phrases:['CABEZAZO DE LA CALLE!','TOME JUPA, HIJUEPUTA!','CON LA CABEZA SE PIENSA Y SE PEGA!','CABEZAZO MARCA REGISTRADA!','LA JUPA ES MI MEJOR ARMA!'],type:'signature',side:'both',tellFrames:14,attackFrames:8,recoveryFrames:20,damage:26,unblockable:true,anim:'sig_rush',effect:'shockwave'},
     ],
-    taunts:['YO SOY DE LA CALLE MAE!','AQUI SE PICHA SUCIO!','LE VOY A ENSENAR CALLE!','AGACHESE QUE VOY!','ESTO NO ES ESCUELA PIPI!'],
+    taunts:['YO SOY DE LA CALLE MAE!','AQUI SE PICHA SUCIO!','LE VOY A ENSENAR CALLE!','AGACHESE QUE VOY!','ESTO NO ES ESCUELA PIPI!','EN LA CALLE NO HAY REGLAS!','USTED NO SOBREVIVE NI UN BUS!','LE FALTA BARRIO, COMPA!','YO ME CRIE A PICHAZOS!','AQUI VALE JUPA PRIMERO!','NI LOS PERROS ME LADRAN!','LA CALLE ME HIZO ASI!'],
+    defeatQuotes:['LA CALLE... ME COBRO HOY...','NI EN MIS PEORES NOCHES... ME DIERON ASI...','DIAY MAE... HOY GANO USTED...','ME TUMBARON... PERO SIGO SIENDO CALLE...','HIJUEPUTA... ESO SI DOLIO...'],
     tellAnim:'taunt', enrageThreshold:0.45, enrageSpeedMult:1.4,
   },
   {
@@ -100,10 +104,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'right',tellFrames:28,attackFrames:12,recoveryFrames:24,damage:26},
     ],
     signatures:[
-      {name:'MI TATA ES ABOGADO',phrase:'MI TATA ES ABOGADO, PLAYO!',type:'signature',side:'right',tellFrames:22,attackFrames:10,recoveryFrames:24,damage:20,stun:true,anim:'sig_swing',effect:'money_rain'},
-      {name:'LLUVIA DE ROJOS',phrase:'TOME ROJOS, MUERTO DE HAMBRE!',type:'signature',side:'both',tellFrames:20,attackFrames:14,recoveryFrames:26,damage:14,hits:3,anim:'sig_throw',effect:'money_rain'},
+      {name:'MI TATA ES ABOGADO',phrases:['MI TATA ES ABOGADO, PLAYO!','LE METO DEMANDA Y PICHAZO!','HABLA CON MI ABOGADO!','YA ESTA DEMANDADO, MAE!','TENGO CONTACTOS, SEPA!'],type:'signature',side:'right',tellFrames:22,attackFrames:10,recoveryFrames:24,damage:20,stun:true,anim:'sig_swing',effect:'money_rain'},
+      {name:'LLUVIA DE ROJOS',phrases:['TOME ROJOS, MUERTO DE HAMBRE!','LE PAGO PA QUE SE VAYA!','ESTO CUESTA MAS QUE SU CASA!','LLUVIA DE BILLETES EN SU JETA!','CON PLATA TODO SE COMPRA!'],type:'signature',side:'both',tellFrames:20,attackFrames:14,recoveryFrames:26,damage:14,hits:3,anim:'sig_throw',effect:'money_rain'},
     ],
-    taunts:['USTED NI PARA UBER SIRVE!','YO VENGO DEL COUNTRY!','NACO, NACO, NACO!','MI RELOJ VALE MAS QUE USTED!','VOY A LLAMAR A DADDY!'],
+    taunts:['USTED NI PARA UBER SIRVE!','YO VENGO DEL COUNTRY!','NACO, NACO, NACO!','MI RELOJ VALE MAS QUE USTED!','VOY A LLAMAR A DADDY!','MI CARRO ES IMPORTADO!','USTED NO ENTRA NI AL MALL!','YO VERANEO EN MIAMI, MAE!','PLEBEYO ASQUEROSO!','NI DE MESERO LO CONTRATO!','USTED GANA EN UN MES LO QUE YO EN UN UBER!','MI PERRO COME MEJOR QUE USTED!'],
+    defeatQuotes:['MI TATA... VA A DEMANDAR... A TODOS...','EL RELOJ... SE ME RAYO...','ESTO NO PASA... EN EL COUNTRY...','DADDY... MANDA EL CHOFER...','HASTA LOS BILLETES... ME LOS TIRARON...'],
     tellAnim:'taunt', enrageThreshold:0.45, enrageSpeedMult:1.3,
   },
   {
@@ -121,10 +126,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:28,attackFrames:14,recoveryFrames:24,damage:30,unblockable:true},
     ],
     signatures:[
-      {name:'MACANAZO FEMINISTA',phrase:'MACANAZO FEMINISTA, MACHITO!',type:'signature',side:'both',tellFrames:22,attackFrames:12,recoveryFrames:24,damage:24,screenShake:true,anim:'sig_ground',effect:'shockwave'},
-      {name:'MOLINETE',phrase:'MOLINETE ANTIPATRIARCAL!',type:'signature',side:'both',tellFrames:18,attackFrames:18,recoveryFrames:22,damage:12,hits:4,anim:'sig_combo',effect:'club_spin'},
+      {name:'MACANAZO FEMINISTA',phrases:['MACANAZO FEMINISTA, MACHITO!','TOMA EMPODERAMIENTO!','LA REVOLUCION PEGA DURO!','MACANA CONTRA EL SISTEMA!','JUSTICIA FEMINISTA!'],type:'signature',side:'both',tellFrames:22,attackFrames:12,recoveryFrames:24,damage:24,screenShake:true,anim:'sig_ground',effect:'shockwave'},
+      {name:'MOLINETE',phrases:['MOLINETE ANTIPATRIARCAL!','GIRA LA REVOLUCION!','MOLINETE DE JUSTICIA!','QUE GIRE TODO, HERMANE!','CENTRIFUGA DE IGUALDAD!'],type:'signature',side:'both',tellFrames:18,attackFrames:18,recoveryFrames:22,damage:12,hits:4,anim:'sig_combo',effect:'club_spin'},
     ],
-    taunts:['ABAJO EL PATRIARCADO!','LA LUCHA ES CONSTANTE!','DESTRUYENDO MACHISMOS!','CON FURIA Y CON ARTE!','LAS CALLES SON NUESTRAS!'],
+    taunts:['ABAJO EL PATRIARCADO!','LA LUCHA ES CONSTANTE!','DESTRUYENDO MACHISMOS!','CON FURIA Y CON ARTE!','LAS CALLES SON NUESTRAS!','LA SORORIDAD PEGA MAS FUERTE!','MASCULINIDAD FRAGIL DETECTED!','IGUALDAD A PICHAZOS!','NI SUMISA NI DEVOTA!','VAMOS COMPAS, A LUCHAR!','PUNOS ARRIBA, SIEMPRE!','EL CIRCO Y LA LUCHA SON UNO!'],
+    defeatQuotes:['LA LUCHA... NO ACABA AQUI...','ME TUMBARON... PERO NO ME CALLARON...','VOLVEREMOS... MAS FUERTES...','ESTO... ES SOLO UNA BATALLA...','LAS COMPAS... VENDRAN POR MI...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.45,
   },
   // === CIRCUITO DEL REDONDEL ===
@@ -144,10 +150,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:18,attackFrames:10,recoveryFrames:18,damage:34},
     ],
     signatures:[
-      {name:'QUIERO AL GERENTE',phrase:'QUIERO AL GERENTE YA!',type:'signature',side:'both',tellFrames:14,attackFrames:18,recoveryFrames:20,damage:14,hits:5,anim:'sig_combo',effect:'nail_slash'},
-      {name:'INADMISIBLE',phrase:'ESTO ES IN-AD-MI-SI-BLE!',type:'signature',side:'both',tellFrames:12,attackFrames:10,recoveryFrames:18,damage:28,anim:'sig_swing',effect:'shockwave'},
+      {name:'QUIERO AL GERENTE',phrases:['QUIERO AL GERENTE YA!','DONDE ESTA SU SUPERVISOR?!','EXIJO VER AL ENCARGADO!','ESTO VA PARA CORPORATIVO!','VOY A CERRAR ESTE LUGAR!'],type:'signature',side:'both',tellFrames:14,attackFrames:18,recoveryFrames:20,damage:14,hits:5,anim:'sig_combo',effect:'nail_slash'},
+      {name:'INADMISIBLE',phrases:['ESTO ES IN-AD-MI-SI-BLE!','INADMISIBLE, SENOR!','INACEPTABLE E INDIGNANTE!','VOY A PONER UNA QUEJA FORMAL!','USTED VA A OIR DE MI ABOGADO!'],type:'signature',side:'both',tellFrames:12,attackFrames:10,recoveryFrames:18,damage:28,anim:'sig_swing',effect:'shockwave'},
     ],
-    taunts:['USTED NO SABE CON QUIEN SE METIO!','VOY A HACER UNA RESENA TERRIBLE!','NECESITO HABLAR CON SU SUPERIOR!','ESTO ES INACEPTABLE!','ME QUEJO EN REDES SOCIALES!'],
+    taunts:['USTED NO SABE CON QUIEN SE METIO!','VOY A HACER UNA RESENA TERRIBLE!','NECESITO HABLAR CON SU SUPERIOR!','ESTO ES INACEPTABLE!','ME QUEJO EN REDES SOCIALES!','QUIERO EL LIBRO DE QUEJAS!','MI ESPOSO ES ABOGADO!','UNA ESTRELLA EN GOOGLE, MINIMO!','EXIJO UNA DISCULPA PUBLICA!','NUNCA MAS VUELVO AQUI!','VOY A LLAMAR AL NUEVE ONCE ONCE!','TENGO MUCHOS SEGUIDORES, SEPA!'],
+    defeatQuotes:['ESTO... VA A SER UNA QUEJA... MUY LARGA...','EXIJO... HABLAR CON ALGUIEN...','MI RESENA... VA A SER... DEVASTADORA...','INADMISIBLE... QUIERO REEMBOLSO...','ESTO LO VA A SABER... TODO FACEBOOK...'],
     tellAnim:'taunt', enrageThreshold:0.45, enrageSpeedMult:1.4,
   },
   {
@@ -166,10 +173,11 @@ const OPPONENT_DATA = [
       {type:'charge',side:'both',tellFrames:28,attackFrames:10,recoveryFrames:24,damage:28,unblockable:true},
     ],
     signatures:[
-      {name:'LAZO DE TOPE',phrase:'LAZO DEL TOPE, COMPA!',type:'signature',side:'both',tellFrames:24,attackFrames:12,recoveryFrames:26,damage:18,stun:true,anim:'sig_grab',effect:'lasso_loop'},
-      {name:'ESPUELAZO',phrase:'ESPUELAZO PA QUE APRENDA!',type:'signature',side:'right',tellFrames:16,attackFrames:8,recoveryFrames:20,damage:30,anim:'sig_rush',effect:'shockwave'},
+      {name:'LAZO DE TOPE',phrases:['LAZO DEL TOPE, COMPA!','LE ENLACE, NOVILLO!','COMO ENLAZAR TERNEROS!','AMARRADO COMO VACA EN TURNO!','LAZOOOO DEL JINETE!'],type:'signature',side:'both',tellFrames:24,attackFrames:12,recoveryFrames:26,damage:18,stun:true,anim:'sig_grab',effect:'lasso_loop'},
+      {name:'ESPUELAZO',phrases:['ESPUELAZO PA QUE APRENDA!','TOME ESPUELA, MACHITO!','ESPUELA DE SABANERO!','ASI SE JINETEAAA!','PURA ESPUELA EN SU COSTILLA!'],type:'signature',side:'right',tellFrames:16,attackFrames:8,recoveryFrames:20,damage:30,anim:'sig_rush',effect:'shockwave'},
     ],
-    taunts:['YIJAAA HIJUEPUTA!','COMO EN EL TOPE!','JINETEANDO BOLOS DESDE EL 98!','LA ESPUELA NO PERDONA!','AQUI MANDO YO Y MI CABALLO!'],
+    taunts:['YIJAAA HIJUEPUTA!','COMO EN EL TOPE!','JINETEANDO BOLOS DESDE EL 98!','LA ESPUELA NO PERDONA!','AQUI MANDO YO Y MI CABALLO!','MAS MONTADO QUE CARRETA EN DESFILE!','BIRRA EN MANO Y PUNO EN ALTO!','PALMARES ES MI RING!','NI LOS TOROS ME TUMBAN!','YO AMARRO CON UNA MANO!','YIJAAA, VENGA ESE PICHAZO!','DE AQUI AL ZAPOTE EN CARRETA!'],
+    defeatQuotes:['ME BAJARON... DEL CABALLO...','NI EN EL TOPE... ME HABIAN DADO ASI...','LA ESPUELA... YA NO PICA...','DIAY... HASTA AQUI LLEGO EL JINETE...','NECESITO... UNA BIRRA... URGENTE...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.5,
   },
   {
@@ -187,10 +195,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:20,attackFrames:12,recoveryFrames:20,damage:30,stun:true},
     ],
     signatures:[
-      {name:'BASS DROP',phrase:'BASS DROP, SIENTALO!',type:'signature',side:'both',tellFrames:22,attackFrames:10,recoveryFrames:24,damage:24,stun:true,screenShake:true,anim:'sig_ground',effect:'shockwave'},
-      {name:'RAVE FURY',phrase:'RAVE FURY COSMICAAAA!',type:'signature',side:'both',tellFrames:16,attackFrames:18,recoveryFrames:20,damage:12,hits:5,anim:'sig_combo',effect:'club_spin'},
+      {name:'BASS DROP',phrases:['BASS DROP, SIENTALO!','WUUUB WUUUB WUUUB!','EL BAJO TE DESTRUYE!','DROP THE BASS EN TU CARA!','140 BPM DE DOLOR!'],type:'signature',side:'both',tellFrames:22,attackFrames:10,recoveryFrames:24,damage:24,stun:true,screenShake:true,anim:'sig_ground',effect:'shockwave'},
+      {name:'RAVE FURY',phrases:['RAVE FURY COSMICAAAA!','BAILA CON MIS PUNOS!','GLOWSTICK DE COMBATE!','LA PISTA ES MIA!','RAVE HASTA EL K.O.!'],type:'signature',side:'both',tellFrames:16,attackFrames:18,recoveryFrames:20,damage:12,hits:5,anim:'sig_combo',effect:'club_spin'},
     ],
-    taunts:['SIENTE LA VIBRACION!','EL UNIVERSO GOLPEA!','PLUR PERO CON PICHAZOS!','LA ENERGIA NO MIENTE!','BAILANDO Y PICHANDOOO!'],
+    taunts:['SIENTE LA VIBRACION!','EL UNIVERSO GOLPEA!','PLUR PERO CON PICHAZOS!','LA ENERGIA NO MIENTE!','BAILANDO Y PICHANDOOO!','EL BEAT NUNCA PARA!','VIBRAS BAJAS NO ENTRAN AQUI!','TU AURA ESTA PALIDA, MAE!','LA LUNA LLENA ME DA PODER!','ESTO ES TRANCE DE COMBATE!','FREQUENCY: DESTRUCCION!','ESTE DJ PONE PICHAZOS!'],
+    defeatQuotes:['LA MUSICA... SE APAGO...','EL BEAT... SE DETUVO...','MALA VIBRACION... COSMICA...','ME BAJARON... DEL TRIP...','NI EL UNIVERSO... ME SALVO ESTA VEZ...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.45,
   },
   // === CIRCUITO DE LA MUERTE ===
@@ -209,10 +218,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:24,attackFrames:16,recoveryFrames:24,damage:42},
     ],
     signatures:[
-      {name:'ROCK N ROLL',phrase:'ROCK AND ROLL, HIJUEPUTA!',type:'signature',side:'both',tellFrames:20,attackFrames:14,recoveryFrames:22,damage:32,anim:'sig_swing',effect:'chain_whip'},
-      {name:'ABRAZO DE OSO',phrase:'ABRAZO DE OSO METALERO!',type:'signature',side:'both',tellFrames:18,attackFrames:20,recoveryFrames:26,damage:38,unblockable:true,anim:'sig_grab',effect:'shockwave'},
+      {name:'ROCK N ROLL',phrases:['ROCK AND ROLL, HIJUEPUTA!','HEAVY METAL EN SU JETA!','GUITARRA DE DESTRUCCION!','ACDC LE MANDA ESTO!','RIFF DE PICHAZOS!'],type:'signature',side:'both',tellFrames:20,attackFrames:14,recoveryFrames:22,damage:32,anim:'sig_swing',effect:'chain_whip'},
+      {name:'ABRAZO DE OSO',phrases:['ABRAZO DE OSO METALERO!','LE VOY A QUEBRAR, MAE!','ABRAZO DE MOSH PIT!','NADIE ESCAPA DEL PIT!','BIENVENIDO AL WALL OF DEATH!'],type:'signature',side:'both',tellFrames:18,attackFrames:20,recoveryFrames:26,damage:38,unblockable:true,anim:'sig_grab',effect:'shockwave'},
     ],
-    taunts:['ESTO ES METAL, MAE!','HEADBANG DE DOLOR!','VOY A HACER MOSH CON SU CARA!','SLAYER LE MANDA SALUDOS!','EL PIT NO PERDONA!'],
+    taunts:['ESTO ES METAL, MAE!','HEADBANG DE DOLOR!','VOY A HACER MOSH CON SU CARA!','SLAYER LE MANDA SALUDOS!','EL PIT NO PERDONA!','BLAST BEAT EN SU JETA!','USTED NO AGUANTA NI UN RIFF!','METAL HASTA LA MUERTE!','ESTO ES DEATH METAL, PAPITO!','GROWL DE COMBATE!','LA CADENA ES MI GUITARRA!','CIRCLE PIT DE PICHAZOS!'],
+    defeatQuotes:['EL ULTIMO... ENCORE...','DIAY... SE ACABO EL CONCIERTO...','HEADBANG... FINAL...','NI EL METAL... AGUANTA TANTO...','SLAYER... ESTARIA ORGULLOSO...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.5,
   },
   {
@@ -230,10 +240,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:20,attackFrames:12,recoveryFrames:18,damage:36,stun:true},
     ],
     signatures:[
-      {name:'JAH GUIDE I',phrase:'JAH GUIDE I THROUGH FIRE!',type:'signature',side:'both',tellFrames:10,attackFrames:8,recoveryFrames:16,damage:22,anim:'sig_counter',effect:'war_paint_glow',condition:'on_player_punch'},
-      {name:'ROOTS THUNDER',phrase:'ROOTS THUNDER FROM LIMON!',type:'signature',side:'both',tellFrames:20,attackFrames:12,recoveryFrames:22,damage:30,screenShake:true,anim:'sig_ground',effect:'shockwave'},
+      {name:'JAH GUIDE I',phrases:['JAH GUIDE I THROUGH FIRE!','JAH PROTECTION, BREDDA!','RASTAMAN VIBRATION!','FIRE PON BABYLON!','SELASSIE I GUIDE MY FIST!'],type:'signature',side:'both',tellFrames:10,attackFrames:8,recoveryFrames:16,damage:22,anim:'sig_counter',effect:'war_paint_glow',condition:'on_player_punch'},
+      {name:'ROOTS THUNDER',phrases:['ROOTS THUNDER FROM LIMON!','TRUENO DEL CARIBE!','LIMON SHAKE THE GROUND!','THUNDER FROM THE EAST!','CARIBBEAN EARTHQUAKE!'],type:'signature',side:'both',tellFrames:20,attackFrames:12,recoveryFrames:22,damage:30,screenShake:true,anim:'sig_ground',effect:'shockwave'},
     ],
-    taunts:['JAH RASTAFARI!','BABYLON FALL TODAY!','ROOTS AND CULTURE!','ONE LOVE, ONE PUNCH!','ZION AWAITS, BREDDA!'],
+    taunts:['JAH RASTAFARI!','BABYLON FALL TODAY!','ROOTS AND CULTURE!','ONE LOVE, ONE PUNCH!','ZION AWAITS, BREDDA!','INNA DI STRUGGLE, I STAND!','LIMON STYLE, BREDDA!','POSITIVE VIBRATION FIST!','MARCUS GARVEY PROTECT I!','I AND I NO FEAR NONE!','FROM CAHUITA WITH STRENGTH!','CARIBBEAN WARRIOR, SEEN?'],
+    defeatQuotes:['JAH... WILL RISE I UP... AGAIN...','BABYLON... WIN DIS ROUND...','LIMON... I COMING HOME...','THE ROOTS... STILL STRONG...','ONE LOVE... STILL, BREDDA...'],
     tellAnim:'taunt', enrageThreshold:0.35, enrageSpeedMult:1.6,
   },
   {
@@ -252,10 +263,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:14,attackFrames:12,recoveryFrames:18,damage:40},
     ],
     signatures:[
-      {name:'PUNO MARCADO',phrase:'PUNO MARCADO EN SU JETA!',type:'signature',side:'both',tellFrames:10,attackFrames:20,recoveryFrames:16,damage:16,hits:5,anim:'sig_combo',effect:'shockwave'},
-      {name:'TATUAJE DE DOLOR',phrase:'LE TATUO EL DOLOR, MAE!',type:'signature',side:'both',tellFrames:14,attackFrames:10,recoveryFrames:20,damage:36,screenShake:true,anim:'sig_ground',effect:'shockwave'},
+      {name:'PUNO MARCADO',phrases:['PUNO MARCADO EN SU JETA!','LLEVA MI MARCA.','CADA GOLPE ES UN TATUAJE.','IMPRESO EN SU CARA.','CINCO DEDOS, CINCO MARCAS.'],type:'signature',side:'both',tellFrames:10,attackFrames:20,recoveryFrames:16,damage:16,hits:5,anim:'sig_combo',effect:'shockwave'},
+      {name:'TATUAJE DE DOLOR',phrases:['LE TATUO EL DOLOR, MAE!','TINTA ROJA: SU SANGRE.','ESTE TATUAJE NO SE BORRA.','DOLOR PERMANENTE.','ARTE EN SU JETA.'],type:'signature',side:'both',tellFrames:14,attackFrames:10,recoveryFrames:20,damage:36,screenShake:true,anim:'sig_ground',effect:'shockwave'},
     ],
-    taunts:['...','LOS PUNOS HABLAN.','SIN PIEDAD.','DOLOR PURO.','TINTA Y SANGRE.'],
+    taunts:['...','LOS PUNOS HABLAN.','SIN PIEDAD.','DOLOR PURO.','TINTA Y SANGRE.','SILENCIO.','HABLE MENOS. PEGUE MAS.','NO OCUPO PALABRAS.','ACERO Y PIEL.','MIREME A LOS OJOS.','USTED YA PERDIO.','...CALLESE.'],
+    defeatQuotes:['...','BUEN GOLPE.','...RESPETO.','HOY NO FUE MI DIA.','VOLVERE.'],
     tellAnim:'taunt', enrageThreshold:0.45, enrageSpeedMult:1.4,
   },
   {
@@ -274,10 +286,11 @@ const OPPONENT_DATA = [
       {type:'special',side:'both',tellFrames:18,attackFrames:14,recoveryFrames:16,damage:42,unblockable:true},
     ],
     signatures:[
-      {name:'SANGRE GUERRERA',phrase:'SANGRE DE GUERRERO, MAE!',type:'signature',side:'both',tellFrames:14,attackFrames:10,recoveryFrames:18,damage:35,unblockable:true,anim:'sig_rush',effect:'war_paint_glow'},
-      {name:'ESPIRITU ANCESTRAL',phrase:'ESPIRITU DE MIS ANCESTROS!',type:'signature',side:'both',tellFrames:18,attackFrames:22,recoveryFrames:20,damage:18,hits:4,unblockable:true,screenShake:true,anim:'sig_combo',effect:'war_paint_glow'},
+      {name:'SANGRE GUERRERA',phrases:['SANGRE DE GUERRERO, MAE!','LA SANGRE BRIBRI HIERVE!','CORRA LA SANGRE ANCESTRAL!','GUERRERO DE SANGRE PURA!','FURIA DE MIS ANCESTROS!'],type:'signature',side:'both',tellFrames:14,attackFrames:10,recoveryFrames:18,damage:35,unblockable:true,anim:'sig_rush',effect:'war_paint_glow'},
+      {name:'ESPIRITU ANCESTRAL',phrases:['ESPIRITU DE MIS ANCESTROS!','SIBU ME DA FUERZA!','LOS ESPIRITUS CASTIGAN!','EL TRUENO ANCESTRAL!','LA SELVA GOLPEA POR MI!'],type:'signature',side:'both',tellFrames:18,attackFrames:22,recoveryFrames:20,damage:18,hits:4,unblockable:true,screenShake:true,anim:'sig_combo',effect:'war_paint_glow'},
     ],
-    taunts:['LA TIERRA ME DA FUERZA!','MIS ANCESTROS ME GUIAN!','USTED OFENDE ESTA TIERRA!','JUSTICIA ANCESTRAL!','EL JADE PROTEGE AL GUERRERO!'],
+    taunts:['LA TIERRA ME DA FUERZA!','MIS ANCESTROS ME GUIAN!','USTED OFENDE ESTA TIERRA!','JUSTICIA ANCESTRAL!','EL JADE PROTEGE AL GUERRERO!','ESTA TIERRA TIENE DUENO!','LOS ESPIRITUS OBSERVAN!','EL JAGUAR ACECHA!','RESPETE O CAIGA!','MIL ANOS DE GUERRA EN MIS VENAS!','LA MONTANA TIEMBLA CONMIGO!','SIBU CASTIGA AL IRRESPETUOSO!'],
+    defeatQuotes:['LA TIERRA... RECIBIRA MI CUERPO...','MIS ANCESTROS... ESPERAN...','EL JADE... SE APAGA...','HOY CAE EL GUERRERO... NO LA CAUSA...','LA SELVA... RECORDARA ESTA PELEA...'],
     tellAnim:'taunt', enrageThreshold:0.4, enrageSpeedMult:1.6,
   },
 ];
@@ -295,10 +308,11 @@ const TORO_DATA = {
     {type:'special',side:'both',tellFrames:24,attackFrames:16,recoveryFrames:28,damage:48,unblockable:true,screenShake:true},
   ],
   signatures:[
-    {name:'ESTAMPIDA',phrase:'MUUUUUUU HIJUEPUTA!',type:'signature',side:'both',tellFrames:22,attackFrames:14,recoveryFrames:30,damage:42,unblockable:true,screenShake:true,anim:'sig_rush',effect:'shockwave'},
-    {name:'CORNADA MORTAL',phrase:'CORNADA MORTAL PA USTED!',type:'signature',side:'both',tellFrames:18,attackFrames:10,recoveryFrames:26,damage:48,unblockable:true,screenShake:true,anim:'sig_rush',effect:'horn_gore'},
+    {name:'ESTAMPIDA',phrases:['MUUUUUUU HIJUEPUTA!','MUUUUUUUUUUUUUU!','*ESTAMPIDA TOTAL*','MUUUUU MALACRIANZA!','*CARGA COMO LOCOMOTORA*'],type:'signature',side:'both',tellFrames:22,attackFrames:14,recoveryFrames:30,damage:42,unblockable:true,screenShake:true,anim:'sig_rush',effect:'shockwave'},
+    {name:'CORNADA MORTAL',phrases:['CORNADA MORTAL PA USTED!','*CUERNOS AL FRENTE*','CORNADA DEL INFIERNO!','TOME CUERNO, MAE!','*EMBISTE CON TODO*'],type:'signature',side:'both',tellFrames:18,attackFrames:10,recoveryFrames:26,damage:48,unblockable:true,screenShake:true,anim:'sig_rush',effect:'horn_gore'},
   ],
-  taunts:['MUUUU!','*RESOPLA*','*PATEA EL SUELO*','MUUUUUUUUU!','*CUERNOS LISTOS*'],
+  taunts:['MUUUU!','*RESOPLA*','*PATEA EL SUELO*','MUUUUUUUUU!','*CUERNOS LISTOS*','*RESOPLA FURIOSO*','*OJOS ROJOS*','*POLVO EN EL AIRE*','MUUUU MUUUU!','*BAJA LA CABEZA*','*RASPA LA TIERRA*','*BUFIDO MORTAL*'],
+  defeatQuotes:['MUUUU... UUUU...','*CAE DE RODILLAS*','*ULTIMO BUFIDO*','MUUU...','*OJOS SE CIERRAN*'],
   enrageThreshold:0.5, enrageSpeedMult:1.6,
 };
 
@@ -432,7 +446,8 @@ class OpponentAI {
     this.currentPattern = p;
     if (p.type==='signature') {
       this.lastSigUsedTick = Date.now();
-      if (p.phrase) { this.signaturePhrase = p.phrase; this.signaturePhraseTimer = 50; }
+      const sp = p.phrases || (p.phrase ? [p.phrase] : null);
+      if (sp) { this.signaturePhrase = sp[Math.floor(Math.random()*sp.length)]; this.signaturePhraseTimer = 50; }
     } else if (this.data.taunts && this.data.taunts.length > 0 && Math.random() < 0.18) {
       this.signaturePhrase = this.data.taunts[Math.floor(Math.random() * this.data.taunts.length)];
       this.signaturePhraseTimer = 35;

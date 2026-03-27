@@ -23,6 +23,7 @@ class Game {
     this.roundDamageTaken = 0;
     this.winLine = '';
     this.koWinLine = '';
+    this.defeatQuote = '';
     this.roundStartLine = '';
 
     this.nameEntry = { chars: ['A','A','A'], pos: 0, done: false };
@@ -308,6 +309,8 @@ class Game {
         this.audio.roundWin();
         this.winLine = CONST.TEXT.WIN_LINES[Math.floor(Math.random()*CONST.TEXT.WIN_LINES.length)];
         this.koWinLine = CONST.TEXT.KO_LINES[Math.floor(Math.random()*CONST.TEXT.KO_LINES.length)];
+        const dqSrc = this.opponent && this.opponent.data && this.opponent.data.defeatQuotes;
+        this.defeatQuote = dqSrc ? dqSrc[Math.floor(Math.random()*dqSrc.length)] : '';
         this._changeState(CONST.STATES.FIGHT_WIN); return;
       }
       if (this.opponentRoundsWon >= Math.ceil(CONST.ROUNDS_PER_FIGHT/2)) { this.audio.roundLose(); this._changeState(CONST.STATES.FIGHT_LOSE); return; }
@@ -461,8 +464,8 @@ class Game {
         break;
       case CONST.STATES.FIGHT_WIN: {
         const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-        const name = isBull ? 'EL TORO' : OPPONENT_DATA[this.currentOpponentIndex].name;
-        this.ui.drawFightWin(name, this.stateTick, this.score, this.winLine, this.koWinLine);
+        const oppD = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+        this.ui.drawFightWin(oppD.name, this.stateTick, this.score, this.winLine, this.koWinLine, this.defeatQuote);
         break;
       }
       case CONST.STATES.FIGHT_LOSE:
