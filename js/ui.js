@@ -100,61 +100,108 @@ class UIManager {
   }
 
   _drawHowToPlayScreen(ctx, W, H, tick) {
+    const isTouch = document.body.classList.contains('touch-device');
+
     ctx.fillStyle = CONST.COLORS.GOLD;
     this.r._drawText('COMO JUGAR', W / 2, 14, 'center', 2);
     this.r.drawSarchiStripe(0, 32, W);
 
     const leftCol = 14;
     const rightCol = W / 2 + 6;
-    const keyColW = 52;
 
     ctx.fillStyle = CONST.COLORS.NEON_GREEN;
     this.r._drawText('MOVIMIENTO', leftCol, 42, 'left', 1);
 
-    const moveKeys = [
-      ['IZQ/DER', 'MOVERSE'],
-      ['ARRIBA', 'BLOQUEAR'],
-      ['ABAJO', 'AGACHARSE'],
-      ['ARRIBAx2', 'ESQUIVAR'],
-    ];
-    for (let i = 0; i < moveKeys.length; i++) {
-      const y = 56 + i * 13;
-      ctx.fillStyle = CONST.COLORS.YELLOW;
-      this.r._drawText(moveKeys[i][0], leftCol, y, 'left', 0.8);
-      ctx.fillStyle = CONST.COLORS.WHITE;
-      this.r._drawText(moveKeys[i][1], leftCol + keyColW, y, 'left', 0.8);
+    if (isTouch) {
+      const moveTouch = [
+        ['D-PAD', 'MOVERSE'],
+        ['ARRIBA', 'BLOQUEAR'],
+        ['ABAJO', 'AGACHARSE'],
+        ['ARRIBAx2', 'ESQUIVAR'],
+      ];
+      for (let i = 0; i < moveTouch.length; i++) {
+        const y = 56 + i * 13;
+        ctx.fillStyle = CONST.COLORS.YELLOW;
+        this.r._drawText(moveTouch[i][0], leftCol, y, 'left', 0.8);
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(moveTouch[i][1], leftCol + 52, y, 'left', 0.8);
+      }
+    } else {
+      const moveKeys = [
+        ['IZQ/DER', 'MOVERSE'],
+        ['ARRIBA', 'BLOQUEAR'],
+        ['ABAJO', 'AGACHARSE'],
+        ['ARRIBAx2', 'ESQUIVAR'],
+      ];
+      for (let i = 0; i < moveKeys.length; i++) {
+        const y = 56 + i * 13;
+        ctx.fillStyle = CONST.COLORS.YELLOW;
+        this.r._drawText(moveKeys[i][0], leftCol, y, 'left', 0.8);
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(moveKeys[i][1], leftCol + 52, y, 'left', 0.8);
+      }
     }
 
     ctx.fillStyle = CONST.COLORS.NEON_GREEN;
     this.r._drawText('COMBATE', rightCol, 42, 'left', 1);
 
-    const fightKeys = [
-      ['A', 'PICHAZO IZQ'],
-      ['S', 'PICHAZO DER'],
-      ['D', 'EL ZARPE'],
-    ];
-    for (let i = 0; i < fightKeys.length; i++) {
-      const y = 56 + i * 13;
-      ctx.fillStyle = CONST.COLORS.YELLOW;
-      this.r._drawText(fightKeys[i][0], rightCol, y, 'left', 0.8);
-      ctx.fillStyle = CONST.COLORS.WHITE;
-      this.r._drawText(fightKeys[i][1], rightCol + 18, y, 'left', 0.8);
+    if (isTouch) {
+      const fightTouch = [
+        ['BOTON A', 'PICHA IZQ'],
+        ['BOTON S', 'PICHA DER'],
+        ['BOTON D', 'EL ZARPE'],
+      ];
+      for (let i = 0; i < fightTouch.length; i++) {
+        const y = 56 + i * 13;
+        ctx.fillStyle = CONST.COLORS.YELLOW;
+        this.r._drawText(fightTouch[i][0], rightCol, y, 'left', 0.8);
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(fightTouch[i][1], rightCol + 48, y, 'left', 0.8);
+      }
+    } else {
+      const fightKeys = [
+        ['TECLA A', 'PICHA IZQ'],
+        ['TECLA S', 'PICHA DER'],
+        ['TECLA D', 'EL ZARPE'],
+      ];
+      for (let i = 0; i < fightKeys.length; i++) {
+        const y = 56 + i * 13;
+        ctx.fillStyle = CONST.COLORS.YELLOW;
+        this.r._drawText(fightKeys[i][0], rightCol, y, 'left', 0.8);
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(fightKeys[i][1], rightCol + 48, y, 'left', 0.8);
+      }
     }
 
     this.r.drawSarchiStripe(0, 110, W);
 
-    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
-    this.r._drawText('SISTEMA', W / 2, 120, 'center', 1);
+    if (isTouch) {
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      this.r._drawText('BOTONES', W / 2, 120, 'center', 1);
 
-    ctx.fillStyle = CONST.COLORS.YELLOW;
-    this.r._drawText('ENTER', leftCol + 20, 136, 'left', 0.8);
-    ctx.fillStyle = CONST.COLORS.WHITE;
-    this.r._drawText('ECHAR TEJA', leftCol + 20 + keyColW, 136, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText('TEJA', leftCol + 20, 136, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText('METER MONEDA', leftCol + 20 + 42, 136, 'left', 0.8);
 
-    ctx.fillStyle = CONST.COLORS.YELLOW;
-    this.r._drawText('ESPACIO', leftCol + 20, 149, 'left', 0.8);
-    ctx.fillStyle = CONST.COLORS.WHITE;
-    this.r._drawText('START', leftCol + 20 + keyColW, 149, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText('START', leftCol + 20, 149, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText('INICIAR JUEGO', leftCol + 20 + 42, 149, 'left', 0.8);
+    } else {
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      this.r._drawText('SISTEMA', W / 2, 120, 'center', 1);
+
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText('ENTER', leftCol + 20, 136, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText('ECHAR TEJA', leftCol + 20 + 52, 136, 'left', 0.8);
+
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText('ESPACIO', leftCol + 20, 149, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText('START', leftCol + 20 + 52, 149, 'left', 0.8);
+    }
 
     this.r.drawSarchiStripe(0, 164, W);
 

@@ -6,6 +6,11 @@ html, body {
   -webkit-user-select: none;
   display: flex; align-items: center; justify-content: center;
 }
+body.touch-device {
+  cursor: auto;
+  align-items: flex-start;
+  justify-content: center;
+}
 #screen-wrap {
   position: relative;
   border-radius: 18px / 14px;
@@ -29,8 +34,8 @@ canvas#glow {
   width: 100%; height: 100%;
   pointer-events: none; z-index: 2;
   mix-blend-mode: screen;
-  opacity: 0.35;
-  filter: blur(3px) brightness(1.2);
+  opacity: 0.15;
+  filter: blur(1px) brightness(1.1);
 }
 #scanlines {
   position: absolute; top: 0; left: 0;
@@ -38,8 +43,8 @@ canvas#glow {
   background:
     repeating-linear-gradient(
       0deg,
-      rgba(0,0,0,0.10) 0px,
-      rgba(0,0,0,0.10) 1px,
+      rgba(0,0,0,0.04) 0px,
+      rgba(0,0,0,0.04) 1px,
       transparent 1px,
       transparent 3px
     );
@@ -53,7 +58,7 @@ canvas#glow {
 #crt {
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
-  background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.55) 100%);
+  background: radial-gradient(ellipse at center, transparent 60%, rgba(0,0,0,0.3) 100%);
   pointer-events: none; z-index: 4;
 }
 #aberration {
@@ -77,4 +82,159 @@ canvas#glow {
 @keyframes phosphor-sweep {
   0% { top: -1%; }
   100% { top: 101%; }
+}
+
+/* ── Touch Controls ── */
+
+#touch-controls {
+  display: none;
+  position: fixed;
+  left: 0; right: 0; bottom: 0;
+  z-index: 100;
+  pointer-events: none;
+  touch-action: none;
+  -webkit-touch-callout: none;
+}
+.touch-device #touch-controls { display: block; }
+
+#touch-meta {
+  position: fixed;
+  top: 8px; left: 0; right: 0;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  pointer-events: none;
+  z-index: 101;
+}
+
+.touch-meta-btn {
+  pointer-events: auto;
+  min-width: 72px;
+  height: 34px;
+  border-radius: 6px;
+  border: 2px solid rgba(255, 215, 0, 0.6);
+  background: rgba(10, 10, 42, 0.75);
+  color: #FFD700;
+  font: bold 13px monospace;
+  letter-spacing: 1px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+.touch-meta-btn:active, .touch-meta-btn.active {
+  background: rgba(255, 215, 0, 0.25);
+  border-color: #FFD700;
+}
+
+#touch-gameplay {
+  position: fixed;
+  bottom: 12px; left: 0; right: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 0 16px;
+  pointer-events: none;
+}
+
+/* ── D-Pad ── */
+
+#touch-dpad {
+  display: grid;
+  grid-template-columns: 52px 52px 52px;
+  grid-template-rows: 52px 52px 52px;
+  gap: 2px;
+  pointer-events: none;
+}
+
+.dpad-btn {
+  pointer-events: auto;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  background: rgba(10, 10, 42, 0.7);
+  border-radius: 8px;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: rgba(255,255,255,0.5);
+  font-size: 16px;
+  line-height: 1;
+}
+.dpad-btn:active, .dpad-btn.active {
+  background: rgba(57, 255, 20, 0.25);
+  border-color: #39FF14;
+}
+
+.dpad-center {
+  background: rgba(10, 10, 42, 0.5);
+  border-radius: 4px;
+}
+
+.dpad-up    { grid-column: 2; grid-row: 1; }
+.dpad-left  { grid-column: 1; grid-row: 2; }
+.dpad-center { grid-column: 2; grid-row: 2; }
+.dpad-right { grid-column: 3; grid-row: 2; }
+.dpad-down  { grid-column: 2; grid-row: 3; }
+
+.dpad-up::after    { content: '\25B2'; }
+.dpad-down::after  { content: '\25BC'; }
+.dpad-left::after  { content: '\25C0'; }
+.dpad-right::after { content: '\25B6'; }
+
+/* ── Action Buttons ── */
+
+#touch-actions {
+  display: grid;
+  grid-template-columns: 56px 56px;
+  grid-template-rows: 56px 56px;
+  gap: 6px;
+  pointer-events: none;
+  margin-bottom: 4px;
+}
+
+.action-btn {
+  pointer-events: auto;
+  width: 56px; height: 56px;
+  border-radius: 50%;
+  border: 2px solid;
+  font: bold 16px monospace;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.action-btn:active, .action-btn.active {
+  filter: brightness(1.5);
+  transform: scale(0.93);
+}
+
+.action-a {
+  grid-column: 1; grid-row: 2;
+  background: rgba(196, 30, 58, 0.55);
+  border-color: rgba(196, 30, 58, 0.8);
+  color: #FF6B84;
+}
+.action-s {
+  grid-column: 2; grid-row: 1;
+  background: rgba(0, 71, 171, 0.55);
+  border-color: rgba(0, 71, 171, 0.8);
+  color: #6BAAFF;
+}
+.action-d {
+  grid-column: 2; grid-row: 2;
+  background: rgba(234, 162, 33, 0.55);
+  border-color: rgba(234, 162, 33, 0.8);
+  color: #FFD700;
+}
+
+/* ── Landscape phones: shrink controls ── */
+@media (max-height: 420px) {
+  #touch-dpad {
+    grid-template-columns: 42px 42px 42px;
+    grid-template-rows: 42px 42px 42px;
+  }
+  #touch-actions {
+    grid-template-columns: 48px 48px;
+    grid-template-rows: 48px 48px;
+  }
+  .action-btn { width: 48px; height: 48px; }
+  .touch-meta-btn { min-width: 60px; height: 28px; font-size: 11px; }
+  #touch-gameplay { bottom: 6px; padding: 0 10px; }
 }

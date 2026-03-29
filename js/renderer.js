@@ -155,8 +155,12 @@ class Renderer {
   }
 
   _resize() {
+    const isTouch = document.body.classList.contains('touch-device');
+    const touchPad = isTouch ? 180 : 0;
+    const touchTop = isTouch ? 44 : 0;
+    const availH = window.innerHeight - touchPad - touchTop;
     const scaleX = window.innerWidth / CONST.WIDTH;
-    const scaleY = window.innerHeight / CONST.HEIGHT;
+    const scaleY = availH / CONST.HEIGHT;
     const scale = Math.max(1, Math.min(scaleX, scaleY));
     const w = Math.floor(CONST.WIDTH * scale);
     const h = Math.floor(CONST.HEIGHT * scale);
@@ -166,6 +170,11 @@ class Renderer {
     if (this.screenWrap) {
       this.screenWrap.style.width = w + 'px';
       this.screenWrap.style.height = h + 'px';
+      if (isTouch) {
+        this.screenWrap.style.marginTop = touchTop + 'px';
+      } else {
+        this.screenWrap.style.marginTop = '';
+      }
     }
   }
 
@@ -176,7 +185,7 @@ class Renderer {
         this.glowCtx.globalCompositeOperation = 'source-over';
         this.glowCtx.drawImage(this.canvas, 0, 0);
         this.glowCtx.globalCompositeOperation = 'lighter';
-        this.glowCtx.globalAlpha = 0.15;
+        this.glowCtx.globalAlpha = 0.07;
         this.glowCtx.drawImage(this.canvas, -1, 0);
         this.glowCtx.drawImage(this.canvas, 1, 0);
         this.glowCtx.drawImage(this.canvas, 0, -1);

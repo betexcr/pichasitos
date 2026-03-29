@@ -2,7 +2,7 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
   <title>PICHASITOS - Boxeo Arcade en las Fiestas de Santa Cruz</title>
   <meta name="description" content="Juego arcade de boxeo estilo SNES ambientado en las Fiestas Patronales de Santa Cruz, Guanacaste. Eche la teja, escoja su peleador y demuestre quien es el mas teja del redondel. Pura vida y pichazos!" />
   <meta name="theme-color" content="#0A0A2A" />
@@ -30,6 +30,27 @@
   <div id="screen-wrap">
     <canvas id="glow"></canvas>
     <canvas id="game"></canvas>
+  </div>
+
+  <div id="touch-controls">
+    <div id="touch-meta">
+      <button class="touch-btn touch-meta-btn" data-action="coin">TEJA</button>
+      <button class="touch-btn touch-meta-btn" data-action="start">START</button>
+    </div>
+    <div id="touch-gameplay">
+      <div id="touch-dpad">
+        <button class="touch-btn dpad-btn dpad-up" data-action="up"></button>
+        <button class="touch-btn dpad-btn dpad-left" data-action="left"></button>
+        <div class="dpad-center"></div>
+        <button class="touch-btn dpad-btn dpad-right" data-action="right"></button>
+        <button class="touch-btn dpad-btn dpad-down" data-action="down"></button>
+      </div>
+      <div id="touch-actions">
+        <button class="touch-btn action-btn action-a" data-action="punchLeft">A</button>
+        <button class="touch-btn action-btn action-s" data-action="punchRight">S</button>
+        <button class="touch-btn action-btn action-d" data-action="special">D</button>
+      </div>
+    </div>
   </div>
 
   <script src="js/constants.js"></script>

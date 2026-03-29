@@ -52,6 +52,67 @@ class Game {
       if (action) this.input[action]=false;
       if (e.key===CONST.KEYS.COIN||e.key===CONST.KEYS.START) this.operatorKeyTimer=0;
     });
+
+    this._setupTouchInput();
+  }
+
+  _setupTouchInput() {
+    const isTouch = 'ontouchstart' in window || navigator.maxTouchPoints > 0;
+    if (!isTouch) return;
+    document.body.classList.add('touch-device');
+    window.dispatchEvent(new Event('resize'));
+
+    const activeTouches = {};
+    const buttons = document.querySelectorAll('[data-action]');
+
+    buttons.forEach((btn) => {
+      const action = btn.dataset.action;
+
+      btn.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          activeTouches[e.changedTouches[i].identifier] = { action, btn };
+        }
+        if (!this.input[action]) this._pressedThisFrame[action] = true;
+        this.input[action] = true;
+        this.idleTimer = 0;
+        btn.classList.add('active');
+      }, { passive: false });
+
+      btn.addEventListener('touchend', (e) => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          delete activeTouches[e.changedTouches[i].identifier];
+        }
+        let stillHeld = false;
+        for (const id in activeTouches) {
+          if (activeTouches[id].action === action) { stillHeld = true; break; }
+        }
+        if (!stillHeld) {
+          this.input[action] = false;
+          btn.classList.remove('active');
+        }
+      }, { passive: false });
+
+      btn.addEventListener('touchcancel', (e) => {
+        e.preventDefault();
+        for (let i = 0; i < e.changedTouches.length; i++) {
+          delete activeTouches[e.changedTouches[i].identifier];
+        }
+        let stillHeld = false;
+        for (const id in activeTouches) {
+          if (activeTouches[id].action === action) { stillHeld = true; break; }
+        }
+        if (!stillHeld) {
+          this.input[action] = false;
+          btn.classList.remove('active');
+        }
+      }, { passive: false });
+    });
+
+    document.addEventListener('touchstart', (e) => {
+      if (e.target.closest('#touch-controls')) e.preventDefault();
+    }, { passive: false });
   }
 
   _pressed(action) { return !!this._pressedThisFrame[action]; }
