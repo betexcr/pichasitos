@@ -129,8 +129,8 @@ class UIManager {
     this.r._drawText('COMBATE', rightCol, 42, 'left', 1);
 
     const fightKeys = [
-      ['A', 'PICHA IZQ'],
-      ['S', 'PICHA DER'],
+      ['A', 'PICHAZO IZQ'],
+      ['S', 'PICHAZO DER'],
       ['D', 'EL ZARPE'],
     ];
     for (let i = 0; i < fightKeys.length; i++) {
@@ -499,7 +499,7 @@ class UIManager {
 
     ctx.fillStyle = CONST.COLORS.WHITE;
     this.r._drawText('ECHE LA TEJA PARA', W / 2, H / 2 + 20, 'center', 1.2);
-    this.r._drawText('SEGUIR PICHANDOSE', W / 2, H / 2 + 36, 'center', 1.2);
+    this.r._drawText('SEGUIR PICHASEANDOSE', W / 2, H / 2 + 36, 'center', 1.2);
 
     const tejaRot = tick * 0.1;
     this.r.drawTeja(W / 2, H / 2 + 62, 16, tejaRot);
@@ -668,11 +668,11 @@ class UIManager {
     if (!ne.done) {
       if (Math.floor(tick / 20) % 2 === 0) {
         ctx.fillStyle = CONST.COLORS.NEON_GREEN;
-        this.r._drawText('PICHA PARA CONFIRMAR', W / 2, 140, 'center', 1);
+        this.r._drawText('PICHAZO PARA CONFIRMAR', W / 2, 140, 'center', 1);
       }
       ctx.fillStyle = CONST.COLORS.GRAY;
       this.r._drawText('ARRIBA/ABAJO: LETRA', W / 2, 160, 'center', 0.8);
-      this.r._drawText('PICHA IZQ/DER: SIGUIENTE', W / 2, 174, 'center', 0.8);
+      this.r._drawText('PICHAZO IZQ/DER: SIGUIENTE', W / 2, 174, 'center', 0.8);
     } else {
       const bounce = Math.sin(tick * 0.12) * 3;
       ctx.fillStyle = CONST.COLORS.GOLD;

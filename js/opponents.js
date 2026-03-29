@@ -85,7 +85,7 @@ const OPPONENT_DATA = [
       {name:'POLVAZO',phrases:['TOME POLVO, PERRO MALPARIDO!','TRAGUESE ESTA TIERRA!','POLVO DE LA CALLE PA USTED!','LE LLENO LOS OJOS, PLAYO!','POLVAZOOOO!'],type:'signature',side:'both',tellFrames:16,attackFrames:10,recoveryFrames:22,damage:10,stun:true,anim:'sig_throw',effect:'dust_cloud',condition:'health_below_50'},
       {name:'CABEZAZO CALLEJERO',phrases:['CABEZAZO DE LA CALLE!','TOME JUPA, HIJUEPUTA!','CON LA CABEZA SE PIENSA Y SE PEGA!','CABEZAZO MARCA REGISTRADA!','LA JUPA ES MI MEJOR ARMA!'],type:'signature',side:'both',tellFrames:14,attackFrames:8,recoveryFrames:20,damage:26,unblockable:true,anim:'sig_rush',effect:'shockwave'},
     ],
-    taunts:['YO SOY DE LA CALLE MAE!','AQUI SE PICHA SUCIO!','LE VOY A ENSENAR CALLE!','AGACHESE QUE VOY!','ESTO NO ES ESCUELA PIPI!','EN LA CALLE NO HAY REGLAS!','USTED NO SOBREVIVE NI UN BUS!','LE FALTA BARRIO, COMPA!','YO ME CRIE A PICHAZOS!','AQUI VALE JUPA PRIMERO!','NI LOS PERROS ME LADRAN!','LA CALLE ME HIZO ASI!'],
+    taunts:['YO SOY DE LA CALLE MAE!','AQUI SE PICHASEA SUCIO!','LE VOY A ENSENAR CALLE!','AGACHESE QUE VOY!','ESTO NO ES ESCUELA PIPI!','EN LA CALLE NO HAY REGLAS!','USTED NO SOBREVIVE NI UN BUS!','LE FALTA BARRIO, COMPA!','YO ME CRIE A PICHAZOS!','AQUI VALE JUPA PRIMERO!','NI LOS PERROS ME LADRAN!','LA CALLE ME HIZO ASI!'],
     defeatQuotes:['LA CALLE... ME COBRO HOY...','NI EN MIS PEORES NOCHES... ME DIERON ASI...','DIAY MAE... HOY GANO USTED...','ME TUMBARON... PERO SIGO SIENDO CALLE...','HIJUEPUTA... ESO SI DOLIO...'],
     tellAnim:'taunt', enrageThreshold:0.45, enrageSpeedMult:1.4,
   },
@@ -136,7 +136,7 @@ const OPPONENT_DATA = [
   // === CIRCUITO DEL REDONDEL ===
   {
     id:6, name:'KAREN', title:'La Rude Girl', circuit:2,
-    quote:'VENGA, VENGA, QUE YO LE PARTO\nLA CARA GRATIS, PAPISONGO!\nYO NO COBRO POR PICHAR!',
+    quote:'VENGA, VENGA, QUE YO LE PARTO\nLA CARA GRATIS, PAPISONGO!\nYO NO COBRO POR PICHASEAR!',
     health:95, damage:{jab:15,power:24,special:34},
     speed:0.9, aggressiveness:0.7, blockChance:0.3, counterChance:0.3,
     build:'stocky', skinColor:CONST.COLORS.SKIN_MEDIUM, hairColor:'#222',
