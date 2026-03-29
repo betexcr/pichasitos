@@ -30,6 +30,7 @@ class Game {
 
     this.input = { left:false,right:false,up:false,down:false,punchLeft:false,punchRight:false,special:false,start:false,coin:false };
     this._pressedThisFrame = {};
+    this._touchPressBuffer = {};
     this._setupInput();
     this._loop();
   }
@@ -73,7 +74,10 @@ class Game {
         for (let i = 0; i < e.changedTouches.length; i++) {
           activeTouches[e.changedTouches[i].identifier] = { action, btn };
         }
-        if (!this.input[action]) this._pressedThisFrame[action] = true;
+        if (!this.input[action]) {
+          this._pressedThisFrame[action] = true;
+          this._touchPressBuffer[action] = true;
+        }
         this.input[action] = true;
         this.idleTimer = 0;
         btn.classList.add('active');
@@ -148,6 +152,10 @@ class Game {
   }
 
   _update() {
+    for (const a in this._touchPressBuffer) {
+      this._pressedThisFrame[a] = true;
+    }
+    this._touchPressBuffer = {};
     this.idleTimer++;
     if (this._consumePress('coin')) { this.arcade.insertCoin(); this.audio.coinInsert(); }
     switch (this.state) {
@@ -224,7 +232,7 @@ class Game {
     const pInput = {
       left:this._consumePress('left'), right:this._consumePress('right'), up:this.input.up,
       down:this._consumePress('down'), punchLeft:this._consumePress('punchLeft'),
-      punchRight:this._consumePress('punchRight'), special:this._consumePress('special'),
+      punchRight:this._consumePress('punchRight'), special:this._consumePress('special') || this.input.special,
     };
     this.player.update(pInput);
     const playerStateForAI = this.player.isWindingUp() ? 'windup' : this.player.state;
