@@ -7,7 +7,7 @@ class UIManager {
     const ctx = this.r.ctx;
     const W = this.r.W;
     const H = this.r.H;
-    const screen = Math.floor(tick / 300) % 2;
+    const screen = Math.floor(tick / 300) % 3;
 
     ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
     ctx.fillRect(0, 0, W, H);
@@ -15,6 +15,8 @@ class UIManager {
 
     if (screen === 0) {
       this._drawTitleScreen(ctx, W, H, tick);
+    } else if (screen === 1) {
+      this._drawHowToPlayScreen(ctx, W, H, tick);
     } else {
       this._drawHighScoreScreen(ctx, W, H, tick, highScores);
     }
@@ -95,6 +97,85 @@ class UIManager {
     }
 
     this.r.drawSarchiRosette(W / 2, H - 22, 10);
+  }
+
+  _drawHowToPlayScreen(ctx, W, H, tick) {
+    ctx.fillStyle = CONST.COLORS.GOLD;
+    this.r._drawText('COMO JUGAR', W / 2, 14, 'center', 2);
+    this.r.drawSarchiStripe(0, 32, W);
+
+    const leftCol = 14;
+    const rightCol = W / 2 + 6;
+    const keyColW = 52;
+
+    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+    this.r._drawText('MOVIMIENTO', leftCol, 42, 'left', 1);
+
+    const moveKeys = [
+      ['IZQ/DER', 'MOVERSE'],
+      ['ARRIBA', 'BLOQUEAR'],
+      ['ABAJO', 'AGACHARSE'],
+      ['ARRIBAx2', 'ESQUIVAR'],
+    ];
+    for (let i = 0; i < moveKeys.length; i++) {
+      const y = 56 + i * 13;
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText(moveKeys[i][0], leftCol, y, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText(moveKeys[i][1], leftCol + keyColW, y, 'left', 0.8);
+    }
+
+    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+    this.r._drawText('COMBATE', rightCol, 42, 'left', 1);
+
+    const fightKeys = [
+      ['A', 'PICHA IZQ'],
+      ['S', 'PICHA DER'],
+      ['D', 'EL ZARPE'],
+    ];
+    for (let i = 0; i < fightKeys.length; i++) {
+      const y = 56 + i * 13;
+      ctx.fillStyle = CONST.COLORS.YELLOW;
+      this.r._drawText(fightKeys[i][0], rightCol, y, 'left', 0.8);
+      ctx.fillStyle = CONST.COLORS.WHITE;
+      this.r._drawText(fightKeys[i][1], rightCol + 18, y, 'left', 0.8);
+    }
+
+    this.r.drawSarchiStripe(0, 110, W);
+
+    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+    this.r._drawText('SISTEMA', W / 2, 120, 'center', 1);
+
+    ctx.fillStyle = CONST.COLORS.YELLOW;
+    this.r._drawText('ENTER', leftCol + 20, 136, 'left', 0.8);
+    ctx.fillStyle = CONST.COLORS.WHITE;
+    this.r._drawText('ECHAR TEJA', leftCol + 20 + keyColW, 136, 'left', 0.8);
+
+    ctx.fillStyle = CONST.COLORS.YELLOW;
+    this.r._drawText('ESPACIO', leftCol + 20, 149, 'left', 0.8);
+    ctx.fillStyle = CONST.COLORS.WHITE;
+    this.r._drawText('START', leftCol + 20 + keyColW, 149, 'left', 0.8);
+
+    this.r.drawSarchiStripe(0, 164, W);
+
+    const tips = [
+      'BLOQUEE PARA REDUCIR DANO',
+      'ESQUIVE: DOBLE ARRIBA RAPIDO',
+      'LLENE EL GUARO PARA EL ZARPE',
+      'ALTERNE PICHAZOS PARA COMBO',
+      'EL ZARPE SOLO CUANDO ESTA LLENO',
+      'CUIDADO CON EL GUARO DE MAS!',
+    ];
+    const tipIndex = Math.floor(tick / 100) % tips.length;
+    const tipPhase = tick % 100;
+    const tipAlpha = tipPhase < 80 ? 1 : 1 - (tipPhase - 80) / 20;
+    ctx.globalAlpha = tipAlpha;
+    ctx.fillStyle = CONST.COLORS.CREAM;
+    this.r._drawText(tips[tipIndex], W / 2, 178, 'center', 0.8);
+    ctx.globalAlpha = 1;
+
+    this.r.drawSarchiRosette(30, H - 28, 8);
+    this.r.drawSarchiRosette(W - 30, H - 28, 8);
   }
 
   _drawCredits(ctx, W, H, credits) {
