@@ -155,11 +155,11 @@ class Renderer {
   }
 
   _resize() {
-    const scaleX = Math.floor(window.innerWidth / CONST.WIDTH);
-    const scaleY = Math.floor(window.innerHeight / CONST.HEIGHT);
+    const scaleX = window.innerWidth / CONST.WIDTH;
+    const scaleY = window.innerHeight / CONST.HEIGHT;
     const scale = Math.max(1, Math.min(scaleX, scaleY));
-    const w = CONST.WIDTH * scale;
-    const h = CONST.HEIGHT * scale;
+    const w = Math.floor(CONST.WIDTH * scale);
+    const h = Math.floor(CONST.HEIGHT * scale);
     this.canvas.style.width = w + 'px';
     this.canvas.style.height = h + 'px';
     this.canvas.style.imageRendering = 'pixelated';
