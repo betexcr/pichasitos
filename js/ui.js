@@ -206,7 +206,9 @@ class UIManager {
     const totalEnemies = allEnemies.length;
     const pageSize = 5;
     const totalPages = Math.ceil(totalEnemies / pageSize);
-    const page = Math.floor(tick / 150) % totalPages;
+    const screenDuration = 300;
+    const pageDuration = Math.floor(screenDuration / totalPages);
+    const page = Math.floor((tick % screenDuration) / pageDuration) % totalPages;
     const startIdx = page * pageSize;
     const endIdx = Math.min(startIdx + pageSize, totalEnemies);
 
