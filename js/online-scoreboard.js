@@ -8,12 +8,40 @@ class OnlineScoreboard {
     this.playerName = '???';
     this._db = null;
     this._presenceRef = null;
+    this._pendingState = null;
+    this._pendingScore = 0;
   }
 
   init() {
-    if (typeof firebase === 'undefined') return;
     var cfg = window.FIREBASE_CONFIG;
     if (!cfg || !cfg.databaseURL || cfg.databaseURL === '') return;
+    this._loadSDK();
+  }
+
+  _loadSDK() {
+    var self = this;
+    var base = 'https://www.gstatic.com/firebasejs/10.14.1/';
+    this._loadScript(base + 'firebase-app-compat.js', function() {
+      self._loadScript(base + 'firebase-database-compat.js', function() {
+        self._connect();
+      });
+    });
+  }
+
+  _loadScript(src, onLoad) {
+    var s = document.createElement('script');
+    s.src = src;
+    s.async = true;
+    s.onload = onLoad;
+    s.onerror = function() {
+      console.warn('Online scoreboard: failed to load ' + src);
+    };
+    document.head.appendChild(s);
+  }
+
+  _connect() {
+    if (typeof firebase === 'undefined') return;
+    var cfg = window.FIREBASE_CONFIG;
 
     try {
       if (!firebase.apps.length) firebase.initializeApp(cfg);
@@ -24,6 +52,10 @@ class OnlineScoreboard {
       this._setupPresence();
       this._listenScores();
       this._listenOnline();
+
+      if (this._pendingState) {
+        this.updateState(this._pendingState, this._pendingScore);
+      }
     } catch (e) {
       console.warn('Online scoreboard unavailable:', e.message);
       this.enabled = false;
@@ -48,8 +80,8 @@ class OnlineScoreboard {
       if (snap.val() !== true) return;
       ref.set({
         name: self.playerName,
-        state: 'attract',
-        score: 0,
+        state: self._pendingState || 'attract',
+        score: self._pendingScore || 0,
         joinedAt: firebase.database.ServerValue.TIMESTAMP,
         lastSeen: firebase.database.ServerValue.TIMESTAMP,
       });
@@ -59,6 +91,8 @@ class OnlineScoreboard {
   }
 
   updateState(state, score) {
+    this._pendingState = state;
+    this._pendingScore = score || 0;
     if (!this._presenceRef) return;
     this._presenceRef.update({
       state: state || 'attract',
