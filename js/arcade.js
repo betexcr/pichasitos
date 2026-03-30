@@ -29,8 +29,8 @@ class Arcade {
     return true;
   }
 
-  addHighScore(name, score, opponents, circuit) {
-    this.highScores.push({ name, score: score || 0, opponents: opponents || 0, circuit: circuit || 0, date: Date.now() });
+  addHighScore(name, score, opponents, circuit, lastDefeated) {
+    this.highScores.push({ name, score: score || 0, opponents: opponents || 0, circuit: circuit || 0, lastDefeated: lastDefeated || '', date: Date.now() });
     this.highScores.sort((a, b) => (b.score || 0) - (a.score || 0));
     if (this.highScores.length > 10) this.highScores = this.highScores.slice(0, 10);
     this._save();

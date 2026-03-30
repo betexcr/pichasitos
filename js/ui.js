@@ -3,28 +3,34 @@ class UIManager {
     this.r = renderer;
   }
 
-  drawAttractMode(tick, credits, highScores) {
+  drawAttractMode(tick, credits, highScores, onlineData) {
     const ctx = this.r.ctx;
     const W = this.r.W;
     const H = this.r.H;
-    const screen = Math.floor(tick / 300) % 3;
+    const hasOnline = onlineData && onlineData.enabled;
+    const screenCount = hasOnline ? 5 : 4;
+    const screen = Math.floor(tick / 300) % screenCount;
 
     ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
     ctx.fillRect(0, 0, W, H);
     this.r.drawSarchiBorder();
 
     if (screen === 0) {
-      this._drawTitleScreen(ctx, W, H, tick);
+      this._drawTitleScreen(ctx, W, H, tick, onlineData);
     } else if (screen === 1) {
       this._drawHowToPlayScreen(ctx, W, H, tick);
+    } else if (screen === 2) {
+      this._drawEnemiesScreen(ctx, W, H, tick);
+    } else if (screen === 3) {
+      this._drawHighScoreScreen(ctx, W, H, tick, highScores, hasOnline);
     } else {
-      this._drawHighScoreScreen(ctx, W, H, tick, highScores);
+      this._drawOnlinePlayersScreen(ctx, W, H, tick, onlineData);
     }
 
     this._drawCredits(ctx, W, H, credits);
   }
 
-  _drawTitleScreen(ctx, W, H, tick) {
+  _drawTitleScreen(ctx, W, H, tick, onlineData) {
     this.r.drawFireworks(tick);
 
     ctx.save();
@@ -67,19 +73,34 @@ class UIManager {
     const tejaRot = tick * 0.08;
     this.r.drawTeja(W / 2, 158, 16, tejaRot);
 
+    if (onlineData && onlineData.enabled && onlineData.count > 0) {
+      const dotPulse = 0.7 + Math.sin(tick * 0.1) * 0.3;
+      ctx.save();
+      ctx.globalAlpha = dotPulse;
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      ctx.beginPath();
+      ctx.arc(W - 58, 180, 3, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      this.r._drawText(onlineData.count + ' EN LINEA', W - 50, 178, 'left', 0.7);
+    }
+
     this.r.drawSarchiRosette(30, H - 26, 10);
     this.r.drawSarchiRosette(W - 30, H - 26, 10);
   }
 
-  _drawHighScoreScreen(ctx, W, H, tick, highScores) {
+  _drawHighScoreScreen(ctx, W, H, tick, highScores, isGlobal) {
+    var title = isGlobal ? 'RANKING GLOBAL' : 'MEJORES PICHASEADORES';
     ctx.fillStyle = CONST.COLORS.GOLD;
-    this.r._drawText('MEJORES PICHASEADORES', W / 2, 18, 'center', 1.8);
+    this.r._drawText(title, W / 2, 18, 'center', 1.8);
     this.r.drawSarchiStripe(0, 38, W);
 
     if (!highScores || highScores.length === 0) {
       ctx.fillStyle = CONST.COLORS.GRAY;
       this.r._drawText('SIN REGISTROS', W / 2, H / 2, 'center', 1.2);
     } else {
+      const frame = Math.floor(tick / 15) % 2;
       const max = Math.min(highScores.length, 8);
       for (let i = 0; i < max; i++) {
         const entry = highScores[i];
@@ -89,14 +110,157 @@ class UIManager {
         const pts = String(entry.score || 0);
         const color = i === 0 ? CONST.COLORS.GOLD : i < 3 ? CONST.COLORS.YELLOW : CONST.COLORS.WHITE;
         ctx.fillStyle = color;
-        this.r._drawText(rank, 26, y, 'left', 1);
-        this.r._drawText(name, 50, y, 'left', 1);
+        this.r._drawText(rank, 16, y, 'left', 1);
+        this.r._drawText(name, 34, y, 'left', 1);
+        if (entry.lastDefeated) {
+          var oppData = this._findOpponentData(entry.lastDefeated);
+          if (oppData) {
+            this.r.sprites.drawOpponentHead(ctx, oppData, frame, 72, y + 6, 0.8);
+          }
+        }
         ctx.fillStyle = color;
-        this.r._drawText(pts, W - 26, y, 'right', 1);
+        this.r._drawText(pts, W - 16, y, 'right', 1);
       }
     }
 
     this.r.drawSarchiRosette(W / 2, H - 22, 10);
+  }
+
+  _drawOnlinePlayersScreen(ctx, W, H, tick, onlineData) {
+    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+    this.r._drawText('EN LINEA AHORA', W / 2, 18, 'center', 1.8);
+
+    var dotPulse = 0.6 + Math.sin(tick * 0.12) * 0.4;
+    ctx.save();
+    ctx.globalAlpha = dotPulse;
+    ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+    ctx.beginPath();
+    ctx.arc(W / 2 + 78, 18, 3, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.restore();
+
+    this.r.drawSarchiStripe(0, 34, W);
+
+    ctx.fillStyle = CONST.COLORS.WHITE;
+    this.r._drawText(onlineData.count + ' PICHASEADOR' + (onlineData.count !== 1 ? 'ES' : ''), W / 2, 46, 'center', 1);
+
+    var players = onlineData.players || [];
+    if (players.length === 0) {
+      ctx.fillStyle = CONST.COLORS.GRAY;
+      this.r._drawText('NADIE POR AQUI...', W / 2, H / 2, 'center', 1.2);
+    } else {
+      var max = Math.min(players.length, 8);
+      for (var i = 0; i < max; i++) {
+        var p = players[i];
+        var y = 64 + i * 17;
+        var stateLabel = (OnlineScoreboard.STATE_LABELS && OnlineScoreboard.STATE_LABELS[p.state]) || 'EN LINEA';
+
+        var stateColor;
+        if (p.state === 'fight') stateColor = CONST.COLORS.RED;
+        else if (p.state === 'victory') stateColor = CONST.COLORS.GOLD;
+        else if (p.state === 'attract') stateColor = CONST.COLORS.GRAY;
+        else stateColor = CONST.COLORS.YELLOW;
+
+        ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+        ctx.beginPath();
+        ctx.arc(18, y + 3, 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(p.name || '???', 28, y, 'left', 1);
+
+        if (p.score > 0) {
+          ctx.fillStyle = CONST.COLORS.GOLD;
+          this.r._drawText(String(p.score), W / 2 + 10, y, 'left', 0.8);
+        }
+
+        ctx.fillStyle = stateColor;
+        this.r._drawText(stateLabel, W - 16, y, 'right', 0.8);
+      }
+
+      if (players.length > 8) {
+        ctx.fillStyle = CONST.COLORS.GRAY;
+        this.r._drawText('+ ' + (players.length - 8) + ' MAS...', W / 2, 64 + 8 * 17, 'center', 0.8);
+      }
+    }
+
+    this.r.drawSarchiRosette(30, H - 22, 8);
+    this.r.drawSarchiRosette(W - 30, H - 22, 8);
+  }
+
+  _drawEnemiesScreen(ctx, W, H, tick) {
+    ctx.fillStyle = CONST.COLORS.GOLD;
+    this.r._drawText('PICHASEADORES', W / 2, 14, 'center', 1.8);
+    this.r.drawSarchiStripe(0, 32, W);
+
+    const allEnemies = [];
+    for (let c = 0; c < CONST.CIRCUITS.length; c++) {
+      const circuit = CONST.CIRCUITS[c];
+      for (let j = 0; j < circuit.opponents.length; j++) {
+        const opp = OPPONENT_DATA[circuit.opponents[j]];
+        if (opp) allEnemies.push({ data: opp, circuitColor: circuit.color });
+      }
+    }
+    allEnemies.push({ data: TORO_DATA, circuitColor: CONST.COLORS.RED });
+
+    const totalEnemies = allEnemies.length;
+    const pageSize = 5;
+    const totalPages = Math.ceil(totalEnemies / pageSize);
+    const page = Math.floor(tick / 150) % totalPages;
+    const startIdx = page * pageSize;
+    const endIdx = Math.min(startIdx + pageSize, totalEnemies);
+
+    const rowH = 28;
+    const startY = 42;
+
+    for (let i = startIdx; i < endIdx; i++) {
+      const entry = allEnemies[i];
+      const row = i - startIdx;
+      const y = startY + row * rowH;
+      const frame = Math.floor(tick / 12) % 2;
+
+      this.r.sprites.drawOpponentHead(ctx, entry.data, frame, 24, y + 10, 1.3);
+
+      ctx.fillStyle = entry.circuitColor;
+      this.r._drawText(entry.data.name, 48, y, 'left', 1.1);
+
+      ctx.fillStyle = CONST.COLORS.GRAY;
+      this.r._drawText(entry.data.title, 48, y + 13, 'left', 0.7);
+
+      const barW = 50;
+      const barX = W - barW - 14;
+      const barY = y + 2;
+      ctx.fillStyle = CONST.COLORS.DARK_GRAY;
+      ctx.fillRect(barX, barY, barW, 5);
+      const hpFrac = entry.data.health / 180;
+      ctx.fillStyle = hpFrac > 0.6 ? CONST.COLORS.RED : CONST.COLORS.ORANGE;
+      ctx.fillRect(barX, barY, barW * hpFrac, 5);
+
+      ctx.fillStyle = CONST.COLORS.DARK_GRAY;
+      ctx.fillRect(barX, barY + 8, barW, 5);
+      const spdFrac = Math.min(1, entry.data.speed);
+      ctx.fillStyle = CONST.COLORS.LIGHT_BLUE;
+      ctx.fillRect(barX, barY + 8, barW * spdFrac, 5);
+    }
+
+    const labelX = W - 64 - 14;
+    ctx.fillStyle = CONST.COLORS.GRAY;
+    this.r._drawText('VIT', labelX - 4, startY + (endIdx - startIdx - 1) * rowH + 22, 'left', 0.6);
+    ctx.fillStyle = CONST.COLORS.GRAY;
+    this.r._drawText('VEL', labelX + 20, startY + (endIdx - startIdx - 1) * rowH + 22, 'left', 0.6);
+
+    if (totalPages > 1) {
+      const dotY = H - 28;
+      for (let p = 0; p < totalPages; p++) {
+        ctx.fillStyle = p === page ? CONST.COLORS.GOLD : CONST.COLORS.DARK_GRAY;
+        ctx.beginPath();
+        ctx.arc(W / 2 + (p - (totalPages - 1) / 2) * 10, dotY, 2.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+    }
+
+    this.r.drawSarchiRosette(30, H - 22, 8);
+    this.r.drawSarchiRosette(W - 30, H - 22, 8);
   }
 
   _drawHowToPlayScreen(ctx, W, H, tick) {
@@ -223,6 +387,15 @@ class UIManager {
 
     this.r.drawSarchiRosette(30, H - 28, 8);
     this.r.drawSarchiRosette(W - 30, H - 28, 8);
+  }
+
+  _findOpponentData(name) {
+    if (!name) return null;
+    if (typeof TORO_DATA !== 'undefined' && TORO_DATA.name === name) return TORO_DATA;
+    for (var i = 0; i < OPPONENT_DATA.length; i++) {
+      if (OPPONENT_DATA[i].name === name) return OPPONENT_DATA[i];
+    }
+    return null;
   }
 
   _drawCredits(ctx, W, H, credits) {

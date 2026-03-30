@@ -28,6 +28,9 @@ class Game {
 
     this.nameEntry = { chars: ['A','A','A'], pos: 0, done: false };
 
+    this.online = new OnlineScoreboard();
+    this.online.init();
+
     this.input = { left:false,right:false,up:false,down:false,punchLeft:false,punchRight:false,special:false,start:false,coin:false };
     this._pressedThisFrame = {};
     this._touchPressBuffer = {};
@@ -126,6 +129,13 @@ class Game {
     this.score += points;
   }
 
+  _getLastDefeatedName() {
+    if (this.currentOpponentIndex > OPPONENT_DATA.length) return TORO_DATA.name;
+    if (this.currentOpponentIndex === OPPONENT_DATA.length) return OPPONENT_DATA[OPPONENT_DATA.length - 1].name;
+    if (this.currentOpponentIndex <= 0) return '';
+    return OPPONENT_DATA[this.currentOpponentIndex - 1].name;
+  }
+
   _loop() {
     try {
       this.tick++; this.stateTick++; this.logicAccum++;
@@ -176,7 +186,10 @@ class Game {
     if (this.state===CONST.STATES.FIGHT && this.idleTimer>CONST.IDLE_TIMEOUT*30) { this._changeState(CONST.STATES.ATTRACT); this.audio.stopMusic(); }
   }
 
-  _changeState(newState) { this.state = newState; this.stateTick = 0; }
+  _changeState(newState) {
+    this.state = newState; this.stateTick = 0;
+    if (this.online) this.online.updateState(newState, this.score);
+  }
 
   _updateAttract() {
     if (this._consumePress('start') && this.arcade.hasCredits()) {
@@ -452,7 +465,12 @@ class Game {
     if (ne.done) {
       if (this.stateTick > 60) {
         const name = ne.chars.join('');
-        this.arcade.addHighScore(name, this.score, this.currentOpponentIndex, this.currentCircuit);
+        const lastDefeated = this._getLastDefeatedName();
+        this.arcade.addHighScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
+        if (this.online) {
+          this.online.setPlayerName(name);
+          this.online.submitScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
+        }
         this._changeState(CONST.STATES.GAME_OVER);
       }
       return;
@@ -498,8 +516,17 @@ class Game {
   _render() {
     this.renderer.clear();
     switch (this.state) {
-      case CONST.STATES.ATTRACT:
-        this.ui.drawAttractMode(this.tick, this.arcade.credits, this.arcade.highScores); break;
+      case CONST.STATES.ATTRACT: {
+        const onlineData = this.online && this.online.enabled ? {
+          enabled: true,
+          players: this.online.onlinePlayers,
+          count: this.online.onlineCount,
+        } : null;
+        const scores = (this.online && this.online.enabled && this.online.globalScores.length > 0)
+          ? this.online.globalScores : this.arcade.highScores;
+        this.ui.drawAttractMode(this.tick, this.arcade.credits, scores, onlineData);
+        break;
+      }
       case CONST.STATES.INTRO:
         this.ui.drawIntro(this.stateTick); break;
       case CONST.STATES.CIRCUIT_INTRO:
