@@ -1,6 +1,14 @@
 # Punch-Out LoRA Training
 
-**Hosted checkpoints and LoRA mirrors:** see the repo root [README.md](../../README.md#public-downloads-models-and-loras).
+**Hosted checkpoints and LoRAs:** canonical downloads live on **Hugging Face** — see the repo root [README.md](../../README.md#public-downloads-models-and-loras).
+
+To **publish** built LoRAs to Hub (maintainers):
+
+```powershell
+pip install huggingface_hub
+$env:HF_TOKEN = "hf_..."   # write token
+python tools/lora/publish_lora_to_hf.py
+```
 
 This folder contains the starter material for training a small LoRA that pushes
 PICHASITOS renders closer to the SNES Punch-Out look.

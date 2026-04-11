@@ -20,16 +20,25 @@ Install path for this repo:
 
 `external/stable-diffusion-webui/models/Stable-diffusion/westernAnimation_v1.safetensors`
 
-### Project LoRAs (Punch-Out style lock, hosted mirror)
+### Project LoRAs (Punch-Out style) — Hugging Face Hub (canonical)
 
-Mirrors of outputs from `tools/lora/output/` (same project; third-party file host for convenience).
+**Hugging Face Hub** is the recommended host: stable URLs, version history, and the usual place SD tools expect LoRAs.
 
-| File | Description | Download |
-|------|-------------|----------|
-| `punchout_style.safetensors` | Main trained LoRA from this repo | [files.catbox.moe mirror](https://files.catbox.moe/dvvtpy.safetensors) |
-| `punchout_style_clean.safetensors` | Alternate / clean naming variant from training runs | [files.catbox.moe mirror](https://files.catbox.moe/7da7bl.safetensors) |
+| Resource | Link |
+|----------|------|
+| **Model repo** (download `.safetensors` files here) | [**`betexcr/pichasitos-punchout-lora`**](https://huggingface.co/betexcr/pichasitos-punchout-lora) |
 
-Install path:
+If that page is still empty, publish once from a machine with a Hugging Face **write** token:
+
+```powershell
+pip install huggingface_hub
+$env:HF_TOKEN = "hf_..."   # https://huggingface.co/settings/tokens
+python tools/lora/publish_lora_to_hf.py
+```
+
+Override the repo id with `PICHASITOS_HF_REPO=yourname/your-repo` if needed.
+
+Install path after download:
 
 `external/stable-diffusion-webui/models/Lora/`
 
@@ -39,7 +48,16 @@ Prompt usage (after the LoRA is installed):
 <lora:punchout_style:0.75>
 ```
 
-> **Note:** Public mirrors can change or disappear. If a link fails, regenerate with `tools/lora/train_lora.ps1` or copy from a teammate who has `tools/lora/output/`.
+#### Legacy mirror (optional)
+
+Temporary third-party mirrors (may expire):
+
+| File | Download |
+|------|----------|
+| `punchout_style.safetensors` | [files.catbox.moe](https://files.catbox.moe/dvvtpy.safetensors) |
+| `punchout_style_clean.safetensors` | [files.catbox.moe](https://files.catbox.moe/7da7bl.safetensors) |
+
+Prefer the Hugging Face repo once it is populated.
 
 ## Quick start (SD stack)
 
