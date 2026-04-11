@@ -4,3 +4,13 @@
 *.key
 node_modules/
 index 10.11.01*
+
+# SD export scratch (reference crops, one-off temp PNGs)
+tools/tmp/
+tools/__pycache__/
+
+# Legacy local trainer checkout (use external/sd-scripts submodule instead)
+tools/lora/sd-scripts/
+
+# TensorBoard / training logs
+tools/lora/logs/

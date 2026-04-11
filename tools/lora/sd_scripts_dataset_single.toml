@@ -1,0 +1,13 @@
+[general]
+caption_extension = ".txt"
+shuffle_caption = false
+keep_tokens = 1
+enable_bucket = true
+
+[[datasets]]
+resolution = 512
+batch_size = 1
+
+  [[datasets.subsets]]
+  image_dir = "__REPO_ROOT__/tools/lora/dataset/20_punchout_single"
+  num_repeats = 1

@@ -1,0 +1,333 @@
+---
+
+description: Local Stable Diffusion asset pipeline for PICHASITOS (western-cartoon Punch-Out target)
+alwaysApply: true
+-----------------
+
+# Stable Diffusion — PICHASITOS Asset Pipeline
+
+## Core Principle
+
+* Stable Diffusion is an **external generator**, never part of gameplay runtime
+* All assets must be:
+
+  * reproducible
+  * consistent in style
+  * stored with metadata
+* This is not image generation
+  → This is **asset manufacturing**
+
+---
+
+## Local Generator
+
+* Base URL: `http://127.0.0.1:7860/`
+* API: `POST /sdapi/v1/txt2img`
+* Requires AUTOMATIC1111 with `--api`
+* Preferred checkpoint family: western-cartoon / comic checkpoints
+* Recommended examples: `Western Animation Diffusion`, `Conv SD1.5`, or another non-anime cartoon checkpoint
+* Optional LoRA: `punchout_style.safetensors` only after it has actually been trained
+
+### Recommended inference defaults
+
+* Sampler: `DPM++ SDE Karras`
+* Steps: `30`
+* CFG: `8`
+* Clip skip: `1`
+* Fighters: `512x512`
+
+---
+
+# Asset Generation Strategy
+
+## 1. Preferred Path (PRIMARY)
+
+Use:
+
+```bash
+python tools/sd_export.py --out <path> --prompt "<subject>"
+python tools/sd_export.py --all-fighters
+```
+
+The script MUST:
+
+* generate PNG
+* generate `.metadata.json`
+* store seed and parameters
+* send checkpoint override through A1111 `override_settings`
+* support LoRA injection for Punch-Out style lock
+
+## 2. Checkpoint + LoRA Doctrine (MANDATORY)
+
+PICHASITOS style is locked in **two layers**:
+
+1. **Checkpoint**: western-cartoon / comic / bold-outline base
+2. **LoRA**: optional Punch-Out-specific style lock after training
+
+Prompts must focus on:
+
+* character identity
+* costume / props
+* pose
+
+The checkpoint should carry most of the global style. A LoRA is optional until a real one exists.
+
+Do NOT use anime checkpoints like `ToonYou` if the goal is Western caricature. Do NOT try to brute-force Punch-Out style using long prose on top of a generic or anime-biased base model.
+
+## 3. Fallback Path (MANUAL)
+
+If API is unavailable:
+
+Provide:
+
+* full prompt (including optional LoRA tag and short style suffix)
+* negative prompt
+* resolution
+* seed (if needed)
+* checkpoint name
+* clip skip
+* output path
+
+Save to:
+
+```
+assets/<category>/<name>.png
+```
+
+---
+
+# Prompt Doctrine (MANDATORY)
+
+## Global Style (PICHASITOS)
+
+Use a short style suffix:
+
+```text
+1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, square jaw, thick brows, big hands, chunky limbs, expressive face, non-anime face design, full body head to toe, facing camera or slight three-quarter, plain flat background, centered silhouette
+```
+
+Do NOT bloat prompts with long style essays. Keep style short so costume tokens stay strong.
+
+## Negative Prompt
+
+```text
+photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, crowd, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, moe, anime eyes, anime face, anime hair, cel anime, shoujo, bishounen
+```
+
+## Fighter Prompt Structure
+
+Use:
+
+```text
+(optional <lora:punchout_style:0.75>), (anchor keywords:1.25), "NAME" enemy, stereotype, costume and props, pose, BREAK, short style suffix
+```
+
+## Prompt Rules
+
+Always describe:
+
+* pose (idle, attack, etc.)
+* camera (facing camera, side view, three-quarter)
+* character personality / trope
+* costume and props
+
+### Example
+
+```text
+(open white shirt over huge belly, black mustache, gold chain, chrome microphone, karaoke singer:1.25), "DON CARLOS" enemy, fat karaoke rey tio showman barrio, costume and props: balding head, black mustache, sweaty white shirt open over huge belly, thick gold rope chain, handheld microphone, belting into microphone, full body, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, non-anime face design, facing camera, plain background
+```
+
+---
+
+# LoRA Training
+
+Training docs live in:
+
+* `tools/lora/README.md`
+* `tools/lora/training_config.toml`
+
+Rules:
+
+* Use 20–40 real Punch-Out SNES reference frames
+* Keep captions consistent with trigger word: `punchout_style`
+* Use a western-cartoon checkpoint as the training base, not ToonYou
+* Save trained LoRA to `external/stable-diffusion-webui/models/Lora/` (vendored WebUI submodule in this repo)
+
+---
+
+# Asset Categories
+
+All assets must be stored in:
+
+* `assets/enemies/` → fighters
+* `assets/portraits/` → face closeups
+* `assets/ui_bg/` → UI backgrounds
+* `assets/map_nodes/` → world map icons
+
+Rules:
+
+* PNG format only
+* Power-of-two sizes when possible
+* Centered subject
+* Clean silhouette
+
+---
+
+# Metadata (MANDATORY)
+
+Each asset must have:
+
+```
+<filename>.metadata.json
+```
+
+Minimum fields:
+
+```json
+{
+  "project": "pichasitos",
+  "prompt": "...",
+  "negative_prompt": "...",
+  "seed": 123456,
+  "parent_seed": null,
+  "prompt_version": "v4.0",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "steps": 30,
+  "cfg_scale": 6.5,
+  "sampler": "DPM++ SDE Karras",
+  "width": 512,
+  "height": 512,
+  "model": "western_cartoon_checkpoint",
+  "timestamp": "ISO8601",
+  "validated": false
+}
+```
+
+---
+
+# Generation Workflow
+
+## Standard Process
+
+1. Generate 4–8 variations
+2. Select best result
+3. Reuse seed
+4. Refine prompt (ONE change at a time)
+5. Validate
+6. Store + metadata
+
+---
+
+# Seed Evolution (CRITICAL)
+
+* Never lose a good seed
+* Refinement must:
+
+  * reuse seed
+  * modify ONE parameter only
+
+---
+
+# Style Lock
+
+* Global style: `pichasitos_western_cartoon`
+* No mixing styles
+* Checkpoint is the source of truth for the style
+
+Override only if:
+
+```json
+{
+  "style_override": true,
+  "reason": "..."
+}
+```
+
+---
+
+# Validation Checklist
+
+Every asset must pass:
+
+* No watermark
+* No text artifacts
+* No anatomical distortions
+* Clear silhouette
+* Readable at small size
+* Matches Punch-Out exaggeration style
+* Uses bold outlines and flat cartoon read
+
+If failed:
+
+* regenerate or discard
+
+---
+
+# Resolution Rules
+
+* Fighters: 512x512
+* Portraits: 512x512
+* UI icons: 256x256
+* Backgrounds: 1024x1024+
+
+Do NOT mix resolutions per category
+
+---
+
+# Naming Convention
+
+```
+<category>_<type>_<descriptor>_<variant>
+```
+
+Examples:
+
+```
+enemy_tico_boxer_idle_v1.png
+portrait_tico_boxer_angry_v1.png
+ui_icon_glove_basic_v1.png
+```
+
+---
+
+# Anti-Patterns (FORBIDDEN)
+
+* Generating without metadata
+* Using photorealistic outputs
+* Accepting first result as final
+* Mixing art styles
+* Losing seed information
+* Saving outside `/assets/`
+* Using vanilla SD 1.5 prompts alone to mimic Punch-Out
+
+---
+
+# Philosophy
+
+PICHASITOS is:
+
+* exaggerated
+* expressive
+* readable
+* humorous
+
+Assets must reflect:
+
+* strong silhouettes
+* clear personality
+* SNES-era visual clarity
+
+---
+
+# Final Doctrine
+
+Every asset must be:
+
+* reproducible
+* intentional
+* stylistically consistent
+
+This is not randomness.
+
+This is **controlled creation**.

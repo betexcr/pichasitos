@@ -1,0 +1,21 @@
+{
+  "project": "pichasitos",
+  "prompt": "<lora:punchout_style_clean:0.6>, (((single character portrait))), exactly one character only, exactly one human only, one person total, solo portrait, isolated subject, zero extra people, zero side characters, zero background people, close-up head and upper torso only, centered portrait framing, single character portrait concept art, arcade versus portrait, same fighter design as the approved full-body enemy art, one fighter only, solo subject, centered, isolated, tight head-and-torso framing, not a group shot, not a duo, simple blank backdrop only, no backdrop graphics, not fashion illustration, not poster art, (visible messy blond hair under backwards red cap, coral orange t-shirt, khaki cargo shorts, fanny pack, sunburned tourist:1.25), \"GRINGO\" enemy. lost sunburned estadounidense tourist. Costume and worn accessories: clearly visible messy blond hair and blond sideburns, bright red backwards baseball cap, coral-orange t-shirt, khaki cargo shorts, white crew socks, brown hiking shoes, nylon fanny pack on waist, folded paper map sticking out cargo pocket, pink sunburn on arms and face, no brown hair, no black hair. Expression and attitude: confused angry tourist glare, stubborn macho frustration, intense arcade rival portrait expression, eyes locked on camera, confrontational face, portrait-ready tension, same facial structure and line language as the approved enemy sprite, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, same character design language as the approved full-body enemy art, bold black outlines, flat cel colors, square jaw, thick brows, chunky readable forms, expressive face, non-anime face design, close head-and-upper-torso crop of the same fighter, facing camera or slight three-quarter, plain solid single-color background, clean empty backdrop, no graphic backdrop, no poster composition",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, multiple characters, extra character, second person, third person, duo, trio, group shot, team, crowd, audience, background person, sidekick, lineup, character sheet, sprite sheet, collage, contact sheet, duplicate, duplicate face, duplicate body, clone, twins, triplets, mirrored duplicate, abstract backdrop shape, abstract background blob, spotlight shape, paint splash background, halo backdrop, pedestal, platform, podium, rock, boulder, floor blob, ground shadow blob, giant shadow oval, background text, giant letters, typography, poster, poster design, graphic design, infographic, logo mark, emblem, badge, symbol, icon, sign, sunburst, rays, radial burst, target shape, background pattern, giant circle, giant ring, giant shape behind character, boxing gloves, boxing ring, ring ropes, stage, theater stage, archway, spotlight background, mouthguard, cropped, missing feet, bust only, fashion illustration, fashion sketch, runway pose, glamour pose, catalog pose, selfie pose, model pose, arms crossed, hands on hips, peace sign, thumbs up, casual standing pose, relaxed stance, holding microphone, singing into microphone, holding smartphone, taking selfie, holding map, holding beer bottle, anime, manga, chibi, kawaii, moe, anime eyes, anime face, anime hair, cel anime, shoujo, bishounen, brown hair, black hair, dark hair, brunette hair, beard",
+  "seed": 756717539,
+  "parent_seed": null,
+  "prompt_version": "v4.2",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "steps": 30,
+  "cfg_scale": 6.5,
+  "sampler": "DPM++ SDE Karras",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "timestamp": "2026-04-08T02:14:36.554340+00:00",
+  "validated": true,
+  "generation_mode": "img2img_reference_portrait",
+  "denoising_strength": 0.62,
+  "source_reference": "d:\\Code\\pichasitos\\tools\\tmp\\portrait_refs_manual2\\enemy_gringo_idle_v1.png"
+}

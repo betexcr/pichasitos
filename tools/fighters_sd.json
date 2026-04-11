@@ -1,0 +1,132 @@
+[
+  {
+    "slug": "player",
+    "name_tag": "PLAYER",
+    "stereotype": "working-class tico festival everyman hero",
+    "visual_anchor": "green tank top, yellow side stripes, dark blue jeans, brown work boots, confident grin",
+    "must_wear": "short black hair, green tank top with gold-yellow side stripes, dark blue jeans, brown work boots, green cloth hand wraps, no gloves",
+    "pose": "cocky grin, chin lifted, festival everyman confidence"
+  },
+  {
+    "slug": "don_carlos",
+    "name_tag": "DON CARLOS",
+    "stereotype": "fat karaoke rey tio showman barrio",
+    "visual_anchor": "open white shirt over huge belly, black mustache, gold chain, chrome microphone cord, karaoke showman",
+    "must_wear": "balding head, black mustache, sweaty white short-sleeve dress shirt open over huge belly, black slacks, brown dress shoes, thick gold rope chain, chrome microphone hanging from neck on a cord",
+    "pose": "sleazy karaoke-star smirk, belly-forward bravado, loud barrio showman energy",
+    "extra_negative": "woman, wife, duet partner, backup singer, companion, mariachi, second singer, second person, side person"
+  },
+  {
+    "slug": "gringo",
+    "name_tag": "GRINGO",
+    "stereotype": "lost sunburned estadounidense tourist",
+    "visual_anchor": "visible messy blond hair under backwards red cap, coral orange t-shirt, khaki cargo shorts, fanny pack, sunburned tourist",
+    "must_wear": "clearly visible messy blond hair and blond sideburns, bright red backwards baseball cap, coral-orange t-shirt, khaki cargo shorts, white crew socks, brown hiking shoes, nylon fanny pack on waist, folded paper map sticking out cargo pocket, pink sunburn on arms and face, no brown hair, no black hair",
+    "pose": "confused angry tourist glare, stubborn macho frustration",
+    "extra_negative": "brown hair, black hair, dark hair, brunette hair, beard"
+  },
+  {
+    "slug": "clarisa",
+    "name_tag": "CLARISA",
+    "stereotype": "rich fresa San Jose daddy's girl",
+    "visual_anchor": "hot pink blouse, white pants, red heels, hoop earrings, designer purse, rich girl",
+    "must_wear": "long straight black hair, large gold hoop earrings, hot pink blouse, skintight white pants, red high heels, very long acrylic nails, tiny designer purse on shoulder, pink smartphone tucked in purse",
+    "pose": "elitist disgusted sneer, spoiled rich-girl confidence"
+  },
+  {
+    "slug": "panzaeperra",
+    "name_tag": "PANZAEPERRA",
+    "stereotype": "skinny calle arrimado gold tooth",
+    "visual_anchor": "tilted black cap, charcoal t-shirt, black skinny jeans, black sneakers, gold tooth",
+    "must_wear": "black baseball cap tilted low, charcoal gray t-shirt, black skinny jeans, black sneakers, thin chain necklace, single visible gold tooth",
+    "pose": "street punk glare, cocky chin-up contempt"
+  },
+  {
+    "slug": "michiquito",
+    "name_tag": "MICHIQUITO",
+    "stereotype": "spoiled pipi rich kid trust-fund brat",
+    "visual_anchor": "hot pink polo, cream pants, slick side-part hair, flashy gold watch, smug rich kid",
+    "must_wear": "neat dark brown side-part hair gelled flat, hot pink polo shirt, cream pants, tan leather shoes, oversized flashy gold wristwatch, expensive rich-kid styling, no beard, no older face",
+    "pose": "smug trust-fund brat smirk, showing-off rich-kid arrogance",
+    "extra_negative": "door, doorway, room interior, furniture, window, wall decoration, house interior, office interior, background prop, adult man, second person, father figure, bodyguard, cropped giant person, partial person at edge, twin, duplicate rich kid, two men, duo"
+  },
+  {
+    "slug": "hitmena",
+    "name_tag": "HITMENA",
+    "stereotype": "female feminist malabarista circus fighter, woman performer in purple and olive",
+    "visual_anchor": "wild dark purple-black hair, dark olive green shirt, olive cargo pants, black boots, purple fabric wraps, fierce woman fighter",
+    "must_wear": "adult woman only, feminine face, wild dark purple-black hair blown back, dark olive-green short-sleeve shirt, olive cargo pants, black combat boots, silver nose ring, long purple fabric wraps or scarves in hands or trailing from arms, no dreadlocks, no juggling clubs",
+    "pose": "activist glare, scrappy circus fighter intensity",
+    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest"
+  },
+  {
+    "slug": "karen",
+    "name_tag": "KAREN",
+    "stereotype": "entitled rude woman manager meme quejas, aggressive woman fighter, not male",
+    "visual_anchor": "adult woman, dark buzzcut, feminine face, dark red muscle shirt, black cargo pants, combat boots, lip piercing",
+    "must_wear": "adult woman only, feminine face, visible bust, very short dark buzzcut hair, dark red muscle shirt, black cargo pants, black combat boots, silver lip ring and eyebrow piercings",
+    "pose": "furious entitled scream face, confrontational manager energy",
+    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest"
+  },
+  {
+    "slug": "carretastar",
+    "name_tag": "CARRETASTAR",
+    "stereotype": "drunk sabanero tope Palmares cowboy",
+    "visual_anchor": "huge black mustache, straw cowboy hat, dark brown jacket over western shirt, raised frothy beer mug, sabanero cowboy",
+    "must_wear": "huge thick black mustache, straw cowboy hat with dark band, dark brown western jacket over brown shirt or vest, raised frothy beer mug, olive green pants, large belt buckle, brown cowboy styling, no clean-shaven face",
+    "pose": "drunk cowboy swagger, wild party grin, sabanero menace"
+  },
+  {
+    "slug": "persefone",
+    "name_tag": "PERSEFONE",
+    "stereotype": "rave tica cosmic PLUR club kid",
+    "visual_anchor": "pink space buns, black mesh crop top, fishnet tights, glowstick bracelets, pacifier necklace",
+    "must_wear": "neon pink space buns hairstyle, black mesh crop top over black bralette, black shorts, hot pink fishnet tights, chunky platform sneakers, glowstick bracelets on both wrists, baby pacifier on thick silver chain necklace",
+    "pose": "wild rave smile, wide eyes, chaotic club-kid confidence",
+    "extra_negative": "neon ring, portal, laser beams, club stage, concert stage, rave poster, energy circle, glowing background disc, cosmic backdrop"
+  },
+  {
+    "slug": "don_alvaro",
+    "name_tag": "DON ALVARO",
+    "stereotype": "fat tico metalero patches and chains",
+    "visual_anchor": "long black hair, full beard, black metal shirt, torn black jeans, heavy metal stare",
+    "must_wear": "long straight black hair, full black beard, black death-metal t-shirt covered in white sew-on patches, torn black jeans, black sneakers, silver wallet chain, studded black wristband",
+    "pose": "manic metalhead stare, tongue-out ferocity"
+  },
+  {
+    "slug": "anai",
+    "name_tag": "ANAI",
+    "stereotype": "Caribbean Limon rasta roots calm island fighter",
+    "visual_anchor": "rasta tam hat red gold green, loose green shirt, khaki pants, sandals, calm fighter",
+    "must_wear": "slim Black man, knit tam hat with red gold green stripes, loose forest-green shirt, khaki loose pants, simple brown sandals, woven bead bracelet",
+    "pose": "calm smile, rooted island confidence, unbothered fighter focus",
+    "extra_negative": "woman, second person, dance partner, backup dancer, companion, duo pose, second figure, extra arms, extra legs"
+  },
+  {
+    "slug": "skin",
+    "name_tag": "SKIN",
+    "stereotype": "silent tattooed wall ear gauges",
+    "visual_anchor": "completely bald, huge ear gauges, dark gray tank top, black cargo pants, forearm tattoos",
+    "must_wear": "completely bald pale scalp stubble, huge flesh-tunnel ear plugs, dark gray ribbed tank top, black cargo pants, silver wallet chain, visible knuckle and forearm tattoos",
+    "pose": "deadpan menace, silent bouncer intimidation"
+  },
+  {
+    "slug": "el_indio",
+    "name_tag": "EL INDIO",
+    "stereotype": "Central American Indigenous man, Native warrior guardian, dignified ancestral protector",
+    "visual_anchor": "Indigenous Central American man, bare chest and bare shoulders, large jade bead necklace, ochre face paint, dark green pants, stern guardian",
+    "must_wear": "adult Indigenous Central American man, brown skin, masculine face, short black hair or tightly tied-back black hair, jade bead necklace and earrings, geometric ochre green face paint on cheeks and forehead, fully bare chest and bare shoulders, dark green wrapped pants, leather sandals, traditional native warrior styling, no modern shirt, no modern jacket, no shawl, no poncho, no draped shoulder cloth",
+    "pose": "dignified stern focus, ancestral guardian calm, grounded warrior presence",
+    "extra_negative": "woman, female, breasts, feminine face, long flowing female hair, conquistador, viking, cowboy, samurai, generic modern man, shirt, tunic, poncho, shawl, robe, cape, shoulder cloth, draped cloth, scarf"
+  },
+  {
+    "slug": "bull",
+    "style_variant": "bull",
+    "name_tag": "EL TORO",
+    "stereotype": "Malacrianza real festival bull boss, intimidating Costa Rican toro bravo inspired by the real animal",
+    "visual_anchor": "full body malacrianza bull, black head and neck, dark chest, white gray speckled body, black lower legs, smooth zebu shoulder hump, huge hanging dewlap, long upward-curving horns",
+    "must_wear": "single quadruped bull only, realistic Malacrianza markings, black head, black neck, dark chest, white-gray torso with black speckles, salt-and-pepper gray white body and hindquarters, black lower legs, tall smooth zebu-style shoulder hump made of flesh and skin, very large hanging dewlap under neck, long upward-curving horns with dark tips, broad heavy torso, realistic long legs with correct bovine proportions, full tail visible, all four legs visible, no human torso, no hands, no humanoid muscles, no nose ring, not solid black, not solid gray",
+    "pose": "stubborn aggressive fiesta bull menace, head slightly lowered, chest forward, powerful territorial stance, whole body fully visible, broadside three-quarter view, long legs planted naturally",
+    "extra_negative": "human, person, rider, mounted rider, cowboy, matador, bullfighter, saddle, reins, cape, poncho, horseman, minotaur, humanoid torso, bipedal, human arms, human hands, bodybuilder anatomy, solid black body, solid gray body, tiny dewlap, short horns, cropped body, cut off horns, missing tail, missing legs, close-up, stubby legs, short legs, tiny legs, hairy hump, mane, fur crest, fluffy hump, horse mane"
+  }
+]

@@ -1,0 +1,18 @@
+{
+  "project": "pichasitos",
+  "prompt": "<lora:punchout_style_clean:0.6>, (((single full-body character))), exactly one character only, exactly one human only, one person total, solo fighter, isolated subject, zero extra people, zero side characters, zero background people, no crowd, no audience, no duplicate faces, no duplicate bodies, entire character visible head to toe, , single character concept art, one fighter only, solo subject, centered, isolated, not a group shot, not a duo, not a trio, plain solid background only, no backdrop graphics, (open white shirt over huge belly, black mustache, gold chain, chrome microphone, karaoke singer:1.25), \"DON CARLOS\" enemy. fat karaoke rey t\u00edo showman barrio. Costume and props: balding head, black mustache, sweaty white short-sleeve dress shirt open over huge belly, black slacks, brown dress shoes, thick gold rope chain, chrome handheld microphone gripped with both hands. belting solo into one microphone mouth open sleazy smile, full body, alone on stage, BREAK, (((single full-body character))), exactly one character only, exactly one human only, one person total, solo fighter, isolated subject, zero extra people, zero side characters, zero background people, no crowd, no audience, no duplicate faces, no duplicate bodies, entire character visible head to toe, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, square jaw, thick brows, big hands, chunky limbs, expressive face, non-anime face design, full body head to toe, facing camera or slight three-quarter, plain solid single-color background, clean empty backdrop, no graphic backdrop, no poster composition, centered silhouette",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, multiple characters, extra character, second person, third person, duo, trio, group shot, team, crowd, audience, background person, sidekick, lineup, character sheet, sprite sheet, collage, contact sheet, duplicate, duplicate face, duplicate body, clone, twins, triplets, mirrored duplicate, abstract backdrop shape, abstract background blob, spotlight shape, paint splash background, halo backdrop, pedestal, platform, podium, rock, boulder, floor blob, ground shadow blob, giant shadow oval, background text, giant letters, typography, poster, poster design, graphic design, infographic, logo mark, emblem, badge, symbol, icon, sign, sunburst, rays, radial burst, target shape, background pattern, giant circle, giant ring, giant shape behind character, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, moe, anime eyes, anime face, anime hair, cel anime, shoujo, bishounen, woman, wife, duet partner, backup singer, companion, mariachi, second singer, second person, side person",
+  "seed": 1418448312,
+  "parent_seed": null,
+  "prompt_version": "v4.1",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "steps": 30,
+  "cfg_scale": 6.5,
+  "sampler": "DPM++ SDE Karras",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "timestamp": "2026-04-07T16:05:10.341840+00:00",
+  "validated": true
+}

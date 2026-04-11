@@ -1,0 +1,58 @@
+# Starter Kohya SS LoRA preset for the PICHASITOS Punch-Out style lock.
+# Edit the paths below to match your local setup before training.
+# Use a western-cartoon checkpoint as the base, not an anime checkpoint.
+
+[model]
+# Reference only (GUI / Kohya). CLI training uses train_lora.ps1 args. Replace __REPO_ROOT__ with your repo root.
+pretrained_model_name_or_path = "__REPO_ROOT__/external/stable-diffusion-webui/models/Stable-diffusion/westernAnimation_v1.safetensors"
+v2 = false
+v_parameterization = false
+clip_skip = 2
+
+[paths]
+train_data_dir = "__REPO_ROOT__/tools/lora/dataset"
+reg_data_dir = ""
+output_dir = "__REPO_ROOT__/tools/lora/output"
+logging_dir = "__REPO_ROOT__/tools/lora/logs"
+output_name = "punchout_style"
+
+[saving]
+save_model_as = "safetensors"
+save_precision = "fp16"
+save_every_n_epochs = 1
+
+[dataset]
+resolution = "512,512"
+enable_bucket = true
+min_bucket_reso = 256
+max_bucket_reso = 1024
+caption_extension = ".txt"
+shuffle_caption = false
+keep_tokens = 1
+
+[network]
+network_module = "networks.lora"
+network_dim = 16
+network_alpha = 16
+
+[training]
+train_batch_size = 1
+max_train_steps = 1000
+learning_rate = 0.0001
+unet_lr = 0.00005
+text_encoder_lr = 0.00001
+lr_scheduler = "cosine"
+lr_warmup_steps = 100
+optimizer_type = "AdamW"
+mixed_precision = "no"
+gradient_checkpointing = true
+cache_latents = true
+seed = 42
+xformers = false
+
+[sampling]
+sample_sampler = "DPM++ SDE Karras"
+sample_every_n_epochs = 1
+sample_prompts = """
+<lora:punchout_style:0.75>, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, full body opponent, facing camera, plain background
+"""
