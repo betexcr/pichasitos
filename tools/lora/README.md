@@ -1,5 +1,7 @@
 # Punch-Out LoRA Training
 
+**Hosted checkpoints and LoRA mirrors:** see the repo root [README.md](../../README.md#public-downloads-models-and-loras).
+
 This folder contains the starter material for training a small LoRA that pushes
 PICHASITOS renders closer to the SNES Punch-Out look.
 

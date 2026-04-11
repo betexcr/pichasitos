@@ -1,5 +1,7 @@
 # External Stable Diffusion stack (vendored)
 
+**Public download links** for the base checkpoint and project LoRAs (too large for Git) are in the repo root **[README.md](../README.md#public-downloads-models-and-loras)**.
+
 This folder holds **git submodules** used by the PICHASITOS asset pipeline:
 
 - `stable-diffusion-webui` — AUTOMATIC1111 WebUI (`--api` for `tools/sd_export.py`)
