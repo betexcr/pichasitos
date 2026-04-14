@@ -206,6 +206,9 @@ class Player {
 
   getAnimState() {
     switch (this.state) {
+      case 'dodge_left': return 'dodge_left';
+      case 'dodge_right': return 'dodge_right';
+      case 'duck': return 'dodge_back';
       case 'windup_left': return 'windup_left';
       case 'windup_right': return 'windup_right';
       case 'punch_left': return 'punch_left';

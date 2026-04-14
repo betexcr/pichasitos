@@ -1,4 +1,5 @@
 class AssetLoader {
+  static ASSET_VERSION = '20260414_v2_poses_fixed';
   static SLUGS = {
     'DON CARLOS':   'don_carlos',
     'GRINGO':       'gringo',
@@ -19,6 +20,7 @@ class AssetLoader {
 
   static POSES = [
     'idle', 'punch_left', 'punch_right', 'hurt', 'block',
+    'dodge_left', 'dodge_back', 'dodge_right',
     'ko', 'windup', 'taunt', 'sig_attack', 'victory',
   ];
 
@@ -37,11 +39,18 @@ class AssetLoader {
     'title_bg', 'map_bg',
   ];
 
+  static MONSTERS = [
+    'monster_cadejos', 'monster_segua', 'monster_llorona',
+    'monster_carreta', 'monster_padre',
+    'monster_tulevieja', 'monster_mico_malo', 'monster_bruja_zarate',
+  ];
+
   constructor() {
     this._enemies = {};
     this._portraits = {};
     this._poses = {};
     this._backgrounds = {};
+    this._monsters = {};
     this._loaded = false;
     this._loadPromise = null;
   }
@@ -55,7 +64,7 @@ class AssetLoader {
       const img = new Image();
       img.onload = () => resolve(img);
       img.onerror = () => resolve(null);
-      img.src = src + '?t=1775968431';
+      img.src = `${src}?v=${AssetLoader.ASSET_VERSION}`;
     });
   }
 
@@ -67,17 +76,29 @@ class AssetLoader {
 
     for (const slug of slugs) {
       tasks.push(
-        this._loadImage(`assets/enemies/enemy_${slug}_idle_v1.png`)
+        this._loadImage(`assets/enemies/enemy_${slug}_idle_v2.png`)
+          .then(img => img || this._loadImage(`assets/enemies/enemy_${slug}_idle_v1.png`))
           .then(img => { if (img) this._enemies[slug] = img; })
       );
       tasks.push(
         this._loadImage(`assets/portraits/portrait_${slug}_angry_v1.png`)
-          .then(img => { if (img) this._portraits[slug] = img; })
+          .then(img => {
+            if (!this._portraits[slug]) this._portraits[slug] = {};
+            if (img) this._portraits[slug].angry = img;
+          })
+      );
+      tasks.push(
+        this._loadImage(`assets/portraits/portrait_${slug}_intro_v1.png`)
+          .then(img => {
+            if (!this._portraits[slug]) this._portraits[slug] = {};
+            if (img) this._portraits[slug].intro = img;
+          })
       );
       for (const pose of AssetLoader.POSES) {
         const filePose = (slug === 'bull' && AssetLoader.BULL_POSE_ALIASES[pose]) || pose;
         tasks.push(
-          this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1.png`)
+          this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2.png`)
+            .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1.png`))
             .then(img => {
               if (img) {
                 if (!this._poses[slug]) this._poses[slug] = {};
@@ -88,7 +109,8 @@ class AssetLoader {
         );
         for (let f = 2; f <= AssetLoader.MAX_FRAMES; f++) {
           tasks.push(
-            this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1_f${f}.png`)
+            this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2_f${f}.png`)
+              .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1_f${f}.png`))
               .then(img => {
                 if (img) {
                   if (!this._poses[slug]) this._poses[slug] = {};
@@ -108,7 +130,21 @@ class AssetLoader {
       );
     }
 
+    for (const mName of AssetLoader.MONSTERS) {
+      tasks.push(
+        this._loadImage(`assets/monsters/${mName}.png`)
+          .then(img => { if (img) this._monsters[mName] = img; })
+      );
+    }
+
     this._loadPromise = Promise.all(tasks).then(() => {
+      for (const slug of slugs) {
+        if (!this._portraits[slug]) this._portraits[slug] = {};
+        if (!this._portraits[slug].intro) {
+          const idlePose = this._poses[slug] && this._poses[slug]['idle'] && this._poses[slug]['idle'][0];
+          if (idlePose) this._portraits[slug].intro = idlePose;
+        }
+      }
       this._loaded = true;
     });
     return this._loadPromise;
@@ -121,13 +157,19 @@ class AssetLoader {
     return this._enemies[slug] || null;
   }
 
-  getPortraitImage(nameOrSlug) {
+  getPortraitImage(nameOrSlug, variant = 'angry') {
     const slug = AssetLoader.SLUGS[nameOrSlug] || nameOrSlug;
-    return this._portraits[slug] || null;
+    const entry = this._portraits[slug];
+    if (!entry) return null;
+    return entry[variant] || entry.angry || entry.intro || null;
   }
 
   getBackground(name) {
     return this._backgrounds[name] || null;
+  }
+
+  getMonster(name) {
+    return this._monsters[name] || null;
   }
 
   getPoseImage(nameOrSlug, pose, frame) {

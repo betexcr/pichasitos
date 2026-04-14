@@ -562,8 +562,7 @@ class OpponentAI {
   getAnimState() {
     switch (this.state) {
       case 'tell':
-        if (this.currentPattern && this.currentPattern.type === 'signature' && this.currentPattern.anim) return this.currentPattern.anim;
-        return this.data.tellAnim || 'taunt';
+        return this.data.tellAnim || 'windup';
       case 'attack':
         if (!this.currentPattern) return 'punch_right';
         if (this.currentPattern.type === 'signature' && this.currentPattern.anim) return this.currentPattern.anim;

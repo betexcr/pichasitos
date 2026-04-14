@@ -76,6 +76,11 @@ PORTRAIT_EXPRESSION = (
     "same facial structure and line language as the approved enemy sprite"
 )
 
+PORTRAIT_INTRO_EXPRESSION = (
+    "pre-fight intro portrait expression, focused stare, determined but controlled face, "
+    "calm confidence before the bell, same facial structure and line language as the approved enemy sprite"
+)
+
 SOLO_PROMPT_LEAD = (
     "single character concept art, arcade opponent design sheet, one fighter only, solo subject, centered, isolated, "
     "not a group shot, not a duo, not a trio, simple blank backdrop only, no backdrop graphics, "
@@ -132,7 +137,7 @@ DEFAULT_NEG = (
 
 DEFAULT_FIGHTERS_JSON = Path(__file__).resolve().parent / "fighters_sd.json"
 FIGHTER_FILENAME_TEMPLATE = "enemy_{slug}_idle_v1.png"
-PORTRAIT_FILENAME_TEMPLATE = "portrait_{slug}_angry_v1.png"
+PORTRAIT_FILENAME_TEMPLATE = "portrait_{slug}_{variant}_v1.png"
 POSE_FILENAME_TEMPLATE = "enemy_{slug}_{pose_id}_v1.png"
 DEFAULT_WIDTH = 512
 DEFAULT_HEIGHT = 896
@@ -544,12 +549,13 @@ def build_portrait_full_prompt(
     *,
     use_break: bool = True,
     lora_tag: str = "",
+    expression: str = PORTRAIT_EXPRESSION,
 ) -> str:
     solo_lead = SOLO_ONE_PORTRAIT_BEAST if fighter.get("style_variant") == "bull" else SOLO_ONE_PORTRAIT_PERSON
     anchor = visual_anchor_from_fighter(fighter)
     core = fighter_core_from_entry(fighter)
     style = portrait_style_suffix_for_fighter(fighter)
-    lead_parts = [part for part in (lora_tag, solo_lead, BUST_PROMPT_LEAD, anchor, core, PORTRAIT_EXPRESSION) if part]
+    lead_parts = [part for part in (lora_tag, solo_lead, BUST_PROMPT_LEAD, anchor, core, expression) if part]
     lead = ", ".join(lead_parts)
     if use_break:
         return f"{lead}, {A1111_BREAK}, {style}"
@@ -617,6 +623,13 @@ def main() -> int:
         "--all-portraits",
         action="store_true",
         help=f"Same as --portraits with default {DEFAULT_FIGHTERS_JSON.name}",
+    )
+    p.add_argument(
+        "--portrait-variant",
+        type=str,
+        default="angry",
+        choices=["angry", "intro"],
+        help="Portrait expression/file variant to generate",
     )
     p.add_argument(
         "--poses",
@@ -818,9 +831,10 @@ def main() -> int:
                 fighter,
                 use_break=use_break,
                 lora_tag=lora_tag,
+                expression=PORTRAIT_INTRO_EXPRESSION if args.portrait_variant == "intro" else PORTRAIT_EXPRESSION,
             )
             fighter_negative = negative_prompt_for_fighter(args.negative, fighter)
-            out_name = PORTRAIT_FILENAME_TEMPLATE.format(slug=slug)
+            out_name = PORTRAIT_FILENAME_TEMPLATE.format(slug=slug, variant=args.portrait_variant)
             out_path = out_dir / out_name
             seed_eff = resolve_seed(args.seed)
             reference_path: Path | None = None
@@ -876,6 +890,7 @@ def main() -> int:
                 metadata["generation_mode"] = "img2img_reference_portrait"
                 metadata["denoising_strength"] = args.denoising_strength
                 metadata["source_reference"] = str(reference_path)
+            metadata["portrait_variant"] = args.portrait_variant
             save_image_and_metadata(out_path, png_bytes, metadata)
 
         return 0

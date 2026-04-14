@@ -192,6 +192,9 @@ class Game {
 
   _changeState(newState, transitionType) {
     if (transitionType && this.renderer) {
+      // Prevent transition restart loops (e.g. ROUND_END repeatedly calling _changeState),
+      // which can trap the screen in black fade and retrigger SFX every tick.
+      if (this.renderer.transitioning) return;
       this.renderer.startTransition(transitionType, 30, () => {
         this.state = newState; this.stateTick = 0;
         if (this.online) this.online.updateState(newState, this.score);
@@ -355,7 +358,8 @@ class Game {
       if (this.player.state==='dodge_left'||this.player.state==='dodge_right'||this.player.state==='duck') {
         this.opponent.recordPlayerDodge(this.player.state); this.audio.dodge();
         this._addScore(CONST.POINTS.DODGE);
-        this.renderer.setDodgeGhost(this.renderer.W/2, 170, 'idle', 0);
+        const dodgeAnim = this.player.state === 'duck' ? 'dodge_back' : this.player.state;
+        this.renderer.setDodgeGhost(this.renderer.W/2, 170, dodgeAnim, 0);
         this.renderer.addDodgeDust(this.renderer.W/2, 200, this.player.state === 'dodge_left' ? 'left' : 'right');
       } else if (this.player.state==='block' && !unblockable) {
         const dmg = Math.floor(this.opponent.getAttackDamage()*CONST.PLAYER.BLOCK_DAMAGE_MULT);
@@ -416,6 +420,7 @@ class Game {
   }
 
   _updateRoundEnd() {
+    if (this.renderer && this.renderer.transitioning) return;
     if (this.stateTick >= 70 && !this._roundEndIris) {
       this._roundEndIris = true;
       this.renderer.startIrisWipe(this.renderer.W/2, this.renderer.H/2, 20);

@@ -63,11 +63,35 @@ PLAYER_POSES = {
     },
     "block": {
         "prompt": (
-            "solo muscular man from behind blocking, green tank top, blue jeans, "
-            "forearms crossed protecting head, crouched low, defensive stance, "
+            "solo muscular man from behind in classic boxer high guard, green tank top, blue jeans, "
+            "both forearms tight in front of face, elbows tucked, chin down, bracing frontal punch, "
             "bold outlines, flat colors, game sprite, white background"
         ),
         "strength": 0.68,
+    },
+    "dodge_left": {
+        "prompt": (
+            "solo muscular man from behind doing a left slip dodge, green tank top, blue jeans, "
+            "head and torso shifted left, shoulder rolled, guard still up, quick evasive motion, "
+            "bold outlines, flat colors, game sprite, white background"
+        ),
+        "strength": 0.74,
+    },
+    "dodge_back": {
+        "prompt": (
+            "solo muscular man from behind doing a pullback dodge, green tank top, blue jeans, "
+            "upper body leaning backward, weight on back leg, both fists near face, avoiding frontal punch, "
+            "bold outlines, flat colors, game sprite, white background"
+        ),
+        "strength": 0.74,
+    },
+    "dodge_right": {
+        "prompt": (
+            "solo muscular man from behind doing a right slip dodge, green tank top, blue jeans, "
+            "head and torso shifted right, shoulder rolled, guard still up, quick evasive motion, "
+            "bold outlines, flat colors, game sprite, white background"
+        ),
+        "strength": 0.74,
     },
     "ko": {
         "prompt": (

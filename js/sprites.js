@@ -839,14 +839,33 @@ class SpriteSystem {
   static POSE_MAP = {
     'idle': 'idle', 'idle2': 'idle',
     'punch_left': 'punch_left', 'punch_right': 'punch_right',
-    'windup_left': 'idle', 'windup_right': 'idle',
+    'windup': 'windup', 'windup_left': 'idle', 'windup_right': 'idle',
     'hurt': 'hurt', 'block': 'block', 'ko': 'ko',
+    'dodge_left': 'dodge_left', 'dodge_right': 'dodge_right',
+    'dodge_back': 'dodge_back', 'duck': 'dodge_back',
     'recovery': 'idle', 'taunt': 'taunt', 'charge': 'sig_attack',
     'special': 'sig_attack', 'victory': 'victory',
     'sig_swing': 'sig_attack', 'sig_rush': 'sig_attack',
     'sig_throw': 'sig_attack', 'sig_grab': 'sig_attack',
     'sig_ground': 'sig_attack', 'sig_combo': 'sig_attack',
     'sig_counter': 'sig_attack',
+  };
+
+  static SIG_FRAME_HINT = {
+    'DON CARLOS':   { 'sig_rush': 0, 'sig_swing': 1 },
+    'GRINGO':       { 'sig_swing': 0, 'sig_throw': 1 },
+    'CLARISA':      { 'sig_combo': 0, 'sig_throw': 1 },
+    'PANZAEPERRA':  { 'sig_rush': 0, 'sig_throw': 1 },
+    'MICHIQUITO':   { 'sig_throw': 0, 'sig_swing': 1 },
+    'HITMENA':      { 'sig_combo': 0, 'sig_ground': 1 },
+    'KAREN':        { 'sig_swing': 0, 'sig_combo': 1 },
+    'CARRETASTAR':  { 'sig_grab': 0, 'sig_rush': 1 },
+    'PERSEFONE':    { 'sig_combo': 0, 'sig_ground': 1 },
+    'DON ALVARO':   { 'sig_swing': 0, 'sig_grab': 1 },
+    'ANAI':         { 'sig_counter': 0, 'sig_ground': 1 },
+    'SKIN':         { 'sig_ground': 0, 'sig_combo': 1 },
+    'EL INDIO':     { 'sig_rush': 0, 'sig_combo': 1 },
+    'EL TORO':      { 'sig_rush': 0 },
   };
 
   static POSE_OFFSETS = {
@@ -868,7 +887,10 @@ class SpriteSystem {
     windup:      { dx:  0, dy:  2, scaleBoost: 0.03 },
     hurt:        { dx:  0, dy:  4, scaleBoost: -0.04 },
     ko:          { dx:  0, dy:  6, scaleBoost: -0.06 },
-    block:       { dx:  0, dy:  1, scaleBoost: 0.02 },
+    block:       { dx:  0, dy: -2, scaleBoost: 0.03 },
+    dodge_left:  { dx: -7, dy: -1, scaleBoost: 0.01 },
+    dodge_right: { dx:  7, dy: -1, scaleBoost: 0.01 },
+    dodge_back:  { dx:  0, dy:  4, scaleBoost: -0.04 },
     taunt:       { dx:  0, dy: -1, scaleBoost: 0.04 },
     sig_attack:  { dx:  0, dy: -10, scaleBoost: 0.08 },
     victory:     { dx:  0, dy: -3, scaleBoost: 0.05 },
@@ -885,12 +907,26 @@ class SpriteSystem {
   }
 
   static KNOWN_BOTTOM_PAD = {
-    'player': 0.234, 'don_carlos': 0.223, 'michiquito': 0.229,
-    'bull': 0.072, 'gringo': 0.057, 'panzaeperra': 0.059,
-    'anai': 0.031, 'hitmena': 0.010, 'don_alvaro': 0.010,
-    'persefone': 0.006, 'clarisa': 0, 'karen': 0,
-    'carretastar': 0, 'skin': 0, 'el_indio': 0,
+    'player': 0.234, 'don_carlos': 0.221, 'michiquito': 0.229,
+    'bull': 0.072, 'gringo': 0.229, 'panzaeperra': 0.229,
+    'anai': 0.229, 'hitmena': 0.289, 'don_alvaro': 0.256,
+    'persefone': 0.229, 'clarisa': 0.229, 'karen': 0.248,
+    'carretastar': 0.229, 'skin': 0.229, 'el_indio': 0.229,
   };
+
+  /** Longest slug wins so e.g. don_alvaro beats don when both could match. */
+  static _matchKnownBottomPadFromSrc(src) {
+    if (!src) return 0;
+    let bestPad = 0;
+    let bestLen = -1;
+    for (const [slug, pad] of Object.entries(SpriteSystem.KNOWN_BOTTOM_PAD)) {
+      if (src.includes(slug) && slug.length > bestLen) {
+        bestLen = slug.length;
+        bestPad = pad;
+      }
+    }
+    return bestPad;
+  }
 
   _getBottomPad(img, cacheKey) {
     if (this._bottomPadCache[cacheKey] != null) return this._bottomPadCache[cacheKey];
@@ -911,15 +947,20 @@ class SpriteSystem {
         }
       }
     } catch (e) {
-      for (const [slug, pad] of Object.entries(SpriteSystem.KNOWN_BOTTOM_PAD)) {
-        if (cacheKey.includes(slug)) {
-          this._bottomPadCache[cacheKey] = pad;
-          return pad;
-        }
-      }
+      const pad = SpriteSystem._matchKnownBottomPadFromSrc(cacheKey);
+      this._bottomPadCache[cacheKey] = pad;
+      return pad;
     }
     this._bottomPadCache[cacheKey] = 0;
     return 0;
+  }
+
+  /** Prefer measured transparency per pose image so all enemies share the same ground line. */
+  _resolveBottomPad(img) {
+    if (img && img.naturalWidth > 0 && img.naturalHeight > 0) {
+      return this._getBottomPad(img, img.src);
+    }
+    return SpriteSystem._matchKnownBottomPadFromSrc(img && img.src ? img.src : '');
   }
 
   static ANIM = {
@@ -1050,10 +1091,7 @@ class SpriteSystem {
   }
 
   _getBottomPadForSrc(src) {
-    for (const [slug, pad] of Object.entries(SpriteSystem.KNOWN_BOTTOM_PAD)) {
-      if (src.includes(slug)) return pad;
-    }
-    return 0;
+    return SpriteSystem._matchKnownBottomPadFromSrc(src);
   }
 
   _drawPoseImage(ctx, img, x, y, scale, poseKey, alpha, t) {
@@ -1073,7 +1111,7 @@ class SpriteSystem {
     const drawH = 110 * (scale / 3) * sBoost * breatheScale;
     const aspect = img.naturalWidth / img.naturalHeight;
     const drawW = drawH * aspect;
-    const bPad = this._getBottomPadForSrc(img.src);
+    const bPad = this._resolveBottomPad(img);
     const drawX = x + dx - drawW / 2;
     const drawY = y + dy + breatheY - drawH * (1 - bPad) + 8;
     ctx.save();
@@ -1093,7 +1131,10 @@ class SpriteSystem {
       const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
       const ps = this._getPoseTransition(charData.name, poseKey);
       const frameCount = this._assets.getPoseFrameCount(charData.name, ps.current);
-      const poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
+      let poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
+      const charHints = SpriteSystem.SIG_FRAME_HINT[charData.name];
+      const sigHint = charHints && charHints[anim];
+      if (sigHint !== undefined && frameCount > sigHint) poseFrame = sigHint;
       const curImg = this._assets.getPoseImage(charData.name, ps.current, poseFrame);
 
       if (curImg) {
@@ -1307,7 +1348,7 @@ class SpriteSystem {
         const drawH = 110 * (s / 2);
         const aspect = curImg.naturalWidth / curImg.naturalHeight;
         const drawW = drawH * aspect;
-        const bPad = this._getBottomPadForSrc(curImg.src);
+        const bPad = this._resolveBottomPad(curImg);
         const drawX = x + pDx - drawW / 2;
         const drawY = y + pDy - drawH * (1 - bPad) + 10;
         ctx.save();

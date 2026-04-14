@@ -1,0 +1,26 @@
+{
+  "project": "pichasitos",
+  "prompt": "Close-up head and upper torso portrait of the character from the reference image. Fat balding middle-aged man with black mustache, sweaty white short-sleeve dress shirt open over huge belly, thick gold rope chain, chrome microphone hanging from neck on a cord. Happy confident expression, big showman grin, eyes looking directly at camera, proud karaoke king energy, calm pre-fight confidence. Same cartoon Punch-Out SNES style as the reference - bold black outlines, flat cel colors, exaggerated chunky proportions, simple expressive face. Plain solid background. ONE character only.",
+  "negative_prompt": "",
+  "seed": null,
+  "parent_seed": null,
+  "prompt_version": "generateimage_v1",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "steps": null,
+  "cfg_scale": null,
+  "sampler": "GenerateImage",
+  "width": 1024,
+  "height": 1024,
+  "model": "GenerateImage (Cursor)",
+  "timestamp": "2026-04-14T04:06:05.9250307-06:00",
+  "validated": false,
+  "portrait_variant": "intro",
+  "reference_image_paths": [
+    "assets/poses/don_carlos/enemy_don_carlos_idle_v1.png",
+    "assets/portraits/portrait_don_carlos_angry_v1.png"
+  ],
+  "generation_mode": "generateimage_reference_portrait",
+  "style_override": true,
+  "reason": "Original game asset style was produced with Cursor GenerateImage using reference images, not the documented hypothetical Stable Diffusion pipeline."
+}

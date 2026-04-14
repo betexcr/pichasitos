@@ -62,7 +62,7 @@ class UIManager {
     }
 
     ctx.fillStyle = CONST.COLORS.YELLOW;
-    this.r._drawText('EL JUEGO DE PICHAZO', W / 2, 165, 'center', 1.0);
+    this.r._drawText('EL JUEGO DE LOS PICHAZOS', W / 2, 165, 'center', 1.0);
 
     const tejaRot = tick * 0.08;
     this.r.drawTeja(W / 2 - 30, 190, 12, tejaRot);
@@ -91,6 +91,89 @@ class UIManager {
     this.r._drawText(circuitInfo ? circuitInfo.name : 'MAPA', W / 2, 8, 'center', 1.4);
 
     const nodes = CONST.MAP_NODES;
+    const areaLabels = ['PUEBLO', 'FERIA', 'REDONDEL', 'CEMENTERIO'];
+    const areaStrokes = [
+      'rgba(120,220,120,0.6)',
+      'rgba(255,214,140,0.65)',
+      'rgba(255,170,120,0.65)',
+      'rgba(255,140,165,0.65)',
+    ];
+    const areaDarkOverlays = [
+      'rgba(10,30,10,0.5)',
+      'rgba(20,10,30,0.5)',
+      'rgba(5,5,15,0.5)',
+      'rgba(30,5,5,0.5)',
+    ];
+
+    const numCircuits = CONST.CIRCUITS.length;
+    const mapTop = 22;
+    const mapBottom = H - 14;
+    const boxGap = 3;
+    const boxH = Math.floor((mapBottom - mapTop - boxGap * (numCircuits - 1)) / numCircuits);
+    const boxLeft = 6;
+    const boxW = W - 12;
+    const radius = 6;
+
+    for (let c = 0; c < numCircuits; c++) {
+      const drawIdx = numCircuits - 1 - c;
+      const top = mapTop + drawIdx * (boxH + boxGap);
+      const left = boxLeft;
+      const width = boxW;
+      const height = boxH;
+      const isCurrentCircuit = c === circuit;
+
+      ctx.save();
+      ctx.beginPath();
+      ctx.moveTo(left + radius, top);
+      ctx.lineTo(left + width - radius, top);
+      ctx.quadraticCurveTo(left + width, top, left + width, top + radius);
+      ctx.lineTo(left + width, top + height - radius);
+      ctx.quadraticCurveTo(left + width, top + height, left + width - radius, top + height);
+      ctx.lineTo(left + radius, top + height);
+      ctx.quadraticCurveTo(left, top + height, left, top + height - radius);
+      ctx.lineTo(left, top + radius);
+      ctx.quadraticCurveTo(left, top, left + radius, top);
+      ctx.closePath();
+      ctx.clip();
+
+      const bgKey = CONST.CIRCUIT_BACKGROUNDS[c];
+      const bgImg = bgKey && this.r.assets ? this.r.assets.getBackground(bgKey) : null;
+      if (bgImg) {
+        const aspect = bgImg.width / bgImg.height;
+        const drawW = width;
+        const drawH = drawW / aspect;
+        ctx.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, left, top + height - drawH, drawW, drawH);
+      }
+      ctx.fillStyle = areaDarkOverlays[c] || 'rgba(0,0,0,0.5)';
+      ctx.fillRect(left, top, width, height);
+
+      ctx.restore();
+
+      ctx.save();
+      ctx.strokeStyle = isCurrentCircuit ? CONST.COLORS.GOLD : (areaStrokes[c] || '#888');
+      ctx.lineWidth = isCurrentCircuit ? 2 : 1;
+      ctx.beginPath();
+      ctx.moveTo(left + radius, top);
+      ctx.lineTo(left + width - radius, top);
+      ctx.quadraticCurveTo(left + width, top, left + width, top + radius);
+      ctx.lineTo(left + width, top + height - radius);
+      ctx.quadraticCurveTo(left + width, top + height, left + width - radius, top + height);
+      ctx.lineTo(left + radius, top + height);
+      ctx.quadraticCurveTo(left, top + height, left, top + height - radius);
+      ctx.lineTo(left, top + radius);
+      ctx.quadraticCurveTo(left, top, left + radius, top);
+      ctx.closePath();
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.fillStyle = isCurrentCircuit ? CONST.COLORS.GOLD : CONST.COLORS.WHITE;
+      this.r._drawText(areaLabels[c] || 'AREA', left + 6, top + 3, 'left', 0.7);
+
+      const iconX = left + width - 13;
+      const iconY = top + 10;
+      this._drawWorldAreaIcon(ctx, c, iconX, iconY, isCurrentCircuit, tick);
+    }
+
     for (let i = 0; i < nodes.length - 1; i++) {
       if (nodes[i].circuit === nodes[i + 1].circuit) {
         const a = nodes[i];
@@ -135,15 +218,16 @@ class UIManager {
       }
 
       const portrait = (i < OPPONENT_DATA.length)
-        ? (this.r.assets ? this.r.assets.getPortraitImage(OPPONENT_DATA[i].name) : null)
-        : (i === OPPONENT_DATA.length ? (this.r.assets ? this.r.assets.getPortraitImage('EL TORO') : null) : null);
+        ? (this.r.assets ? this.r.assets.getPortraitImage(OPPONENT_DATA[i].name, 'intro') : null)
+        : (i === OPPONENT_DATA.length ? (this.r.assets ? this.r.assets.getPortraitImage('EL TORO', 'intro') : null) : null);
 
       if (portrait) {
+        const charName = (i < OPPONENT_DATA.length) ? OPPONENT_DATA[i].name : (i === OPPONENT_DATA.length ? 'EL TORO' : null);
         ctx.save();
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
         ctx.clip();
-        ctx.drawImage(portrait, node.x - r, node.y - r, r * 2, r * 2);
+        this._drawPortraitCropped(ctx, portrait, node.x - r, node.y - r, r * 2, r * 2, charName);
         ctx.restore();
       } else {
         const circColors = [CONST.COLORS.GREEN, CONST.COLORS.YELLOW, CONST.COLORS.ORANGE, CONST.COLORS.RED];
@@ -176,6 +260,93 @@ class UIManager {
       ctx.fillStyle = CONST.COLORS.NEON_GREEN;
       this.r._drawText('PRESS START', W / 2, H - 16, 'center', 1.2);
     }
+  }
+
+  _drawWorldAreaIcon(ctx, areaIndex, x, y, isActive, tick) {
+    ctx.save();
+    if (!isActive) ctx.globalAlpha = 0.88;
+    else ctx.globalAlpha = 0.96 + Math.sin(tick * 0.08) * 0.04;
+
+    switch (areaIndex) {
+      case 0:
+        this._drawTownIcon(ctx, x, y);
+        break;
+      case 1:
+        this._drawFairIcon(ctx, x, y, tick);
+        break;
+      case 2:
+        this._drawBullringIcon(ctx, x, y);
+        break;
+      case 3:
+        this._drawCemeteryIcon(ctx, x, y);
+        break;
+    }
+    ctx.restore();
+  }
+
+  _drawTownIcon(ctx, x, y) {
+    ctx.fillStyle = '#8B5A2B';
+    ctx.fillRect(x - 5, y + 2, 10, 6);
+    ctx.fillStyle = '#D9E6F2';
+    ctx.fillRect(x - 2, y + 4, 2, 2);
+    ctx.fillRect(x + 1, y + 4, 2, 2);
+    ctx.fillStyle = '#C41E3A';
+    ctx.fillRect(x - 6, y - 1, 12, 1);
+    ctx.fillRect(x - 4, y - 2, 8, 1);
+    ctx.fillRect(x - 2, y - 3, 4, 1);
+  }
+
+  _drawFairIcon(ctx, x, y, tick) {
+    ctx.strokeStyle = '#FFE27A';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y + 1, 5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.strokeStyle = '#FFC44A';
+    ctx.beginPath();
+    ctx.moveTo(x, y - 4);
+    ctx.lineTo(x, y + 6);
+    ctx.moveTo(x - 5, y + 1);
+    ctx.lineTo(x + 5, y + 1);
+    ctx.moveTo(x - 4, y - 2);
+    ctx.lineTo(x + 4, y + 4);
+    ctx.moveTo(x + 4, y - 2);
+    ctx.lineTo(x - 4, y + 4);
+    ctx.stroke();
+
+    ctx.fillStyle = '#EAA221';
+    ctx.fillRect(x - 1, y + 7, 2, 2);
+    if (Math.sin(tick * 0.2) > 0.2) {
+      ctx.fillStyle = '#FFF4B0';
+      ctx.fillRect(x - 1, y - 4, 1, 1);
+      ctx.fillRect(x + 3, y + 1, 1, 1);
+    }
+  }
+
+  _drawBullringIcon(ctx, x, y) {
+    ctx.strokeStyle = '#D68A4B';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.arc(x, y + 3, 5, 0, Math.PI * 2);
+    ctx.stroke();
+
+    ctx.fillStyle = '#F0D7BC';
+    ctx.fillRect(x - 2, y + 1, 4, 4);
+    ctx.fillStyle = '#8B5A2B';
+    ctx.fillRect(x - 4, y - 1, 3, 1);
+    ctx.fillRect(x + 1, y - 1, 3, 1);
+    ctx.fillRect(x - 1, y + 3, 2, 1);
+  }
+
+  _drawCemeteryIcon(ctx, x, y) {
+    ctx.fillStyle = '#BFC4D5';
+    ctx.fillRect(x - 1, y - 2, 2, 7);
+    ctx.fillRect(x - 3, y, 6, 2);
+    ctx.fillStyle = '#A2A7B8';
+    ctx.fillRect(x - 4, y + 5, 8, 2);
+    ctx.fillStyle = '#8CD38A';
+    ctx.fillRect(x - 5, y + 7, 10, 1);
   }
 
   drawAttractMode(tick, credits, highScores, onlineData) {
@@ -249,7 +420,7 @@ class UIManager {
     }
 
     ctx.fillStyle = CONST.COLORS.YELLOW;
-    this.r._drawText(CONST.TEXT.PRECIO, W / 2, 130, 'center', 1.2);
+    this.r._drawText('EL JUEGO DE LOS PICHAZOS', W / 2, 130, 'center', 1.2);
 
     const tejaRot = tick * 0.08;
     this.r.drawTeja(W / 2, 158, 16, tejaRot);
@@ -296,7 +467,7 @@ class UIManager {
         if (entry.lastDefeated) {
           var oppData = this._findOpponentData(entry.lastDefeated);
           if (oppData) {
-            var pImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name);
+            var pImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name, 'intro');
             if (pImg) {
               var pS = 14;
               ctx.save();
@@ -413,7 +584,7 @@ class UIManager {
       const y = startY + row * rowH;
       const frame = Math.floor(tick / 12) % 2;
 
-      const thumbImg = this.r.assets && this.r.assets.getPortraitImage(entry.data.name);
+      const thumbImg = this.r.assets && this.r.assets.getPortraitImage(entry.data.name, 'intro');
       if (thumbImg) {
         const thumbS = 22;
         this._drawPortraitCropped(ctx, thumbImg, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, entry.data.name);
@@ -671,7 +842,7 @@ class UIManager {
       const a = Math.min(1, (stateTick - showAt) / 10);
       ctx.globalAlpha = a;
       const y = 66 + i * rowH;
-      const portraitImg = this.r.assets && this.r.assets.getPortraitImage(opp.name);
+      const portraitImg = this.r.assets && this.r.assets.getPortraitImage(opp.name, 'intro');
       if (portraitImg) {
         const pS = 28;
         ctx.save();
@@ -703,7 +874,7 @@ class UIManager {
     ctx.fillRect(0, 0, W, H);
     this.r.drawSarchiBorder();
 
-    const portraitImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name);
+    const portraitImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name, 'intro');
     const spriteAlpha = Math.min(1, stateTick / 15);
 
     if (portraitImg) {
@@ -810,21 +981,21 @@ class UIManager {
   }
 
   static PORTRAIT_CROPS = {
-    'DON CARLOS':   { top: 0.05, bottom: 0.15, left: 0.05, right: 0.05 },
-    'GRINGO':       { top: 0.02, bottom: 0.30, left: 0.05, right: 0.05 },
-    'CLARISA':      { top: 0.0,  bottom: 0.55, left: 0.10, right: 0.15 },
-    'PANZAEPERRA':  { top: 0.02, bottom: 0.28, left: 0.05, right: 0.05 },
-    'MICHIQUITO':   { top: 0.0,  bottom: 0.50, left: 0.10, right: 0.10 },
-    'HITMENA':      { top: 0.05, bottom: 0.45, left: 0.05, right: 0.05 },
-    'EL INDIO':     { top: 0.02, bottom: 0.25, left: 0.05, right: 0.05 },
-    'DON ALVARO':   { top: 0.0,  bottom: 0.25, left: 0.0,  right: 0.05 },
-    'ANAI':         { top: 0.0,  bottom: 0.65, left: 0.15, right: 0.15 },
-    'PERSEFONE':    { top: 0.0,  bottom: 0.60, left: 0.15, right: 0.15 },
-    'SKIN':         { top: 0.02, bottom: 0.22, left: 0.05, right: 0.05 },
-    'KAREN':        { top: 0.15, bottom: 0.30, left: 0.0,  right: 0.20 },
-    'CARRETASTAR':  { top: 0.0,  bottom: 0.35, left: 0.25, right: 0.0  },
-    'BULL':         { top: 0.0,  bottom: 0.30, left: 0.10, right: 0.0  },
-    'PLAYER':       { top: 0.02, bottom: 0.22, left: 0.05, right: 0.05 },
+    'DON CARLOS':   { top: 0.20, bottom: 0.0, left: 0.0, right: 0.0, alignX: 0.5, alignY: 1.0, fit: 'contain' },
+    'GRINGO':       { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'CLARISA':      { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
+    'PANZAEPERRA':  { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'MICHIQUITO':   { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
+    'HITMENA':      { top: 0.12, bottom: 0.44, left: 0.18, right: 0.18, fit: 'cover' },
+    'EL INDIO':     { top: 0.12, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'DON ALVARO':   { top: 0.12, bottom: 0.44, left: 0.20, right: 0.20, fit: 'cover' },
+    'ANAI':         { top: 0.12, bottom: 0.44, left: 0.20, right: 0.20, fit: 'cover' },
+    'PERSEFONE':    { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
+    'SKIN':         { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'KAREN':        { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'CARRETASTAR':  { top: 0.12, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
+    'EL TORO':      { top: 0.14, bottom: 0.40, left: 0.14, right: 0.14, fit: 'cover' },
+    'PLAYER':       { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
   };
 
   _drawPortraitCropped(ctx, img, dx, dy, dw, dh, charName) {
@@ -833,7 +1004,41 @@ class UIManager {
     const sy = img.naturalHeight * crop.top;
     const sw = img.naturalWidth * (1 - crop.left - crop.right);
     const sh = img.naturalHeight * (1 - crop.top - crop.bottom);
-    ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+    const srcAspect = sw / sh;
+    const dstAspect = dw / dh;
+    const alignX = (typeof crop.alignX === 'number') ? Math.max(0, Math.min(1, crop.alignX)) : 0.5;
+    const alignY = (typeof crop.alignY === 'number') ? Math.max(0, Math.min(1, crop.alignY)) : 0.5;
+    const fit = crop.fit === 'cover' ? 'cover' : 'contain';
+
+    if (fit === 'cover') {
+      let coverSX = sx;
+      let coverSY = sy;
+      let coverSW = sw;
+      let coverSH = sh;
+      if (srcAspect > dstAspect) {
+        coverSW = sh * dstAspect;
+        coverSX = sx + (sw - coverSW) * alignX;
+      } else if (srcAspect < dstAspect) {
+        coverSH = sw / dstAspect;
+        coverSY = sy + (sh - coverSH) * alignY;
+      }
+      ctx.drawImage(img, coverSX, coverSY, coverSW, coverSH, dx, dy, dw, dh);
+      return;
+    }
+
+    let drawW = dw;
+    let drawH = dh;
+    let drawX = dx;
+    let drawY = dy;
+    if (srcAspect > dstAspect) {
+      drawH = dw / srcAspect;
+      drawY = dy + (dh - drawH) * alignY;
+    } else {
+      drawW = dh * srcAspect;
+      drawX = dx + (dw - drawW) * alignX;
+    }
+
+    ctx.drawImage(img, sx, sy, sw, sh, drawX, drawY, drawW, drawH);
   }
 
   _roundedRect(ctx, x, y, w, h, r) {
@@ -982,11 +1187,10 @@ class UIManager {
       const alpha = Math.min(1, (stateTick - 70) / 20);
       ctx.globalAlpha = alpha;
 
-      const defeatedPortrait = this.r.assets && this.r.assets.getPortraitImage(oppName);
+      const defeatedPortrait = this.r.assets && this.r.assets.getPortraitImage(oppName, 'angry');
       if (defeatedPortrait) {
         const pSize = 32;
-        const pAlpha = 0.5 + Math.sin(stateTick * 0.04) * 0.1;
-        ctx.globalAlpha = alpha * pAlpha;
+        ctx.globalAlpha = alpha;
         this._drawPortraitCropped(ctx, defeatedPortrait, W / 2 - pSize / 2, 108, pSize, pSize, oppName);
         ctx.globalAlpha = alpha;
         ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
@@ -1000,7 +1204,7 @@ class UIManager {
 
     if (score !== undefined) {
       ctx.fillStyle = CONST.COLORS.GOLD;
-      const scoreY = this.r.assets && this.r.assets.getPortraitImage(oppName) ? 164 : 146;
+      const scoreY = this.r.assets && this.r.assets.getPortraitImage(oppName, 'angry') ? 164 : 146;
       this.r._drawText('PUNTOS: ' + score, W / 2, scoreY, 'center', 1.4);
     }
 

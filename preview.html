@@ -250,7 +250,183 @@ header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
   font-size: 0.8rem;
 }
 .speed-control input { width: 120px; accent-color: var(--gold); }
+
+.arena-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(460px, 1fr));
+  gap: 20px;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+.arena-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+  cursor: pointer;
+}
+.arena-card:hover { border-color: var(--gold); }
+.arena-card canvas {
+  width: 100%;
+  display: block;
+  image-rendering: pixelated;
+}
+.arena-card .arena-label {
+  padding: 12px 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.arena-card .arena-label .name {
+  font-weight: 700;
+  font-size: 0.95rem;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+.arena-card .arena-label .circuit-dot {
+  width: 10px; height: 10px; border-radius: 50%; display: inline-block;
+  margin-right: 8px; vertical-align: middle;
+}
+.arena-card .arena-label .opponents {
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.portrait-pair {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
+}
+.portrait-slot {
+  text-align: center;
+}
+.portrait-slot .ref-img {
+  width: 110px;
+  height: 110px;
+}
+.portrait-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+.sig-names {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+.sig-tag {
+  background: rgba(255,60,40,0.15);
+  border: 1px solid rgba(255,60,40,0.35);
+  color: #ff6b4a;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+}
+.pose-card.sig-card {
+  border-color: rgba(255,60,40,0.3);
+}
+.pose-card.sig-card:hover {
+  border-color: #ff6b4a;
+  box-shadow: 0 4px 20px rgba(255,60,40,0.15);
+}
+.pose-card .sig-label {
+  color: #ff6b4a;
+  font-size: 0.7rem;
+}
+
+.arena-game-modal {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(0,0,0,0.85);
+  backdrop-filter: blur(5px);
+}
+.arena-game-modal.is-open {
+  display: flex;
+}
+.arena-game-modal-panel {
+  position: relative;
+  max-width: calc(100vw - 24px);
+  background: var(--card);
+  border: 2px solid var(--gold);
+  border-radius: 12px;
+  padding: 40px 16px 14px;
+  box-shadow: 0 12px 48px rgba(0,0,0,0.55);
+}
+.arena-game-modal-panel h3 {
+  color: var(--gold);
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-align: center;
+  text-transform: uppercase;
+  margin: 0 0 10px;
+  padding: 0 28px;
+  line-height: 1.35;
+}
+.arena-game-modal-loading {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.9rem;
+  padding: 80px 24px;
+  min-width: 200px;
+}
+.arena-game-canvas-wrap {
+  line-height: 0;
+  border-radius: 8px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  background: #000;
+}
+.arena-game-canvas-wrap canvas {
+  display: block;
+  width: min(768px, calc(100vw - 64px));
+  height: auto;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+.arena-game-modal-close {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255,255,255,0.08);
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.arena-game-modal-close:hover {
+  background: rgba(255,215,0,0.2);
+  color: var(--gold);
+}
+.arena-game-modal-hint {
+  margin-top: 10px;
+  text-align: center;
+  font-size: 0.72rem;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+}
 </style>
+<script src="js/constants.js"></script>
+<script src="js/asset-loader.js"></script>
+<script src="js/sprites.js"></script>
+<script src="js/renderer.js"></script>
 </head>
 <body>
 
@@ -259,49 +435,82 @@ header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
   <p>Fighter Roster &amp; Animation Preview</p>
 </header>
 
+<section class="arena-section" id="arena-section">
+  <div class="section-label" style="max-width:1100px;margin:0 auto;padding:20px 16px 0;">Arena Backgrounds (4 Circuits) — click a card for the in-game view</div>
+  <div class="arena-grid" id="arena-grid"></div>
+</section>
+
 <nav class="roster" id="roster"></nav>
 <main class="fighter-view" id="fighter-view"></main>
+
+<div id="arena-game-modal" class="arena-game-modal" aria-hidden="true">
+  <div class="arena-game-modal-panel">
+    <button type="button" class="arena-game-modal-close" id="arena-game-modal-close" aria-label="Close">&times;</button>
+    <h3 id="arena-game-modal-title">Arena</h3>
+    <div id="arena-game-modal-loading" class="arena-game-modal-loading">Loading arena assets…</div>
+    <div id="arena-game-canvas-wrap" class="arena-game-canvas-wrap" style="display:none">
+      <canvas id="arena-game-canvas"></canvas>
+    </div>
+    <p class="arena-game-modal-hint">In-game <code style="color:#aaa">Renderer.drawArena</code> at native resolution (×3 scale)</p>
+  </div>
+</div>
 
 <script>
 const FIGHTERS = [
   { slug: 'player',       name: 'PLAYER',       title: 'El Pichaseador',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','dodge_left','dodge_back','dodge_right','ko','windup','taunt','sig_attack','victory'],
+    sigs: [] },
   { slug: 'don_carlos',   name: 'DON CARLOS',   title: 'El Rey del Karaoke',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'PANZAZO',pose:'sig_attack'},{name:'SERENATA MORTAL',pose:'sig_attack_f2'}] },
   { slug: 'gringo',       name: 'GRINGO',       title: 'El Turista Perdido',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'FANNY WHACK',pose:'sig_attack'},{name:'SAY CHEESE',pose:'sig_attack_f2'}] },
   { slug: 'clarisa',      name: 'CLARISA',      title: 'La Fresa de Escazu',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'UNAS DE GATA',pose:'sig_attack'},{name:'NI ME TOQUES',pose:'sig_attack_f2'}] },
   { slug: 'skin',         name: 'SKIN',         title: 'El Muro de Concreto',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'TATUAJE DE DOLOR',pose:'sig_attack'},{name:'PUNO MARCADO',pose:'sig_attack_f2'}] },
   { slug: 'karen',        name: 'KAREN',        title: 'La Gerente Furiosa',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'INADMISIBLE',pose:'sig_attack'},{name:'QUIERO AL GERENTE',pose:'sig_attack_f2'}] },
   { slug: 'don_alvaro',   name: 'DON ALVARO',   title: 'El Patron del Barrio',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'ROCK N ROLL',pose:'sig_attack'},{name:'ABRAZO DE OSO',pose:'sig_attack_f2'}] },
   { slug: 'hitmena',      name: 'HITMENA',      title: 'La Doble Cara',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'MOLINETE',pose:'sig_attack'},{name:'MACANAZO FEMINISTA',pose:'sig_attack_f2'}] },
   { slug: 'panzaeperra',  name: 'PANZAEPERRA',  title: 'El Tanque Humano',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'CABEZAZO CALLEJERO',pose:'sig_attack'},{name:'POLVAZO',pose:'sig_attack_f2'}] },
   { slug: 'el_indio',     name: 'EL INDIO',     title: 'El Chorotega',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'SANGRE GUERRERA',pose:'sig_attack'},{name:'ESPIRITU ANCESTRAL',pose:'sig_attack_f2'}] },
   { slug: 'michiquito',   name: 'MICHIQUITO',   title: 'El Junior de Papi',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'LLUVIA DE ROJOS',pose:'sig_attack'},{name:'MI TATA ES ABOGADO',pose:'sig_attack_f2'}] },
   { slug: 'persefone',    name: 'PERSEFONE',    title: 'La Club Kid Cosmica',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'RAVE FURY',pose:'sig_attack'},{name:'BASS DROP',pose:'sig_attack_f2'}] },
   { slug: 'anai',         name: 'ANAI',         title: 'El Rasta de Limon',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'JAH GUIDE I',pose:'sig_attack'},{name:'ROOTS THUNDER',pose:'sig_attack_f2'}] },
   { slug: 'carretastar',  name: 'CARRETASTAR',  title: 'El Boyero Legendario',
-    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','sig_attack_f2','victory'],
+    sigs: [{name:'LAZO DE TOPE',pose:'sig_attack'},{name:'ESPUELAZO',pose:'sig_attack_f2'}] },
   { slug: 'bull',         name: 'EL TORO',      title: 'Malacrianza',
-    poses: ['idle','charge','horn_left','horn_right','hurt','stomp','ko','taunt','sig_charge','victory'] },
+    poses: ['idle','charge','horn_left','horn_right','hurt','stomp','ko','taunt','sig_charge','sig_charge_f2','victory'],
+    sigs: [{name:'ESTAMPIDA',pose:'sig_charge'},{name:'CORNADA MORTAL',pose:'sig_charge_f2'}] },
 ];
 
 const POSE_LABELS = {
   idle: 'Idle', punch_left: 'Left Punch', punch_right: 'Right Punch',
-  hurt: 'Hurt', block: 'Block', ko: 'KO', windup: 'Windup',
-  taunt: 'Taunt', sig_attack: 'Signature', victory: 'Victory',
+  hurt: 'Hurt', block: 'Block', dodge_left: 'Dodge Left', dodge_back: 'Dodge Back',
+  dodge_right: 'Dodge Right', ko: 'KO', windup: 'Windup',
+  taunt: 'Taunt', sig_attack: 'Signature #1', sig_attack_f2: 'Signature #2', victory: 'Victory',
   charge: 'Charge', horn_left: 'Horn Left', horn_right: 'Horn Right',
-  stomp: 'Stomp', sig_charge: 'Sig Charge',
+  stomp: 'Stomp', sig_charge: 'Sig Charge', sig_charge_f2: 'Sig Charge #2',
 };
 
 const POSE_MOTION = {
@@ -310,25 +519,32 @@ const POSE_MOTION = {
   punch_right: { x: 8,  y: -6,   s: 1.04 },
   hurt:        { x: 0,  y: 4,    s: 0.97 },
   block:       { x: 0,  y: 6,    s: 0.95 },
+  dodge_left:  { x: -14, y: 0,  s: 1    },
+  dodge_back:  { x: 0,  y: 8,   s: 0.96 },
+  dodge_right: { x: 14, y: 0,   s: 1    },
   ko:          { x: 0,  y: 20,   s: 0.90 },
   windup:      { x: 6,  y: -3,   s: 1.02 },
   taunt:       { x: 0,  y: -2,   s: 1.03 },
   sig_attack:  { x: 0,  y: -16,  s: 1.10 },
+  sig_attack_f2: { x: 0, y: -14, s: 1.10 },
   victory:     { x: 0,  y: -8,   s: 1.05 },
   charge:      { x: 0,  y: -10,  s: 1.06 },
   horn_left:   { x: -10, y: 0,   s: 1.03 },
   horn_right:  { x: 10, y: 0,    s: 1.03 },
   stomp:       { x: 0,  y: 8,    s: 1.05 },
   sig_charge:  { x: 0,  y: -14,  s: 1.12 },
+  sig_charge_f2: { x: 0, y: -12, s: 1.10 },
 };
 
 const POSE_FX = {
   punch_left: 'impact', punch_right: 'impact',
   hurt: 'shake', ko: 'shake',
-  sig_attack: 'impact', sig_charge: 'impact',
+  sig_attack: 'impact', sig_attack_f2: 'impact', sig_charge: 'impact', sig_charge_f2: 'impact',
   horn_left: 'impact', horn_right: 'impact',
   stomp: 'shake', charge: 'impact',
 };
+
+const ASSET_VERSION = '20260414_all_chars_v2_poses';
 
 function getAnimSequences(f) {
   if (f.slug === 'bull') {
@@ -380,6 +596,13 @@ function getAnimSequences(f) {
       { pose: 'hurt', ms: 250 }, { pose: 'block', ms: 300 },
       { pose: 'idle', ms: 500 },
     ]},
+    { name: 'Dodge Drill',     frames: [
+      { pose: 'idle', ms: 400 }, { pose: 'dodge_left', ms: 250 },
+      { pose: 'idle', ms: 200 }, { pose: 'dodge_right', ms: 250 },
+      { pose: 'idle', ms: 200 }, { pose: 'dodge_back', ms: 300 },
+      { pose: 'idle', ms: 200 }, { pose: 'block', ms: 300 },
+      { pose: 'idle', ms: 400 },
+    ]},
     { name: 'KO Sequence',     frames: [
       { pose: 'hurt', ms: 300 }, { pose: 'hurt', ms: 300 },
       { pose: 'ko', ms: 500 }, { pose: 'ko', ms: 800 },
@@ -392,14 +615,30 @@ function getAnimSequences(f) {
   ];
 }
 
-function posePath(slug, pose) {
-  return `assets/poses/${slug}/enemy_${slug}_${pose}_v1.png`;
+function posePath(slug, pose, version) {
+  const v = version || 'v2';
+  const m = pose.match(/^(.+)_(f\d+)$/);
+  if (m) return `assets/poses/${slug}/enemy_${slug}_${m[1]}_${v}_${m[2]}.png?v=${ASSET_VERSION}`;
+  return `assets/poses/${slug}/enemy_${slug}_${pose}_${v}.png?v=${ASSET_VERSION}`;
 }
-function enemyPath(slug) {
-  return `assets/enemies/enemy_${slug}_idle_v1.png`;
+function enemyPath(slug, version) {
+  const v = version || 'v2';
+  return `assets/enemies/enemy_${slug}_idle_${v}.png?v=${ASSET_VERSION}`;
 }
 function portraitPath(slug) {
-  return `assets/portraits/portrait_${slug}_angry_v1.png`;
+  return `assets/portraits/portrait_${slug}_intro_v1.png?v=${ASSET_VERSION}`;
+}
+function portraitFallback(slug) {
+  return `assets/portraits/portrait_${slug}_angry_v1.png?v=${ASSET_VERSION}`;
+}
+function imgFallbackV1(img, slug, pose) {
+  if (!img.dataset.triedV1) {
+    img.dataset.triedV1 = '1';
+    if (pose) img.src = posePath(slug, pose, 'v1');
+    else img.src = enemyPath(slug, 'v1');
+  } else {
+    img.style.display = 'none';
+  }
 }
 
 let currentSlug = null;
@@ -436,12 +675,16 @@ function showPose(slug, pose) {
   const transform = `translate(${motion.x}px, ${motion.y}px) scale(${motion.s})`;
 
   if (activeFront === 'A') {
+    spriteB.dataset.triedV1 = '';
+    spriteB.onerror = function() { imgFallbackV1(this, slug, pose); };
     spriteB.src = src;
     spriteB.style.transform = transform;
     spriteB.classList.replace('behind', 'front');
     spriteA.classList.replace('front', 'behind');
     activeFront = 'B';
   } else {
+    spriteA.dataset.triedV1 = '';
+    spriteA.onerror = function() { imgFallbackV1(this, slug, pose); };
     spriteA.src = src;
     spriteA.style.transform = transform;
     spriteA.classList.replace('behind', 'front');
@@ -468,13 +711,18 @@ function renderFighter(slug) {
 
   const hasPortrait = slug !== 'player';
   const view = document.getElementById('fighter-view');
+  const sigsHtml = f.sigs.length ? `<div class="sig-names">${f.sigs.map(s => `<span class="sig-tag">${s.name}</span>`).join('')}</div>` : '';
   view.innerHTML = `
     <div class="fighter-header">
-      ${hasPortrait ? `<img class="ref-img" src="${portraitPath(slug)}" alt="${f.name} portrait" onerror="this.style.display='none'">` : ''}
-      <img class="ref-img" src="${enemyPath(slug)}" alt="${f.name} sprite" onerror="this.style.display='none'">
+      ${hasPortrait ? `<div class="portrait-pair">
+        <div class="portrait-slot"><img class="ref-img" src="${portraitPath(slug)}" alt="Intro" onerror="this.src='${posePath(slug,'idle')}'; this.onerror=function(){this.style.display='none'}"><div class="portrait-label">INTRO</div></div>
+        <div class="portrait-slot"><img class="ref-img" src="${portraitFallback(slug)}" alt="Angry" onerror="this.style.display='none'"><div class="portrait-label">ANGRY</div></div>
+      </div>` : ''}
+      <img class="ref-img" src="${enemyPath(slug)}" alt="${f.name} sprite" onerror="imgFallbackV1(this,'${slug}')">
       <div class="fighter-info">
         <h2>${f.name}</h2>
         <div class="title">${f.title}</div>
+        ${sigsHtml}
       </div>
     </div>
 
@@ -482,8 +730,8 @@ function renderFighter(slug) {
       <h3>Animation Player</h3>
       <div class="player-wrap">
         <div class="sprite-viewport" id="viewport">
-          <img id="spriteA" class="front" src="${posePath(slug, f.poses[0])}" alt="sprite">
-          <img id="spriteB" class="behind" src="${posePath(slug, f.poses[0])}" alt="sprite">
+          <img id="spriteA" class="front" src="${posePath(slug, f.poses[0])}" alt="sprite" onerror="imgFallbackV1(this,'${slug}','${f.poses[0]}')">
+          <img id="spriteB" class="behind" src="${posePath(slug, f.poses[0])}" alt="sprite" onerror="imgFallbackV1(this,'${slug}','${f.poses[0]}')">
         </div>
         <div class="pose-desc" id="pose-desc"></div>
         <div class="player-controls" id="player-controls"></div>
@@ -495,7 +743,7 @@ function renderFighter(slug) {
       </div>
     </div>
 
-    <div class="section-label">All Poses (${f.poses.length})</div>
+    <div class="section-label">All Poses (${f.poses.length}${f.sigs.length ? ' + ' + f.sigs.length + ' signatures' : ''})</div>
     <div class="pose-grid" id="pose-grid"></div>
   `;
 
@@ -505,21 +753,43 @@ function renderFighter(slug) {
   activeFront = 'A';
 
   const grid = document.getElementById('pose-grid');
+  const sigsByPose = {};
+  f.sigs.forEach(sig => { (sigsByPose[sig.pose] = sigsByPose[sig.pose] || []).push(sig); });
   f.poses.forEach(pose => {
-    const card = document.createElement('div');
-    card.className = 'pose-card';
-    card.dataset.pose = pose;
-    card.innerHTML = `
-      <img src="${posePath(slug, pose)}" alt="${pose}">
-      <div class="label">${POSE_LABELS[pose] || pose}</div>
-    `;
-    card.addEventListener('click', () => {
-      stopAnim();
-      showPose(slug, pose);
-      document.getElementById('pose-desc').textContent = POSE_LABELS[pose] || pose;
-      document.querySelectorAll('.player-controls button').forEach(b => b.classList.remove('active'));
-    });
-    grid.appendChild(card);
+    const matchedSigs = sigsByPose[pose];
+    if (matchedSigs) {
+      matchedSigs.forEach(sig => {
+        const card = document.createElement('div');
+        card.className = 'pose-card sig-card';
+        card.dataset.pose = sig.pose;
+        card.innerHTML = `
+          <img src="${posePath(slug, sig.pose)}" alt="${sig.name}" onerror="imgFallbackV1(this,'${slug}','${sig.pose}')">
+          <div class="label sig-label">${sig.name}</div>
+        `;
+        card.addEventListener('click', () => {
+          stopAnim();
+          showPose(slug, sig.pose);
+          document.getElementById('pose-desc').textContent = sig.name;
+          document.querySelectorAll('.player-controls button').forEach(b => b.classList.remove('active'));
+        });
+        grid.appendChild(card);
+      });
+    } else {
+      const card = document.createElement('div');
+      card.className = 'pose-card';
+      card.dataset.pose = pose;
+      card.innerHTML = `
+        <img src="${posePath(slug, pose)}" alt="${pose}" onerror="imgFallbackV1(this,'${slug}','${pose}')">
+        <div class="label">${POSE_LABELS[pose] || pose}</div>
+      `;
+      card.addEventListener('click', () => {
+        stopAnim();
+        showPose(slug, pose);
+        document.getElementById('pose-desc').textContent = POSE_LABELS[pose] || pose;
+        document.querySelectorAll('.player-controls button').forEach(b => b.classList.remove('active'));
+      });
+      grid.appendChild(card);
+    }
   });
 
   const sequences = getAnimSequences(f);
@@ -562,8 +832,558 @@ function stopAnim() {
   if (animTimer) { clearTimeout(animTimer); animTimer = null; }
 }
 
+// ─── Arena Preview ───────────────────────────────────────────
+const GAME_W = 256, GAME_H = 224;
+
+const CIRCUITS = [
+  { name: 'CIRCUITO DEL PUEBLO',    color: '#228B22', opponents: ['Don Carlos','Gringo','Clarisa'], bg: 'arena_pueblo' },
+  { name: 'CIRCUITO DE LA FERIA',   color: '#EAA221', opponents: ['Skin','Karen','Don Alvaro'],     bg: 'arena_feria' },
+  { name: 'CIRCUITO DEL REDONDEL',  color: '#CC5500', opponents: ['Hitmena','Panzaeperra','El Indio'], bg: 'arena_redondel' },
+  { name: 'CIRCUITO DE LA MUERTE',  color: '#C41E3A', opponents: ['Michiquito','Persefone','Anai','Carretastar'], bg: 'arena_muerte' },
+];
+
+const ARENA_THEMES = [
+  { key:'pueblo', skyStops:['#1A3A72','#2F5B8F','#6D7DA3','#C88B58'], hasStars:false, hasMoon:false, hasClouds:true, hasStringLights:true, hasBanners:true, hasCrowd:true, fenceStyle:'pueblo', groundStops:['#CCAA74','#C09A62','#A88453','#7B5D38'], detailColor:'rgba(110,80,50,0.25)', topLine:'#8A6640', topLineHi:'#D8B280' },
+  { key:'feria',  skyStops:['#171440','#352B78','#5A3DA0','#9B3D8A'], hasStars:true, hasMoon:false, hasClouds:false, hasStringLights:true, hasBanners:true, hasCrowd:true, fenceStyle:'feria', groundStops:['#B98D5F','#AB7A46','#8A633C','#65462A'], detailColor:'rgba(60,30,60,0.2)', topLine:'#744927', topLineHi:'#CC9560' },
+  { key:'redondel', skyStops:['#030310','#060620','#0A0A2E','#111144','#181850'], hasStars:true, hasMoon:false, hasClouds:true, hasStringLights:true, hasBanners:true, hasCrowd:true, fenceStyle:'redondel', groundStops:['#B89868','#B09060','#A0805A','#7A6040','#6A5035'], detailColor:'rgba(90,60,30,0.25)', topLine:'#7A6040', topLineHi:'#B09060', centerRing:true },
+  { key:'muerte', skyStops:['#130808','#2B0E0E','#4A1010','#6A1412'], hasStars:false, hasMoon:false, hasClouds:false, hasStringLights:false, hasBanners:false, hasCrowd:false, fenceStyle:'muerte', groundStops:['#3C2118','#4C2A1D','#5F2E1E','#2A1712'], detailColor:'rgba(0,0,0,0.35)', topLine:'#2A120E', topLineHi:'#7A3524' },
+];
+
+const BULB_COLORS = ['#FF2222','#FFD700','#33CC33','#3388FF','#FF8800'];
+const CROWD_COLORS = ['#CC2222','#2255CC','#228B22','#FF8800','#DD44CC','#DDDD33','#FF5599','#22CCCC','#EE5500','#AA33FF'];
+const SKIN_TONES = ['#DEB887','#C8A070','#A87848','#8B6040','#704830'];
+const HAT_COLORS = ['#CC2222','#2255CC','#228B22','#FFD700','#FF8800','#884422'];
+
+const arenaBgImages = {};
+const arenaAnimState = {};
+
+function loadArenaBgs() {
+  CIRCUITS.forEach(c => {
+    const img = new Image();
+    img.src = `assets/ui_bg/${c.bg}.png?v=${ASSET_VERSION}`;
+    img.onload = () => { arenaBgImages[c.bg] = img; };
+  });
+}
+
+function seedCrowd(W) {
+  const people = [];
+  for (let row = 0; row < 2; row++) {
+    const count = row === 0 ? 28 : 18;
+    const baseY = row === 0 ? 88 : 80;
+    for (let i = 0; i < count; i++) {
+      people.push({
+        x: Math.floor(Math.random() * W),
+        y: baseY + Math.random() * 6,
+        row, height: 8 + Math.floor(Math.random() * 4),
+        color: CROWD_COLORS[Math.floor(Math.random() * CROWD_COLORS.length)],
+        skin: SKIN_TONES[Math.floor(Math.random() * SKIN_TONES.length)],
+        hat: Math.random() < 0.3 ? (Math.random() < 0.5 ? 'cap' : 'sombrero') : 'none',
+        hatColor: HAT_COLORS[Math.floor(Math.random() * HAT_COLORS.length)],
+        phase: Math.random() * Math.PI * 2,
+        waving: Math.random() < 0.15,
+        holdingBeer: Math.random() < 0.12,
+      });
+    }
+  }
+  return people.sort((a, b) => a.y - b.y);
+}
+
+function seedClouds(W) {
+  const clouds = [];
+  for (let i = 0; i < 6; i++) {
+    clouds.push({ x: Math.random() * W, y: 10 + Math.random() * 30, w: 18 + Math.random() * 30, speed: 0.02 + Math.random() * 0.04 });
+  }
+  return clouds;
+}
+
+function seedStars(W) {
+  const stars = [];
+  for (let i = 0; i < 40; i++) {
+    stars.push({ x: Math.floor(Math.random() * W), y: Math.floor(Math.random() * 55), phase: Math.random() * Math.PI * 2 });
+  }
+  return stars;
+}
+
+function initArenaState(idx) {
+  arenaAnimState[idx] = {
+    crowd: seedCrowd(GAME_W),
+    clouds: seedClouds(GAME_W),
+    stars: seedStars(GAME_W),
+    monsters: [],
+    monsterTimer: 60 + Math.floor(Math.random() * 120),
+  };
+}
+
+const MONSTER_TYPES = [
+  'cadejos', 'segua', 'llorona', 'carreta', 'padre_sin_cabeza',
+  'tulevieja', 'mico_malo', 'bruja_zarate',
+];
+const MONSTER_ASSET_KEYS = {
+  cadejos: 'monster_cadejos', segua: 'monster_segua',
+  llorona: 'monster_llorona', carreta: 'monster_carreta',
+  padre_sin_cabeza: 'monster_padre',
+  tulevieja: 'monster_tulevieja', mico_malo: 'monster_mico_malo',
+  bruja_zarate: 'monster_bruja_zarate',
+};
+const MONSTER_DRAW_H = 22;
+const monsterImages = {};
+
+function loadMonsterImages() {
+  for (const key of Object.values(MONSTER_ASSET_KEYS)) {
+    const img = new Image();
+    img.src = `assets/monsters/${key}.png?v=${ASSET_VERSION}`;
+    img.onload = () => { monsterImages[key] = img; };
+  }
+}
+
+function spawnMonster(W, activeMonsters) {
+  const active = new Set(activeMonsters.map(m => m.type));
+  const available = MONSTER_TYPES.filter(t => !active.has(t));
+  if (available.length === 0) return null;
+  const type = available[Math.floor(Math.random() * available.length)];
+  const goRight = Math.random() < 0.5;
+  return {
+    type, x: goRight ? -20 : W + 20, y: 58 + Math.random() * 28,
+    vx: (goRight ? 1 : -1) * (0.15 + Math.random() * 0.25),
+    phase: Math.random() * Math.PI * 2, alpha: 0,
+    maxAlpha: 0.85 + Math.random() * 0.15, alive: true,
+  };
+}
+
+function drawMuerteMonsters(c, tick, st) {
+  const W = GAME_W;
+  st.monsterTimer--;
+  if (st.monsterTimer <= 0 && st.monsters.length < 3) {
+    const spawned = spawnMonster(W, st.monsters);
+    if (spawned) st.monsters.push(spawned);
+    st.monsterTimer = 200 + Math.floor(Math.random() * 400);
+  }
+  for (const m of st.monsters) {
+    m.x += m.vx;
+    const inside = m.x > -5 && m.x < W + 5;
+    m.alpha += (inside ? m.maxAlpha - m.alpha : -m.alpha) * 0.04;
+    if ((m.vx > 0 && m.x > W + 25) || (m.vx < 0 && m.x < -25)) m.alive = false;
+  }
+  st.monsters = st.monsters.filter(m => m.alive);
+
+  for (const m of st.monsters) {
+    if (m.alpha < 0.01) continue;
+    const assetKey = MONSTER_ASSET_KEYS[m.type];
+    const img = monsterImages[assetKey];
+    if (!img) continue;
+    const bob = Math.sin(tick * 0.05 + m.phase) * 1.5;
+    const flip = m.vx < 0;
+    const drawH = MONSTER_DRAW_H;
+    const aspect = img.width / img.height;
+    const drawW = drawH * aspect;
+    const dx = Math.floor(m.x - drawW / 2);
+    const dy = Math.floor(m.y - drawH / 2 + bob);
+
+    c.globalAlpha = m.alpha;
+    c.save();
+    if (flip) {
+      c.translate(dx + drawW, dy);
+      c.scale(-1, 1);
+      c.drawImage(img, 0, 0, drawW, drawH);
+    } else {
+      c.drawImage(img, dx, dy, drawW, drawH);
+    }
+    c.restore();
+  }
+  c.globalAlpha = 1;
+}
+
+function hexToRgba(hex, a) {
+  const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+  return `rgba(${r},${g},${b},${a})`;
+}
+
+function drawSarchiRosette(c, x, y, size) {
+  const colors = ['#FF2222','#3388FF','#FFD700','#33CC33','#FF8800'];
+  const s = Math.max(2, Math.floor(size));
+  const ps = Math.max(1, Math.floor(s / 4));
+  c.fillStyle = '#5C3A22';
+  c.beginPath(); c.arc(x, y, s + 1, 0, Math.PI * 2); c.fill();
+  const petals = 8;
+  for (let i = 0; i < petals; i++) {
+    const angle = (i / petals) * Math.PI * 2;
+    const pSize = i % 2 === 0 ? ps * 2 : Math.max(1, Math.floor(ps * 1.4));
+    const dist = i % 2 === 0 ? s : s * 0.85;
+    const px = x + Math.round(Math.cos(angle) * dist);
+    const py = y + Math.round(Math.sin(angle) * dist);
+    c.fillStyle = colors[i % colors.length];
+    c.fillRect(px - Math.floor(pSize/2), py - Math.floor(pSize/2), pSize, pSize);
+    c.fillStyle = 'rgba(255,255,255,0.2)';
+    c.fillRect(px - Math.floor(pSize/2), py - Math.floor(pSize/2), pSize, 1);
+  }
+  for (let i = 0; i < petals; i++) {
+    const angle = (i / petals) * Math.PI * 2 + Math.PI / petals;
+    const px = x + Math.round(Math.cos(angle) * s * 0.55);
+    const py = y + Math.round(Math.sin(angle) * s * 0.55);
+    c.fillStyle = colors[(i + 2) % colors.length];
+    c.fillRect(px - 1, py - 1, ps + 1, ps + 1);
+  }
+  c.fillStyle = '#FFD700';
+  const cps = Math.max(2, ps * 2);
+  c.fillRect(x - Math.floor(cps/2), y - Math.floor(cps/2), cps, cps);
+  c.fillStyle = 'rgba(255,255,255,0.35)';
+  c.fillRect(x - Math.floor(cps/2), y - Math.floor(cps/2), cps, 1);
+}
+
+function drawTorch(c, x, y, tick) {
+  c.fillStyle = '#5C3A22';
+  c.fillRect(x, y + 4, 2, 6);
+  const flicker = Math.sin(tick * 0.3) * 0.5 + Math.sin(tick * 0.47) * 0.3;
+  const h = 3 + Math.floor(flicker + 1);
+  c.fillStyle = '#FF8C00';
+  c.fillRect(x - 1, y + 3 - h, 4, h);
+  c.fillStyle = '#FFCC00';
+  c.fillRect(x, y + 2 - h, 2, Math.max(1, h - 1));
+  c.fillStyle = '#FFF8E0';
+  c.fillRect(x, y + 1 - h, 1, 1);
+  c.fillStyle = `rgba(255,140,0,${0.08 + flicker * 0.03})`;
+  c.fillRect(x - 5, y - h - 2, 12, h + 8);
+}
+
+function drawArenaPreview(canvas, idx, tick) {
+  const c = canvas.getContext('2d');
+  const W = GAME_W, H = GAME_H;
+  const theme = ARENA_THEMES[idx];
+  const circuit = CIRCUITS[idx];
+  const st = arenaAnimState[idx];
+
+  c.clearRect(0, 0, W, H);
+
+  const bgImg = arenaBgImages[circuit.bg];
+  if (bgImg) {
+    const arenaH = 100;
+    const aspect = bgImg.width / bgImg.height;
+    const drawW = W;
+    const drawH = drawW / aspect;
+    c.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, 0, arenaH - drawH, drawW, drawH);
+    if (theme.key === 'feria') { c.fillStyle='rgba(40,0,60,0.18)'; c.fillRect(0,0,W,100); }
+    else if (theme.key === 'muerte') { c.fillStyle='rgba(70,0,0,0.22)'; c.fillRect(0,0,W,100); }
+  } else {
+    const grad = c.createLinearGradient(0, 0, 0, 100);
+    const stops = theme.skyStops;
+    const last = Math.max(1, stops.length - 1);
+    for (let i = 0; i < stops.length; i++) grad.addColorStop(i / last, stops[i]);
+    c.fillStyle = grad;
+    c.fillRect(0, 0, W, 100);
+  }
+
+  if (theme.hasStars) {
+    for (const s of st.stars) {
+      const twinkle = 0.3 + Math.sin(tick * 0.04 + s.phase) * 0.3;
+      c.fillStyle = `rgba(255,255,255,${twinkle})`;
+      c.fillRect(s.x, s.y, 1, 1);
+    }
+  }
+
+  if (theme.hasMoon) {
+    const mx=38, my=18, mr=10;
+    c.fillStyle='rgba(180,200,255,0.03)'; c.beginPath(); c.arc(mx,my,mr+14,0,Math.PI*2); c.fill();
+    c.fillStyle='#FFFDE8'; c.beginPath(); c.arc(mx,my,mr,0,Math.PI*2); c.fill();
+    c.fillStyle='#FFFFF4'; c.beginPath(); c.arc(mx-2,my-2,mr-3,0,Math.PI*2); c.fill();
+    c.fillStyle='#DDD8B0'; c.fillRect(mx-3,my-2,3,2); c.fillRect(mx+2,my+3,2,2);
+  }
+
+  if (theme.key === 'feria') {
+    const wheelX=W-38, wheelY=48, spokes=10, spin=tick*0.01;
+    c.strokeStyle='rgba(220,230,255,0.5)'; c.lineWidth=1;
+    c.beginPath(); c.arc(wheelX,wheelY,20,0,Math.PI*2); c.stroke();
+    for(let i=0;i<spokes;i++){
+      const a=spin+(i/spokes)*Math.PI*2;
+      c.strokeStyle='rgba(190,210,255,0.35)'; c.beginPath(); c.moveTo(wheelX,wheelY); c.lineTo(wheelX+Math.cos(a)*20,wheelY+Math.sin(a)*20); c.stroke();
+      const on=Math.sin(tick*0.16+i)>0.2;
+      c.fillStyle=on?'#FF5AD9':'#3B2A5C'; c.fillRect(Math.floor(wheelX+Math.cos(a)*20)-1,Math.floor(wheelY+Math.sin(a)*20)-1,3,3);
+    }
+  }
+
+  if (theme.key === 'muerte') {
+    for(let i=0;i<8;i++){
+      const x=(i*37+tick*0.25)%(W+20)-10, y=24+(i%4)*10;
+      const glow=Math.sin(tick*0.18+i*1.9)*0.5+0.5;
+      c.fillStyle=`rgba(255,90,30,${0.12+glow*0.14})`; c.fillRect(Math.floor(x),Math.floor(y),2,2);
+    }
+    c.fillStyle='rgba(35,10,10,0.3)'; c.fillRect(0,65,W,20);
+    drawMuerteMonsters(c, tick, st);
+  }
+
+  if (theme.hasClouds) {
+    const px = Math.sin(tick*0.003)*4;
+    for(const cl of st.clouds){
+      const cx=((cl.x+tick*cl.speed+px)%(W+cl.w))-cl.w/2;
+      const cf=Math.floor(cx);
+      c.fillStyle=theme.key==='pueblo'?'rgba(60,95,130,0.25)':'rgba(25,25,70,0.25)';
+      c.fillRect(cf+2,cl.y-3,cl.w-4,2);
+      c.fillStyle=theme.key==='pueblo'?'rgba(78,120,160,0.32)':'rgba(30,30,80,0.38)';
+      c.fillRect(cf,cl.y,cl.w,3); c.fillRect(cf+3,cl.y-2,cl.w-6,2); c.fillRect(cf+2,cl.y+3,cl.w-4,2);
+    }
+  }
+
+  if (theme.hasStringLights) {
+    c.strokeStyle='#333'; c.lineWidth=1; c.beginPath(); c.moveTo(0,60);
+    for(let x=0;x<=W;x+=4) c.lineTo(x,58+Math.sin(x*0.04)*4);
+    c.stroke();
+    for(let i=0;i<22;i++){
+      const bx=i*12+3, by=58+Math.sin(bx*0.04)*4;
+      const glow=Math.sin(tick*0.08+i*0.7)>0.2;
+      const col=BULB_COLORS[i%BULB_COLORS.length];
+      if(glow){
+        c.fillStyle=hexToRgba(col,0.18); c.fillRect(bx-3,by-2,7,7);
+        c.fillStyle=hexToRgba(col,0.3); c.fillRect(bx-2,by-1,5,5);
+      }
+      c.fillStyle=glow?col:'#555'; c.fillRect(bx-1,by,3,3);
+      if(glow){ c.fillStyle='rgba(255,255,255,0.6)'; c.fillRect(bx,by,1,1); }
+    }
+  }
+
+  if (theme.hasBanners) {
+    const bannerCols=['#FF2222','#3388FF','#FFD700','#33CC33','#FF8800','#FF69B4'];
+    for(let i=0;i<9;i++){
+      const bx=6+i*28, sway=Math.sin(tick*0.03+i*0.8)*1.5, by=64+sway, bw=20, bh=12;
+      const col=bannerCols[i%bannerCols.length];
+      c.fillStyle=col; c.fillRect(bx,by,bw,bh);
+      c.fillRect(bx+2,by+bh,bw-4,2); c.fillRect(bx+4,by+bh+2,bw-8,2); c.fillRect(bx+6,by+bh+4,bw-12,1);
+      c.fillStyle='rgba(255,255,255,0.3)'; c.fillRect(bx+3,by+2,2,2);
+      c.fillStyle='rgba(255,255,255,0.15)'; c.fillRect(bx,by,bw,1);
+      c.fillStyle='rgba(0,0,0,0.18)'; c.fillRect(bx,by+bh-1,bw,1);
+    }
+  }
+
+  if (theme.hasCrowd) {
+    for(const p of st.crowd){
+      const bounce=Math.sin(tick*0.06+p.phase)*(p.row===0?2:1.2);
+      const py=p.y+bounce, h=p.height;
+      c.globalAlpha=p.row===1?0.65:1;
+      c.fillStyle=p.color; c.fillRect(p.x-3,py,6,h);
+      c.fillStyle='rgba(255,255,255,0.08)'; c.fillRect(p.x-3,py,6,1);
+      c.fillStyle='rgba(0,0,0,0.18)'; c.fillRect(p.x-3,py+h-1,6,1);
+      c.fillStyle=p.skin; c.fillRect(p.x-2,py-4,4,5);
+      c.fillStyle='rgba(0,0,0,0.35)'; c.fillRect(p.x-1,py-2,1,1); c.fillRect(p.x+1,py-2,1,1);
+      if(p.hat==='cap'){
+        c.fillStyle=p.hatColor; c.fillRect(p.x-3,py-5,6,2); c.fillRect(p.x-4,py-4,2,1);
+      } else if(p.hat==='sombrero'){
+        c.fillStyle=p.hatColor; c.fillRect(p.x-4,py-5,8,2); c.fillRect(p.x-2,py-7,4,2);
+      }
+      if(p.waving){
+        const armY=py-2+Math.sin(tick*0.12+p.phase)*3;
+        c.fillStyle=p.skin; c.fillRect(p.x+3,armY,2,2); c.fillRect(p.x+4,armY-1,1,1);
+      }
+      if(p.holdingBeer){
+        c.fillStyle='#FFD700'; c.fillRect(p.x-4,py+1,2,3);
+        c.fillStyle='#FFFDD0'; c.fillRect(p.x-4,py,2,1);
+      }
+    }
+    c.globalAlpha=1;
+  }
+
+  // Fence
+  const fenceY=95;
+  if(theme.fenceStyle==='pueblo'){
+    c.fillStyle='#8E5F3A'; c.fillRect(0,fenceY,W,45);
+    c.fillStyle='#6E4528'; c.fillRect(0,fenceY,W,2); c.fillRect(0,fenceY+43,W,2);
+    for(let x=0;x<=W;x+=22){ c.fillStyle='#5C3A22'; c.fillRect(x,fenceY,3,45); c.fillStyle='rgba(255,220,170,0.16)'; c.fillRect(x+1,fenceY,1,45); }
+  } else if(theme.fenceStyle==='feria'){
+    c.fillStyle='#4B355D'; c.fillRect(0,fenceY,W,45);
+    for(let x=0;x<W;x+=16){ c.fillStyle=(Math.floor(x/16)%2===0)?'#FF4DC4':'#3FE1FF'; c.fillRect(x,fenceY+6,16,4); }
+    for(let x=0;x<W;x+=12){ const by2=fenceY+2+Math.sin((x+tick)*0.05)*1.2; const on=Math.sin(tick*0.1+x*0.08)>0; c.fillStyle=on?'#FFE66B':'#2F2942'; c.fillRect(x,by2,3,3); }
+    c.fillStyle='#2A2038'; c.fillRect(0,fenceY,W,2); c.fillRect(0,fenceY+43,W,2);
+  } else if(theme.fenceStyle==='muerte'){
+    c.fillStyle='#2A1612'; c.fillRect(0,fenceY,W,45);
+    c.fillStyle='#140B09'; c.fillRect(0,fenceY,W,2); c.fillRect(0,fenceY+43,W,2);
+    for(let x=0;x<=W;x+=14){ c.fillStyle='#1E0F0C'; c.fillRect(x,fenceY+8,2,37); c.fillStyle='#5A2016'; c.fillRect(x-1,fenceY+5,4,3); }
+    c.strokeStyle='rgba(110,110,110,0.25)'; c.lineWidth=1;
+    for(let y=fenceY+14;y<=fenceY+32;y+=8){ c.beginPath(); c.moveTo(0,y); c.lineTo(W,y+3); c.stroke(); }
+  } else {
+    // Redondel: Sarchi-themed fence with rosettes, colored panels, and torches
+    const FENCE_WOOD='#9E7B5A', DARK_BROWN='#5C3A22', GOLD='#FFD700';
+    const sarchiColors=['#FF2222','#3388FF','#FFD700','#33CC33','#FF8800'];
+    c.fillStyle=FENCE_WOOD; c.fillRect(0,fenceY,W,45);
+    // Wood grain
+    c.fillStyle='rgba(0,0,0,0.05)';
+    for(let gy=fenceY+3;gy<fenceY+43;gy+=3) c.fillRect(0,gy,W,1);
+    c.fillStyle='rgba(255,220,160,0.06)';
+    for(let gy=fenceY+5;gy<fenceY+43;gy+=5) c.fillRect(0,gy,W,1);
+    // Top/bottom rails
+    c.fillStyle='#7A5B3A'; c.fillRect(0,fenceY,W,2); c.fillRect(0,fenceY+43,W,2);
+    c.fillStyle='rgba(255,220,160,0.22)'; c.fillRect(0,fenceY+2,W,1);
+    c.fillStyle='rgba(0,0,0,0.1)'; c.fillRect(0,fenceY+44,W,1);
+    // Panels with Sarchi ornaments
+    const panelW=32;
+    for(let i=0;i<=W;i+=panelW){
+      // Post
+      c.fillStyle=DARK_BROWN; c.fillRect(i,fenceY,3,45);
+      c.fillStyle='rgba(255,220,160,0.18)'; c.fillRect(i+1,fenceY,1,45);
+      c.fillStyle='rgba(0,0,0,0.12)'; c.fillRect(i+2,fenceY,1,45);
+      const px=i+3, pw=Math.min(panelW-5,W-px);
+      if(pw<=0) continue;
+      const ci=Math.floor(i/panelW);
+      // Colored stripes
+      for(let s=0;s<3;s++){
+        c.fillStyle=sarchiColors[(ci+s)%sarchiColors.length];
+        c.fillRect(px,fenceY+4+s*14,pw,2);
+        c.fillStyle=hexToRgba(sarchiColors[(ci+s+2)%sarchiColors.length],0.25);
+        c.fillRect(px,fenceY+6+s*14,pw,1);
+        c.fillStyle='rgba(255,255,255,0.1)';
+        c.fillRect(px,fenceY+4+s*14,pw,1);
+      }
+      // Sarchi rosette on each panel
+      if(pw>10) drawSarchiRosette(c,i+panelW/2,fenceY+22,6);
+      // Torch on each post
+      drawTorch(c,i+1,fenceY-8,tick+i*17);
+      const flicker=Math.sin((tick+i*17)*0.3)*0.5+Math.sin((tick+i*17)*0.47)*0.3;
+      const torchGlow=0.04+flicker*0.015;
+      c.fillStyle=`rgba(255,140,0,${torchGlow})`; c.fillRect(i-4,fenceY,10,20);
+      c.fillStyle=`rgba(255,180,60,${torchGlow*0.5})`; c.fillRect(i-8,fenceY,18,30);
+    }
+  }
+
+  // Ground
+  const dirtGrad=c.createLinearGradient(0,140,0,H);
+  const gs=theme.groundStops, gLast=Math.max(1,gs.length-1);
+  for(let i=0;i<gs.length;i++) dirtGrad.addColorStop(i/gLast,gs[i]);
+  c.fillStyle=dirtGrad; c.fillRect(0,140,W,H-140);
+
+  const centerGrad=c.createRadialGradient(W/2,190,10,W/2,190,80);
+  centerGrad.addColorStop(0,theme.detailColor); centerGrad.addColorStop(1,'rgba(0,0,0,0)');
+  c.fillStyle=centerGrad; c.fillRect(0,142,W,H-142);
+
+  if(theme.centerRing){
+    c.strokeStyle='rgba(120,80,50,0.2)'; c.lineWidth=1;
+    c.beginPath(); c.ellipse(W/2,210,90,18,0,0,Math.PI*2); c.stroke();
+  }
+
+  c.fillStyle=theme.topLine; c.fillRect(0,140,W,1);
+  c.fillStyle=theme.topLineHi; c.fillRect(0,141,W,1);
+}
+
+let arenaRaf = null;
+
+let previewGameArenaRenderer = null;
+let previewGameArenaRaf = null;
+let previewGameArenaAssets = null;
+
+function closeArenaGameView() {
+  const modal = document.getElementById('arena-game-modal');
+  if (!modal) return;
+  modal.classList.remove('is-open');
+  modal.setAttribute('aria-hidden', 'true');
+  if (previewGameArenaRaf) {
+    cancelAnimationFrame(previewGameArenaRaf);
+    previewGameArenaRaf = null;
+  }
+}
+
+function openArenaGameView(circuitIdx) {
+  if (previewGameArenaRaf) {
+    cancelAnimationFrame(previewGameArenaRaf);
+    previewGameArenaRaf = null;
+  }
+
+  const modal = document.getElementById('arena-game-modal');
+  const title = document.getElementById('arena-game-modal-title');
+  const loading = document.getElementById('arena-game-modal-loading');
+  const wrap = document.getElementById('arena-game-canvas-wrap');
+  const cvs = document.getElementById('arena-game-canvas');
+  if (!modal || !cvs || typeof Renderer === 'undefined' || typeof AssetLoader === 'undefined') return;
+
+  const wanted = String(circuitIdx);
+  modal.dataset.circuit = wanted;
+  title.textContent = CIRCUITS[circuitIdx].name;
+  modal.classList.add('is-open');
+  modal.setAttribute('aria-hidden', 'false');
+  loading.style.display = 'block';
+  wrap.style.display = 'none';
+
+  if (!previewGameArenaAssets) previewGameArenaAssets = new AssetLoader();
+  previewGameArenaAssets.preload().then(() => {
+    if (!modal.classList.contains('is-open')) return;
+    if (modal.dataset.circuit !== wanted) return;
+
+    loading.style.display = 'none';
+    wrap.style.display = 'block';
+
+    if (!previewGameArenaRenderer) {
+      previewGameArenaRenderer = new Renderer(cvs, previewGameArenaAssets);
+    }
+    previewGameArenaRenderer.setCircuit(parseInt(modal.dataset.circuit, 10));
+
+    let tick = 0;
+    function loop() {
+      if (!modal.classList.contains('is-open')) return;
+      previewGameArenaRenderer.drawArena(tick++);
+      previewGameArenaRaf = requestAnimationFrame(loop);
+    }
+    previewGameArenaRaf = requestAnimationFrame(loop);
+  });
+}
+
+function initArenaSection() {
+  const grid = document.getElementById('arena-grid');
+
+  CIRCUITS.forEach((circ, idx) => {
+    initArenaState(idx);
+    const card = document.createElement('div');
+    card.className = 'arena-card';
+    card.title = 'Click for full in-game arena (Renderer.drawArena)';
+    card.addEventListener('click', () => openArenaGameView(idx));
+    const cvs = document.createElement('canvas');
+    cvs.width = GAME_W;
+    cvs.height = GAME_H;
+    cvs.id = `arena-cvs-${idx}`;
+    card.appendChild(cvs);
+
+    const label = document.createElement('div');
+    label.className = 'arena-label';
+    label.innerHTML = `
+      <span class="name"><span class="circuit-dot" style="background:${circ.color}"></span>${circ.name}</span>
+      <span class="opponents">${circ.opponents.join(' · ')}</span>
+    `;
+    card.appendChild(label);
+    grid.appendChild(card);
+  });
+
+  startArenaLoop();
+}
+
+function startArenaLoop() {
+  if (arenaRaf) cancelAnimationFrame(arenaRaf);
+  let tick = 0;
+  function loop() {
+    tick++;
+    for (let i = 0; i < CIRCUITS.length; i++) {
+      const cvs = document.getElementById(`arena-cvs-${i}`);
+      if (cvs) drawArenaPreview(cvs, i, tick);
+    }
+    arenaRaf = requestAnimationFrame(loop);
+  }
+  loop();
+}
+
+loadArenaBgs();
+loadMonsterImages();
+
+// ─── Init ────────────────────────────────────────────────────
+
 buildRoster();
+initArenaSection();
 selectFighter('player');
+
+(function initArenaGameModalUi() {
+  const modal = document.getElementById('arena-game-modal');
+  const btn = document.getElementById('arena-game-modal-close');
+  if (btn) btn.addEventListener('click', closeArenaGameView);
+  if (modal) {
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) closeArenaGameView();
+    });
+  }
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) closeArenaGameView();
+  });
+})();
 </script>
 </body>
 </html>

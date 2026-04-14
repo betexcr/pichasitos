@@ -56,6 +56,7 @@ class Renderer {
 
     this._transition = null;
     this._transitionBuffer = null;
+    this._tellTintBuffer = null;
     this._currentCircuit = 0;
 
     this._impactStar = null;
@@ -159,6 +160,9 @@ class Renderer {
         size: 1 + Math.floor(Math.random() * 3),
       });
     }
+
+    this._muerteMonsters = [];
+    this._monsterSpawnTimer = 120 + Math.floor(Math.random() * 300);
 
     this._resize();
     window.addEventListener('resize', () => this._resize());
@@ -324,9 +328,245 @@ class Renderer {
     this._currentCircuit = circuit;
   }
 
+  _getArenaTheme(circuit) {
+    switch (circuit) {
+      case 0: // Pueblo
+        return {
+          key: 'pueblo',
+          skyStops: ['#1A3A72', '#2F5B8F', '#6D7DA3', '#C88B58'],
+          hasStars: false,
+          hasMoon: false,
+          hasClouds: true,
+          hasFireflies: true,
+          hasStringLights: true,
+          hasLightPools: true,
+          hasBanners: true,
+          hasCrowd: true,
+          hasDust: true,
+          centerRing: false,
+          fenceStyle: 'pueblo',
+          groundStops: ['#CCAA74', '#C09A62', '#A88453', '#7B5D38'],
+          detailColor: 'rgba(110,80,50,0.25)',
+          topLine: '#8A6640',
+          topLineHi: '#D8B280',
+        };
+      case 1: // Feria
+        return {
+          key: 'feria',
+          skyStops: ['#171440', '#352B78', '#5A3DA0', '#9B3D8A'],
+          hasStars: true,
+          hasMoon: false,
+          hasClouds: false,
+          hasFireflies: false,
+          hasStringLights: true,
+          hasLightPools: true,
+          hasBanners: true,
+          hasCrowd: true,
+          hasDust: true,
+          centerRing: false,
+          fenceStyle: 'feria',
+          groundStops: ['#B98D5F', '#AB7A46', '#8A633C', '#65462A'],
+          detailColor: 'rgba(60,30,60,0.2)',
+          topLine: '#744927',
+          topLineHi: '#CC9560',
+        };
+      case 3: // Muerte
+        return {
+          key: 'muerte',
+          skyStops: ['#130808', '#2B0E0E', '#4A1010', '#6A1412'],
+          hasStars: false,
+          hasMoon: false,
+          hasClouds: false,
+          hasFireflies: false,
+          hasStringLights: false,
+          hasLightPools: false,
+          hasBanners: false,
+          hasCrowd: false,
+          hasDust: false,
+          centerRing: false,
+          fenceStyle: 'muerte',
+          groundStops: ['#3C2118', '#4C2A1D', '#5F2E1E', '#2A1712'],
+          detailColor: 'rgba(0,0,0,0.35)',
+          topLine: '#2A120E',
+          topLineHi: '#7A3524',
+        };
+      case 2: // Redondel
+      default:
+        return {
+          key: 'redondel',
+          skyStops: ['#030310', '#060620', '#0A0A2E', '#111144', '#181850'],
+          hasStars: true,
+          hasMoon: false,
+          hasClouds: true,
+          hasFireflies: true,
+          hasStringLights: true,
+          hasLightPools: true,
+          hasBanners: true,
+          hasCrowd: true,
+          hasDust: true,
+          centerRing: true,
+          fenceStyle: 'redondel',
+          groundStops: ['#B89868', '#B09060', CONST.COLORS.DIRT, CONST.COLORS.DIRT_DARK, '#6A5035'],
+          detailColor: 'rgba(90,60,30,0.25)',
+          topLine: CONST.COLORS.DIRT_DARK,
+          topLineHi: '#B09060',
+        };
+    }
+  }
+
+  _drawFeriaRides(c, tick) {
+    const wheelX = CONST.WIDTH - 38;
+    const wheelY = 48;
+    const spokes = 10;
+    const spin = tick * 0.01;
+    c.strokeStyle = 'rgba(220,230,255,0.5)';
+    c.lineWidth = 1;
+    c.beginPath();
+    c.arc(wheelX, wheelY, 20, 0, Math.PI * 2);
+    c.stroke();
+    for (let i = 0; i < spokes; i++) {
+      const a = spin + (i / spokes) * Math.PI * 2;
+      c.strokeStyle = 'rgba(190,210,255,0.35)';
+      c.beginPath();
+      c.moveTo(wheelX, wheelY);
+      c.lineTo(wheelX + Math.cos(a) * 20, wheelY + Math.sin(a) * 20);
+      c.stroke();
+      const bx = wheelX + Math.cos(a) * 20;
+      const by = wheelY + Math.sin(a) * 20;
+      const on = Math.sin(tick * 0.16 + i) > 0.2;
+      c.fillStyle = on ? '#FF5AD9' : '#3B2A5C';
+      c.fillRect(Math.floor(bx) - 1, Math.floor(by) - 1, 3, 3);
+    }
+    c.fillStyle = '#2D1F2A';
+    c.fillRect(wheelX - 2, wheelY + 18, 4, 12);
+    c.fillRect(wheelX - 10, wheelY + 30, 20, 2);
+  }
+
+  _drawMuerteAtmosphere(c, tick) {
+    const W = CONST.WIDTH;
+    for (let i = 0; i < 8; i++) {
+      const x = (i * 37 + tick * 0.25) % (W + 20) - 10;
+      const y = 24 + (i % 4) * 10;
+      const glow = Math.sin(tick * 0.18 + i * 1.9) * 0.5 + 0.5;
+      c.fillStyle = `rgba(255,90,30,${0.12 + glow * 0.14})`;
+      c.fillRect(Math.floor(x), Math.floor(y), 2, 2);
+      c.fillStyle = `rgba(255,200,80,${0.05 + glow * 0.08})`;
+      c.fillRect(Math.floor(x) - 1, Math.floor(y) - 1, 4, 4);
+    }
+    c.fillStyle = 'rgba(35,10,10,0.3)';
+    c.fillRect(0, 65, W, 20);
+    c.fillStyle = 'rgba(60,16,16,0.22)';
+    c.fillRect(0, 82, W, 12);
+  }
+
+  static MONSTER_TYPES = [
+    'cadejos', 'segua', 'llorona', 'carreta', 'padre_sin_cabeza',
+    'tulevieja', 'mico_malo', 'bruja_zarate',
+  ];
+
+  _spawnMuerteMonster() {
+    const active = new Set(this._muerteMonsters.map(m => m.type));
+    const available = Renderer.MONSTER_TYPES.filter(t => !active.has(t));
+    if (available.length === 0) return null;
+    const type = available[Math.floor(Math.random() * available.length)];
+    const goRight = Math.random() < 0.5;
+    const W = CONST.WIDTH;
+    return {
+      type,
+      x: goRight ? -20 : W + 20,
+      y: 58 + Math.random() * 28,
+      vx: (goRight ? 1 : -1) * (0.15 + Math.random() * 0.25),
+      phase: Math.random() * Math.PI * 2,
+      alpha: 0,
+      maxAlpha: 0.85 + Math.random() * 0.15,
+      alive: true,
+    };
+  }
+
+  _updateMuerteMonsters(tick) {
+    const W = CONST.WIDTH;
+    this._monsterSpawnTimer--;
+    if (this._monsterSpawnTimer <= 0 && this._muerteMonsters.length < 3) {
+      const spawned = this._spawnMuerteMonster();
+      if (spawned) this._muerteMonsters.push(spawned);
+      this._monsterSpawnTimer = 200 + Math.floor(Math.random() * 400);
+    }
+    for (const m of this._muerteMonsters) {
+      m.x += m.vx;
+      const insideBounds = m.x > -5 && m.x < W + 5;
+      m.alpha += (insideBounds ? m.maxAlpha - m.alpha : -m.alpha) * 0.04;
+      if ((m.vx > 0 && m.x > W + 25) || (m.vx < 0 && m.x < -25)) m.alive = false;
+    }
+    this._muerteMonsters = this._muerteMonsters.filter(m => m.alive);
+  }
+
+  static MONSTER_ASSETS = {
+    cadejos: 'monster_cadejos',
+    segua: 'monster_segua',
+    llorona: 'monster_llorona',
+    carreta: 'monster_carreta',
+    padre_sin_cabeza: 'monster_padre',
+    tulevieja: 'monster_tulevieja',
+    mico_malo: 'monster_mico_malo',
+    bruja_zarate: 'monster_bruja_zarate',
+  };
+
+  static MONSTER_DRAW_H = 22;
+
+  _drawMuerteMonsters(c, tick) {
+    this._updateMuerteMonsters(tick);
+    for (const m of this._muerteMonsters) {
+      if (m.alpha < 0.01) continue;
+      const assetKey = Renderer.MONSTER_ASSETS[m.type];
+      const img = this.assets ? this.assets.getMonster(assetKey) : null;
+      const bob = Math.sin(tick * 0.05 + m.phase) * 1.5;
+      const flip = m.vx < 0;
+
+      if (img) {
+        const drawH = Renderer.MONSTER_DRAW_H;
+        const aspect = img.width / img.height;
+        const drawW = drawH * aspect;
+        const dx = Math.floor(m.x - drawW / 2);
+        const dy = Math.floor(m.y - drawH / 2 + bob);
+
+        c.globalAlpha = m.alpha;
+        c.save();
+        if (flip) {
+          c.translate(dx + drawW, dy);
+          c.scale(-1, 1);
+          c.drawImage(img, 0, 0, drawW, drawH);
+        } else {
+          c.drawImage(img, dx, dy, drawW, drawH);
+        }
+        c.restore();
+      }
+    }
+    c.globalAlpha = 1;
+  }
+
+  _drawVolcanicCracks(c, tick) {
+    const crackA = 0.2 + Math.sin(tick * 0.04) * 0.05;
+    c.strokeStyle = `rgba(255,90,30,${crackA})`;
+    c.lineWidth = 1;
+    const lines = [
+      [18, 162, 60, 176, 95, 170],
+      [132, 156, 166, 168, 202, 164],
+      [40, 194, 78, 204, 118, 198],
+      [154, 188, 182, 200, 228, 196],
+    ];
+    for (const l of lines) {
+      c.beginPath();
+      c.moveTo(l[0], l[1]);
+      c.lineTo(l[2], l[3]);
+      c.lineTo(l[4], l[5]);
+      c.stroke();
+    }
+  }
+
   drawArena(tick) {
     const c = this.ctx;
     const W = CONST.WIDTH;
+    const theme = this._getArenaTheme(this._currentCircuit);
 
     const bgName = CONST.CIRCUIT_BACKGROUNDS[this._currentCircuit];
     const bgImg = bgName && this.assets ? this.assets.getBackground(bgName) : null;
@@ -336,121 +576,140 @@ class Renderer {
       const drawW = W;
       const drawH = drawW / aspect;
       c.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, 0, arenaH - drawH, drawW, drawH);
+      if (theme.key === 'feria') {
+        c.fillStyle = 'rgba(40,0,60,0.18)';
+        c.fillRect(0, 0, W, 100);
+      } else if (theme.key === 'muerte') {
+        c.fillStyle = 'rgba(70,0,0,0.22)';
+        c.fillRect(0, 0, W, 100);
+      }
     } else {
       const grad = c.createLinearGradient(0, 0, 0, 100);
-      grad.addColorStop(0, '#030310');
-      grad.addColorStop(0.3, '#060620');
-      grad.addColorStop(0.6, '#0A0A2E');
-      grad.addColorStop(0.85, '#111144');
-      grad.addColorStop(1, '#181850');
+      const stops = theme.skyStops;
+      const last = Math.max(1, stops.length - 1);
+      for (let i = 0; i < stops.length; i++) {
+        grad.addColorStop(i / last, stops[i]);
+      }
       c.fillStyle = grad;
       c.fillRect(0, 0, W, 100);
     }
 
-    const milkyWayAlpha = 0.02;
-    c.fillStyle = `rgba(120,130,180,${milkyWayAlpha})`;
-    c.beginPath();
-    c.moveTo(0, 30);
-    c.quadraticCurveTo(W * 0.3, 10, W * 0.5, 25);
-    c.quadraticCurveTo(W * 0.7, 40, W, 20);
-    c.lineTo(W, 35);
-    c.quadraticCurveTo(W * 0.7, 55, W * 0.5, 40);
-    c.quadraticCurveTo(W * 0.3, 25, 0, 45);
-    c.fill();
+    if (theme.key === 'redondel') {
+      const milkyWayAlpha = 0.02;
+      c.fillStyle = `rgba(120,130,180,${milkyWayAlpha})`;
+      c.beginPath();
+      c.moveTo(0, 30);
+      c.quadraticCurveTo(W * 0.3, 10, W * 0.5, 25);
+      c.quadraticCurveTo(W * 0.7, 40, W, 20);
+      c.lineTo(W, 35);
+      c.quadraticCurveTo(W * 0.7, 55, W * 0.5, 40);
+      c.quadraticCurveTo(W * 0.3, 25, 0, 45);
+      c.fill();
+    }
 
-    const starParallax = Math.sin(tick * 0.003) * 2;
-    for (const star of this._stars) {
-      const twinkle = Math.sin(star.twinkle + tick * 0.05) * 0.4 + 0.6;
-      const a = twinkle * star.brightness;
-      const sx = Math.floor(star.x + starParallax * 0.3);
-      const sy = Math.floor(star.y);
-      c.fillStyle = `rgba(255,255,255,${a})`;
-      c.fillRect(sx, sy, star.size, star.size);
-      if (star.size >= 3) {
-        c.fillStyle = `rgba(255,255,220,${a * 0.35})`;
-        c.fillRect(sx - 1, sy, star.size + 2, star.size);
-        c.fillRect(sx, sy - 1, star.size, star.size + 2);
-        c.fillStyle = `rgba(200,220,255,${a * 0.12})`;
-        c.fillRect(sx - 2, sy - 1, star.size + 4, star.size + 2);
-        c.fillRect(sx - 1, sy - 2, star.size + 2, star.size + 4);
-      } else if (star.size === 2) {
-        c.fillStyle = `rgba(255,255,240,${a * 0.2})`;
-        c.fillRect(sx - 1, sy, star.size + 2, star.size);
-        c.fillRect(sx, sy - 1, star.size, star.size + 2);
+    if (theme.hasStars) {
+      const starParallax = Math.sin(tick * 0.003) * 2;
+      for (const star of this._stars) {
+        const twinkle = Math.sin(star.twinkle + tick * 0.05) * 0.4 + 0.6;
+        const a = twinkle * star.brightness;
+        const sx = Math.floor(star.x + starParallax * 0.3);
+        const sy = Math.floor(star.y);
+        c.fillStyle = `rgba(255,255,255,${a})`;
+        c.fillRect(sx, sy, star.size, star.size);
+        if (star.size >= 3) {
+          c.fillStyle = `rgba(255,255,220,${a * 0.35})`;
+          c.fillRect(sx - 1, sy, star.size + 2, star.size);
+          c.fillRect(sx, sy - 1, star.size, star.size + 2);
+          c.fillStyle = `rgba(200,220,255,${a * 0.12})`;
+          c.fillRect(sx - 2, sy - 1, star.size + 4, star.size + 2);
+          c.fillRect(sx - 1, sy - 2, star.size + 2, star.size + 4);
+        } else if (star.size === 2) {
+          c.fillStyle = `rgba(255,255,240,${a * 0.2})`;
+          c.fillRect(sx - 1, sy, star.size + 2, star.size);
+          c.fillRect(sx, sy - 1, star.size, star.size + 2);
+        }
       }
     }
 
-    this._drawMoon(c, tick);
-    this._drawShootingStar(c, tick);
-
-    const cloudParallax = Math.sin(tick * 0.003) * 4;
-    for (const cloud of this._clouds) {
-      const cx = ((cloud.x + tick * cloud.speed + cloudParallax) % (W + cloud.w)) - cloud.w/2;
-      const cFloor = Math.floor(cx);
-      c.fillStyle = 'rgba(25,25,70,0.25)';
-      c.fillRect(cFloor + 2, cloud.y - 3, cloud.w - 4, 2);
-      c.fillStyle = 'rgba(30,30,80,0.38)';
-      c.fillRect(cFloor, cloud.y, cloud.w, 3);
-      c.fillRect(cFloor + 3, cloud.y - 2, cloud.w - 6, 2);
-      c.fillRect(cFloor + 2, cloud.y + 3, cloud.w - 4, 2);
-      c.fillStyle = 'rgba(40,40,100,0.15)';
-      c.fillRect(cFloor + 4, cloud.y + 5, cloud.w - 8, 1);
+    if (theme.hasMoon) this._drawMoon(c, tick);
+    if (theme.key === 'redondel') this._drawShootingStar(c, tick);
+    if (theme.key === 'feria') this._drawFeriaRides(c, tick);
+    if (theme.key === 'muerte') {
+      this._drawMuerteAtmosphere(c, tick);
+      this._drawMuerteMonsters(c, tick);
     }
 
-    this._drawFireflies(c, tick);
-    this._drawStringLights(c, tick);
-    this._drawBanners(c, tick);
-    this._drawCrowd(c, tick);
-    this._drawFence(c, tick);
+    if (theme.hasClouds) {
+      const cloudParallax = Math.sin(tick * 0.003) * 4;
+      for (const cloud of this._clouds) {
+        const cx = ((cloud.x + tick * cloud.speed + cloudParallax) % (W + cloud.w)) - cloud.w / 2;
+        const cFloor = Math.floor(cx);
+        c.fillStyle = theme.key === 'pueblo' ? 'rgba(60,95,130,0.25)' : 'rgba(25,25,70,0.25)';
+        c.fillRect(cFloor + 2, cloud.y - 3, cloud.w - 4, 2);
+        c.fillStyle = theme.key === 'pueblo' ? 'rgba(78,120,160,0.32)' : 'rgba(30,30,80,0.38)';
+        c.fillRect(cFloor, cloud.y, cloud.w, 3);
+        c.fillRect(cFloor + 3, cloud.y - 2, cloud.w - 6, 2);
+        c.fillRect(cFloor + 2, cloud.y + 3, cloud.w - 4, 2);
+      }
+    }
+
+    if (theme.hasFireflies) this._drawFireflies(c, tick);
+    if (theme.hasStringLights) this._drawStringLights(c, tick);
+    if (theme.hasBanners) this._drawBanners(c, tick);
+    if (theme.hasCrowd) this._drawCrowd(c, tick);
+    this._drawFence(c, tick, theme.fenceStyle);
 
     const dirtGrad = c.createLinearGradient(0, 140, 0, CONST.HEIGHT);
-    dirtGrad.addColorStop(0, '#B89868');
-    dirtGrad.addColorStop(0.15, '#B09060');
-    dirtGrad.addColorStop(0.4, CONST.COLORS.DIRT);
-    dirtGrad.addColorStop(0.8, CONST.COLORS.DIRT_DARK);
-    dirtGrad.addColorStop(1, '#6A5035');
+    const groundStops = theme.groundStops;
+    const gLast = Math.max(1, groundStops.length - 1);
+    for (let i = 0; i < groundStops.length; i++) {
+      dirtGrad.addColorStop(i / gLast, groundStops[i]);
+    }
     c.fillStyle = dirtGrad;
     c.fillRect(0, 140, W, CONST.HEIGHT - 140);
 
-    c.fillStyle = 'rgba(0,0,0,0.06)';
-    const centerGrad = c.createRadialGradient(W/2, 190, 10, W/2, 190, 80);
-    centerGrad.addColorStop(0, 'rgba(90,60,30,0.12)');
-    centerGrad.addColorStop(1, 'rgba(90,60,30,0)');
+    const centerGrad = c.createRadialGradient(W / 2, 190, 10, W / 2, 190, 80);
+    centerGrad.addColorStop(0, theme.detailColor);
+    centerGrad.addColorStop(1, 'rgba(0,0,0,0)');
     c.fillStyle = centerGrad;
     c.fillRect(0, 142, W, CONST.HEIGHT - 142);
 
-    c.strokeStyle = 'rgba(120,80,50,0.2)';
-    c.lineWidth = 1;
-    c.beginPath();
-    c.ellipse(W/2, 210, 90, 18, 0, 0, Math.PI * 2);
-    c.stroke();
-    c.strokeStyle = 'rgba(140,100,60,0.12)';
-    c.beginPath();
-    c.ellipse(W/2, 210, 95, 20, 0, 0, Math.PI * 2);
-    c.stroke();
+    if (theme.centerRing) {
+      c.strokeStyle = 'rgba(120,80,50,0.2)';
+      c.lineWidth = 1;
+      c.beginPath();
+      c.ellipse(W / 2, 210, 90, 18, 0, 0, Math.PI * 2);
+      c.stroke();
+      c.strokeStyle = 'rgba(140,100,60,0.12)';
+      c.beginPath();
+      c.ellipse(W / 2, 210, 95, 20, 0, 0, Math.PI * 2);
+      c.stroke();
+    } else if (theme.key === 'muerte') {
+      this._drawVolcanicCracks(c, tick);
+    }
 
     for (const d of this._dirtDetails) {
       if (d.type === 'speck') {
-        c.fillStyle = CONST.COLORS.DIRT_DARK;
+        c.fillStyle = theme.key === 'muerte' ? '#1D0B08' : CONST.COLORS.DIRT_DARK;
         c.fillRect(Math.floor(d.x), Math.floor(d.y), d.size, 1);
       } else if (d.type === 'footprint') {
-        c.fillStyle = 'rgba(90,60,30,0.25)';
+        c.fillStyle = theme.key === 'muerte' ? 'rgba(20,8,6,0.45)' : 'rgba(90,60,30,0.25)';
         c.fillRect(Math.floor(d.x), Math.floor(d.y), 2, 4);
         c.fillRect(Math.floor(d.x) + 3, Math.floor(d.y) + 1, 2, 4);
-        c.fillStyle = 'rgba(90,60,30,0.15)';
+        c.fillStyle = theme.key === 'muerte' ? 'rgba(30,10,8,0.25)' : 'rgba(90,60,30,0.15)';
         c.fillRect(Math.floor(d.x), Math.floor(d.y) + 4, 5, 1);
       } else {
-        c.fillStyle = 'rgba(100,70,40,0.3)';
+        c.fillStyle = theme.key === 'muerte' ? 'rgba(45,20,15,0.35)' : 'rgba(100,70,40,0.3)';
         c.fillRect(Math.floor(d.x), Math.floor(d.y), d.size + 1, d.size);
       }
     }
 
-    this._drawStringLightPools(c, tick);
-    this._drawDustMotes(c, tick);
+    if (theme.hasLightPools) this._drawStringLightPools(c, tick);
+    if (theme.hasDust) this._drawDustMotes(c, tick);
 
-    c.fillStyle = CONST.COLORS.DIRT_DARK;
+    c.fillStyle = theme.topLine;
     c.fillRect(0, 140, W, 1);
-    c.fillStyle = '#B09060';
+    c.fillStyle = theme.topLineHi;
     c.fillRect(0, 141, W, 1);
   }
 
@@ -764,9 +1023,69 @@ class Renderer {
     c.globalAlpha = 1;
   }
 
-  _drawFence(c, tick) {
+  _drawFence(c, tick, style) {
+    const variant = style || 'redondel';
     const fenceY = 95;
     const W = CONST.WIDTH;
+    if (variant === 'pueblo') {
+      c.fillStyle = '#8E5F3A';
+      c.fillRect(0, fenceY, W, 45);
+      c.fillStyle = '#6E4528';
+      c.fillRect(0, fenceY, W, 2);
+      c.fillRect(0, fenceY + 43, W, 2);
+      for (let x = 0; x <= W; x += 22) {
+        c.fillStyle = '#5C3A22';
+        c.fillRect(x, fenceY, 3, 45);
+        c.fillStyle = 'rgba(255,220,170,0.16)';
+        c.fillRect(x + 1, fenceY, 1, 45);
+      }
+      return;
+    }
+    if (variant === 'feria') {
+      c.fillStyle = '#4B355D';
+      c.fillRect(0, fenceY, W, 45);
+      for (let x = 0; x < W; x += 16) {
+        c.fillStyle = (Math.floor(x / 16) % 2 === 0) ? '#FF4DC4' : '#3FE1FF';
+        c.fillRect(x, fenceY + 6, 16, 4);
+        c.fillStyle = 'rgba(255,255,255,0.22)';
+        c.fillRect(x, fenceY + 6, 16, 1);
+      }
+      for (let x = 0; x < W; x += 12) {
+        const by = fenceY + 2 + Math.sin((x + tick) * 0.05) * 1.2;
+        const on = Math.sin(tick * 0.1 + x * 0.08) > 0;
+        c.fillStyle = on ? '#FFE66B' : '#2F2942';
+        c.fillRect(x, by, 3, 3);
+      }
+      c.fillStyle = '#2A2038';
+      c.fillRect(0, fenceY, W, 2);
+      c.fillRect(0, fenceY + 43, W, 2);
+      return;
+    }
+    if (variant === 'muerte') {
+      c.fillStyle = '#2A1612';
+      c.fillRect(0, fenceY, W, 45);
+      c.fillStyle = '#140B09';
+      c.fillRect(0, fenceY, W, 2);
+      c.fillRect(0, fenceY + 43, W, 2);
+      for (let x = 0; x <= W; x += 14) {
+        c.fillStyle = '#1E0F0C';
+        c.fillRect(x, fenceY + 8, 2, 37);
+        c.fillStyle = '#5A2016';
+        c.fillRect(x - 1, fenceY + 5, 4, 3);
+        c.fillStyle = 'rgba(255,80,40,0.12)';
+        c.fillRect(x - 2, fenceY + 3, 6, 2);
+      }
+      c.strokeStyle = 'rgba(110,110,110,0.25)';
+      c.lineWidth = 1;
+      for (let y = fenceY + 14; y <= fenceY + 32; y += 8) {
+        c.beginPath();
+        c.moveTo(0, y);
+        c.lineTo(W, y + 3);
+        c.stroke();
+      }
+      return;
+    }
+
     c.fillStyle = CONST.COLORS.FENCE_WOOD;
     c.fillRect(0, fenceY, W, 45);
 
@@ -944,19 +1263,30 @@ class Renderer {
     const maxStars = 5;
     const guaroPct = player.guaro / CONST.PLAYER.MAX_GUARO;
     const filledStars = Math.floor(guaroPct * maxStars);
+    const specialReady = player.guaro >= CONST.PLAYER.MAX_GUARO;
     for (let i = 0; i < maxStars; i++) {
       const sx = 4 + i * 8;
       const sy = 25;
       const filled = i < filledStars;
-      c.fillStyle = filled ? '#FFD700' : '#333';
+      const readyPulse = specialReady ? Math.sin(tick * 0.22 + i * 0.7) * 0.5 + 0.5 : 0;
+      if (filled && specialReady) {
+        c.save();
+        c.globalAlpha = 0.25 + readyPulse * 0.35;
+        c.fillStyle = '#FFF2A0';
+        c.fillRect(sx - 2, sy - 2, 9, 8);
+        c.restore();
+      }
+      c.fillStyle = filled
+        ? (specialReady ? (readyPulse > 0.5 ? '#FFE98A' : '#FFD700') : '#FFD700')
+        : '#333';
       c.fillRect(sx + 2, sy, 1, 1);
       c.fillRect(sx, sy + 1, 5, 1);
       c.fillRect(sx + 1, sy + 2, 3, 1);
       c.fillRect(sx, sy + 3, 2, 1);
       c.fillRect(sx + 3, sy + 3, 2, 1);
-      if (filled && Math.sin(tick * 0.15 + i) > 0.7) {
+      if (filled && (specialReady || Math.sin(tick * 0.15 + i) > 0.7)) {
         c.fillStyle = 'rgba(255,255,200,0.5)';
-        c.fillRect(sx, sy, 5, 4);
+        c.fillRect(sx, sy, 5, specialReady ? 5 : 4);
       }
     }
 
@@ -1148,6 +1478,35 @@ class Renderer {
     this._drawText('G', gx - 1, gy - 2, 'left', 0.6);
   }
 
+  // Tell warning: tint only opaque opponent pixels (not a bounding box).
+  _drawOpponentTellSilhouette(c, oppX, oppY, oppScale, oppData, oppAnim, opponentFrame, pulse, tellColor) {
+    const bw = 220;
+    const bh = 260;
+    if (!this._tellTintBuffer || this._tellTintBuffer.width !== bw || this._tellTintBuffer.height !== bh) {
+      this._tellTintBuffer = document.createElement('canvas');
+      this._tellTintBuffer.width = bw;
+      this._tellTintBuffer.height = bh;
+    }
+    const b = this._tellTintBuffer;
+    const bctx = b.getContext('2d');
+    bctx.setTransform(1, 0, 0, 1, 0, 0);
+    bctx.clearRect(0, 0, bw, bh);
+    bctx.imageSmoothingEnabled = c.imageSmoothingEnabled;
+    bctx.imageSmoothingQuality = c.imageSmoothingQuality || 'high';
+    bctx.save();
+    bctx.translate(bw / 2 - oppX, bh / 2 - oppY);
+    this.sprites.drawOpponent(bctx, oppData, oppAnim, opponentFrame, oppX, oppY, oppScale);
+    bctx.restore();
+    bctx.globalCompositeOperation = 'source-in';
+    bctx.fillStyle = tellColor;
+    bctx.fillRect(0, 0, bw, bh);
+    bctx.globalCompositeOperation = 'source-over';
+    c.save();
+    c.globalAlpha = Math.min(0.28, pulse * 0.9);
+    c.drawImage(b, oppX - bw / 2, oppY - bh / 2);
+    c.restore();
+  }
+
   // ── Fight Scene ──
 
   drawFightScene(player, opponent, tick) {
@@ -1172,17 +1531,40 @@ class Renderer {
     const oppScale = 3.8;
     const oppData = opponent.data;
     const oppAnim = opponent.getAnimState();
+    const isTell = opponent.state === 'tell';
+    const isTellSig = isTell && opponent.currentPattern && opponent.currentPattern.type === 'signature';
+    const tellColor = isTell ? (isTellSig ? (oppData.accentColor || CONST.COLORS.ORANGE) : CONST.COLORS.YELLOW) : null;
+    const tellPulse = isTell ? Math.sin(tick * 0.4) * 0.15 + 0.15 : 0;
 
-    if (opponent.state === 'tell') {
-      const isSig = opponent.currentPattern && opponent.currentPattern.type === 'signature';
-      const tellColor = isSig ? (oppData.accentColor || CONST.COLORS.ORANGE) : CONST.COLORS.YELLOW;
-      const pulse = Math.sin(tick * 0.4) * 0.15 + 0.15;
-      c.globalAlpha = pulse;
-      c.fillStyle = tellColor;
-      c.fillRect(oppX - 40, oppY - 80, 80, 100);
-      c.globalAlpha = 1;
+    c.fillStyle = 'rgba(0,0,0,0.15)';
+    c.beginPath();
+    c.ellipse(oppX, oppY + 8, 26, 7, 0, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = 'rgba(0,0,0,0.28)';
+    c.beginPath();
+    c.ellipse(oppX, oppY + 8, 18, 5, 0, 0, Math.PI * 2);
+    c.fill();
 
-      if (isSig) {
+    c.save();
+    c.globalAlpha = 1;
+    c.globalCompositeOperation = 'source-over';
+    this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
+    c.restore();
+    if (isTell && tellPulse > 0 && tellColor) {
+      this._drawOpponentTellSilhouette(c, oppX, oppY, oppScale, oppData, oppAnim, opponent.animFrame, tellPulse, tellColor);
+    }
+    if (this.oppHitFlashTimer > 0) {
+      const flashT = this.oppHitFlashTimer / 8;
+      c.save();
+      c.globalAlpha = Math.min(0.9, flashT * 0.8);
+      c.globalCompositeOperation = 'lighter';
+      this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
+      c.restore();
+      this.oppHitFlashTimer--;
+    }
+
+    if (isTell && tellColor) {
+      if (isTellSig) {
         const lineCount = 6;
         for (let i = 0; i < lineCount; i++) {
           const angle = (i / lineCount) * Math.PI * 2 + tick * 0.15;
@@ -1204,33 +1586,9 @@ class Renderer {
 
       const exclPulse = Math.sin(tick * 0.5) * 2;
       const exY = oppY - 85 + exclPulse;
-      c.fillStyle = isSig ? CONST.COLORS.RED : CONST.COLORS.YELLOW;
+      c.fillStyle = isTellSig ? CONST.COLORS.RED : CONST.COLORS.YELLOW;
       c.fillRect(oppX - 1, exY, 3, 6);
       c.fillRect(oppX - 1, exY + 8, 3, 2);
-    }
-
-    c.fillStyle = 'rgba(0,0,0,0.15)';
-    c.beginPath();
-    c.ellipse(oppX, oppY + 8, 26, 7, 0, 0, Math.PI * 2);
-    c.fill();
-    c.fillStyle = 'rgba(0,0,0,0.28)';
-    c.beginPath();
-    c.ellipse(oppX, oppY + 8, 18, 5, 0, 0, Math.PI * 2);
-    c.fill();
-
-    c.save();
-    c.globalAlpha = 1;
-    c.globalCompositeOperation = 'source-over';
-    this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
-    c.restore();
-    if (this.oppHitFlashTimer > 0) {
-      const flashT = this.oppHitFlashTimer / 8;
-      c.save();
-      c.globalAlpha = Math.min(0.9, flashT * 0.8);
-      c.globalCompositeOperation = 'lighter';
-      this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
-      c.restore();
-      this.oppHitFlashTimer--;
     }
 
     this._drawImpactStar(c);
@@ -2358,14 +2716,24 @@ class Renderer {
     const scaleX = Math.cos(rotation || 0);
     const absScaleX = Math.abs(scaleX);
     const w = Math.max(2, Math.floor(s * absScaleX));
+    const rx = w / 2;
+    const ry = s / 2;
 
+    c.beginPath();
+    c.ellipse(x, y, rx, ry, 0, 0, Math.PI * 2);
     c.fillStyle = CONST.COLORS.GOLD;
-    c.fillRect(x - Math.floor(w / 2), y - Math.floor(s / 2), w, s);
+    c.fill();
 
+    c.beginPath();
+    c.ellipse(x, y - 1, Math.max(1, rx - 1), Math.max(1, ry - 1), 0, 0, Math.PI * 2);
     c.fillStyle = CONST.COLORS.YELLOW;
-    c.fillRect(x - Math.floor(w / 2), y - Math.floor(s / 2), w, 2);
-    c.fillStyle = '#B8860B';
-    c.fillRect(x - Math.floor(w / 2), y + Math.floor(s / 2) - 2, w, 2);
+    c.fill();
+
+    c.beginPath();
+    c.ellipse(x, y, Math.max(1, rx - 0.5), Math.max(1, ry - 0.5), 0, 0, Math.PI * 2);
+    c.strokeStyle = '#B8860B';
+    c.lineWidth = 1;
+    c.stroke();
 
     if (w > 5) {
       c.fillStyle = CONST.COLORS.DARK_BROWN;

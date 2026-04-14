@@ -88,22 +88,22 @@ const CONST = {
   },
 
   MAP_NODES: [
-    { x: 70,  y: 160, circuit: 0 },
-    { x: 120, y: 140, circuit: 0 },
-    { x: 165, y: 155, circuit: 0 },
+    { x: 64,  y: 197, circuit: 0 },
+    { x: 128, y: 175, circuit: 0 },
+    { x: 192, y: 197, circuit: 0 },
 
-    { x: 60,  y: 110, circuit: 1 },
-    { x: 110, y: 95,  circuit: 1 },
-    { x: 155, y: 108, circuit: 1 },
+    { x: 56,  y: 150, circuit: 1 },
+    { x: 128, y: 128, circuit: 1 },
+    { x: 200, y: 150, circuit: 1 },
 
-    { x: 80,  y: 65,  circuit: 2 },
-    { x: 128, y: 50,  circuit: 2 },
-    { x: 176, y: 62,  circuit: 2 },
+    { x: 64,  y: 103, circuit: 2 },
+    { x: 128, y: 81,  circuit: 2 },
+    { x: 192, y: 103, circuit: 2 },
 
-    { x: 55,  y: 30,  circuit: 3 },
-    { x: 100, y: 18,  circuit: 3 },
-    { x: 148, y: 25,  circuit: 3 },
-    { x: 195, y: 35,  circuit: 3 },
+    { x: 52,  y: 56,  circuit: 3 },
+    { x: 102, y: 34,  circuit: 3 },
+    { x: 154, y: 34,  circuit: 3 },
+    { x: 204, y: 56,  circuit: 3 },
   ],
 
   CIRCUITS: [
