@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PICHASITOS — Fighter Preview</title>
+<style>
+:root {
+  --bg: #0a0a1a;
+  --card: #12122a;
+  --border: #2a2a4a;
+  --gold: #ffd700;
+  --text: #e8e8f0;
+  --muted: #8888aa;
+  --accent: #39ff14;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  min-height: 100vh;
+}
+
+header {
+  text-align: center;
+  padding: 32px 16px 24px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #14142e 0%, var(--bg) 100%);
+}
+header h1 {
+  font-size: 2.4rem;
+  color: var(--gold);
+  letter-spacing: 4px;
+  text-transform: uppercase;
+}
+header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
+
+.roster {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  padding: 20px 16px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  background: var(--bg);
+  border-bottom: 1px solid var(--border);
+}
+.roster button {
+  background: var(--card);
+  border: 2px solid var(--border);
+  color: var(--text);
+  padding: 6px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.roster button:hover { border-color: var(--gold); color: var(--gold); }
+.roster button.active {
+  background: rgba(255,215,0,0.15);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.fighter-view {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px 16px 60px;
+}
+
+.fighter-header {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-bottom: 28px;
+}
+.fighter-header .ref-img {
+  width: 140px;
+  height: 140px;
+  border-radius: 12px;
+  border: 2px solid var(--border);
+  object-fit: contain;
+  background: var(--card);
+  flex-shrink: 0;
+}
+.fighter-info h2 {
+  font-size: 1.8rem;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.fighter-info .title { color: var(--muted); font-size: 1rem; }
+
+.section-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  color: var(--muted);
+  margin-bottom: 14px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.pose-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 14px;
+  margin-bottom: 36px;
+}
+.pose-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.pose-card:hover {
+  border-color: var(--gold);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(255,215,0,0.1);
+}
+.pose-card.active {
+  border-color: var(--accent);
+  box-shadow: 0 0 20px rgba(57,255,20,0.15);
+}
+.pose-card img {
+  width: 100%;
+  aspect-ratio: 1;
+  object-fit: contain;
+  background: linear-gradient(135deg, #1a1a35 0%, #0e0e20 100%);
+  display: block;
+}
+.pose-card .label {
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--muted);
+  text-align: center;
+}
+.pose-card.active .label { color: var(--accent); }
+
+.anim-stage {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+.anim-stage h3 {
+  color: var(--gold);
+  margin-bottom: 16px;
+  font-size: 1rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-align: center;
+}
+
+.player-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.sprite-viewport {
+  width: 280px;
+  height: 280px;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #1a1a35 0%, #0e0e20 100%);
+  border: 2px solid var(--border);
+}
+.sprite-viewport img {
+  position: absolute;
+  top: 0; left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  transition: opacity 0.12s ease, transform 0.15s ease;
+}
+.sprite-viewport img.behind { opacity: 0; z-index: 0; }
+.sprite-viewport img.front  { opacity: 1; z-index: 1; }
+
+.sprite-viewport.shake {
+  animation: shake 0.15s ease-in-out;
+}
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px) rotate(-1deg); }
+  40% { transform: translateX(5px) rotate(1deg); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
+}
+.sprite-viewport.impact {
+  animation: impact 0.2s ease-out;
+}
+@keyframes impact {
+  0% { transform: scale(1); }
+  30% { transform: scale(1.06); }
+  100% { transform: scale(1); }
+}
+
+.pose-desc {
+  color: var(--muted);
+  font-size: 0.85rem;
+  font-style: italic;
+  min-height: 1.2em;
+  text-align: center;
+}
+
+.player-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.player-controls button {
+  background: var(--card);
+  border: 2px solid var(--border);
+  color: var(--text);
+  padding: 8px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: all 0.15s;
+}
+.player-controls button:hover { border-color: var(--gold); color: var(--gold); }
+.player-controls button.active {
+  background: rgba(57,255,20,0.12);
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.speed-control {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  justify-content: center;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+.speed-control input { width: 120px; accent-color: var(--gold); }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Pichasitos</h1>
+  <p>Fighter Roster &amp; Animation Preview</p>
+</header>
+
+<nav class="roster" id="roster"></nav>
+<main class="fighter-view" id="fighter-view"></main>
+
+<script>
+const FIGHTERS = [
+  { slug: 'player',       name: 'PLAYER',       title: 'El Pichaseador',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'don_carlos',   name: 'DON CARLOS',   title: 'El Rey del Karaoke',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'gringo',       name: 'GRINGO',       title: 'El Turista Perdido',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'clarisa',      name: 'CLARISA',      title: 'La Fresa de Escazu',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'skin',         name: 'SKIN',         title: 'El Muro de Concreto',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'karen',        name: 'KAREN',        title: 'La Gerente Furiosa',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'don_alvaro',   name: 'DON ALVARO',   title: 'El Patron del Barrio',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'hitmena',      name: 'HITMENA',      title: 'La Doble Cara',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'panzaeperra',  name: 'PANZAEPERRA',  title: 'El Tanque Humano',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'el_indio',     name: 'EL INDIO',     title: 'El Chorotega',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'michiquito',   name: 'MICHIQUITO',   title: 'El Junior de Papi',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'persefone',    name: 'PERSEFONE',    title: 'La Club Kid Cosmica',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'anai',         name: 'ANAI',         title: 'El Rasta de Limon',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'carretastar',  name: 'CARRETASTAR',  title: 'El Boyero Legendario',
+    poses: ['idle','punch_left','punch_right','hurt','block','ko','windup','taunt','sig_attack','victory'] },
+  { slug: 'bull',         name: 'EL TORO',      title: 'Malacrianza',
+    poses: ['idle','charge','horn_left','horn_right','hurt','stomp','ko','taunt','sig_charge','victory'] },
+];
+
+const POSE_LABELS = {
+  idle: 'Idle', punch_left: 'Left Punch', punch_right: 'Right Punch',
+  hurt: 'Hurt', block: 'Block', ko: 'KO', windup: 'Windup',
+  taunt: 'Taunt', sig_attack: 'Signature', victory: 'Victory',
+  charge: 'Charge', horn_left: 'Horn Left', horn_right: 'Horn Right',
+  stomp: 'Stomp', sig_charge: 'Sig Charge',
+};
+
+const POSE_MOTION = {
+  idle:        { x: 0,  y: 0,    s: 1    },
+  punch_left:  { x: -8, y: -6,   s: 1.04 },
+  punch_right: { x: 8,  y: -6,   s: 1.04 },
+  hurt:        { x: 0,  y: 4,    s: 0.97 },
+  block:       { x: 0,  y: 6,    s: 0.95 },
+  ko:          { x: 0,  y: 20,   s: 0.90 },
+  windup:      { x: 6,  y: -3,   s: 1.02 },
+  taunt:       { x: 0,  y: -2,   s: 1.03 },
+  sig_attack:  { x: 0,  y: -16,  s: 1.10 },
+  victory:     { x: 0,  y: -8,   s: 1.05 },
+  charge:      { x: 0,  y: -10,  s: 1.06 },
+  horn_left:   { x: -10, y: 0,   s: 1.03 },
+  horn_right:  { x: 10, y: 0,    s: 1.03 },
+  stomp:       { x: 0,  y: 8,    s: 1.05 },
+  sig_charge:  { x: 0,  y: -14,  s: 1.12 },
+};
+
+const POSE_FX = {
+  punch_left: 'impact', punch_right: 'impact',
+  hurt: 'shake', ko: 'shake',
+  sig_attack: 'impact', sig_charge: 'impact',
+  horn_left: 'impact', horn_right: 'impact',
+  stomp: 'shake', charge: 'impact',
+};
+
+function getAnimSequences(f) {
+  if (f.slug === 'bull') {
+    return [
+      { name: 'Horn Combo',     frames: [
+        { pose: 'idle', ms: 400 }, { pose: 'charge', ms: 250 },
+        { pose: 'horn_left', ms: 200 }, { pose: 'idle', ms: 300 },
+        { pose: 'charge', ms: 250 }, { pose: 'horn_right', ms: 200 },
+        { pose: 'idle', ms: 400 },
+      ]},
+      { name: 'Signature',      frames: [
+        { pose: 'idle', ms: 400 }, { pose: 'charge', ms: 300 },
+        { pose: 'sig_charge', ms: 200 }, { pose: 'sig_charge', ms: 200 },
+        { pose: 'idle', ms: 500 },
+      ]},
+      { name: 'Take a Hit',     frames: [
+        { pose: 'idle', ms: 400 }, { pose: 'hurt', ms: 250 },
+        { pose: 'hurt', ms: 250 }, { pose: 'idle', ms: 500 },
+      ]},
+      { name: 'Stomp',          frames: [
+        { pose: 'idle', ms: 400 }, { pose: 'stomp', ms: 250 },
+        { pose: 'stomp', ms: 250 }, { pose: 'idle', ms: 500 },
+      ]},
+      { name: 'KO Sequence',    frames: [
+        { pose: 'hurt', ms: 300 }, { pose: 'hurt', ms: 300 },
+        { pose: 'ko', ms: 500 }, { pose: 'ko', ms: 800 },
+      ]},
+      { name: 'Taunt & Win',    frames: [
+        { pose: 'idle', ms: 400 }, { pose: 'taunt', ms: 500 },
+        { pose: 'taunt', ms: 500 }, { pose: 'victory', ms: 600 },
+        { pose: 'victory', ms: 600 },
+      ]},
+    ];
+  }
+  return [
+    { name: 'Punch Combo',     frames: [
+      { pose: 'idle', ms: 400 }, { pose: 'windup', ms: 200 },
+      { pose: 'punch_left', ms: 150 }, { pose: 'idle', ms: 300 },
+      { pose: 'windup', ms: 200 }, { pose: 'punch_right', ms: 150 },
+      { pose: 'idle', ms: 400 },
+    ]},
+    { name: 'Signature Move',  frames: [
+      { pose: 'idle', ms: 400 }, { pose: 'windup', ms: 250 },
+      { pose: 'sig_attack', ms: 200 }, { pose: 'sig_attack', ms: 200 },
+      { pose: 'idle', ms: 500 },
+    ]},
+    { name: 'Take a Hit',      frames: [
+      { pose: 'idle', ms: 400 }, { pose: 'hurt', ms: 250 },
+      { pose: 'hurt', ms: 250 }, { pose: 'block', ms: 300 },
+      { pose: 'idle', ms: 500 },
+    ]},
+    { name: 'KO Sequence',     frames: [
+      { pose: 'hurt', ms: 300 }, { pose: 'hurt', ms: 300 },
+      { pose: 'ko', ms: 500 }, { pose: 'ko', ms: 800 },
+    ]},
+    { name: 'Taunt & Win',     frames: [
+      { pose: 'idle', ms: 400 }, { pose: 'taunt', ms: 500 },
+      { pose: 'taunt', ms: 500 }, { pose: 'victory', ms: 600 },
+      { pose: 'victory', ms: 600 },
+    ]},
+  ];
+}
+
+function posePath(slug, pose) {
+  return `assets/poses/${slug}/enemy_${slug}_${pose}_v1.png`;
+}
+function enemyPath(slug) {
+  return `assets/enemies/enemy_${slug}_idle_v1.png`;
+}
+function portraitPath(slug) {
+  return `assets/portraits/portrait_${slug}_angry_v1.png`;
+}
+
+let currentSlug = null;
+let animTimer = null;
+let animFrame = 0;
+let speedMul = 1.0;
+let spriteA = null;
+let spriteB = null;
+let viewport = null;
+let activeFront = 'A';
+
+function buildRoster() {
+  const nav = document.getElementById('roster');
+  FIGHTERS.forEach(f => {
+    const btn = document.createElement('button');
+    btn.textContent = f.name;
+    btn.dataset.slug = f.slug;
+    btn.addEventListener('click', () => selectFighter(f.slug));
+    nav.appendChild(btn);
+  });
+}
+
+function selectFighter(slug) {
+  currentSlug = slug;
+  document.querySelectorAll('.roster button').forEach(b =>
+    b.classList.toggle('active', b.dataset.slug === slug)
+  );
+  renderFighter(slug);
+}
+
+function showPose(slug, pose) {
+  const src = posePath(slug, pose);
+  const motion = POSE_MOTION[pose] || { x: 0, y: 0, s: 1 };
+  const transform = `translate(${motion.x}px, ${motion.y}px) scale(${motion.s})`;
+
+  if (activeFront === 'A') {
+    spriteB.src = src;
+    spriteB.style.transform = transform;
+    spriteB.classList.replace('behind', 'front');
+    spriteA.classList.replace('front', 'behind');
+    activeFront = 'B';
+  } else {
+    spriteA.src = src;
+    spriteA.style.transform = transform;
+    spriteA.classList.replace('behind', 'front');
+    spriteB.classList.replace('front', 'behind');
+    activeFront = 'A';
+  }
+
+  const fx = POSE_FX[pose];
+  if (fx && viewport) {
+    viewport.classList.remove('shake', 'impact');
+    void viewport.offsetWidth;
+    viewport.classList.add(fx);
+  }
+
+  document.querySelectorAll('.pose-card').forEach(c =>
+    c.classList.toggle('active', c.dataset.pose === pose)
+  );
+}
+
+function renderFighter(slug) {
+  const f = FIGHTERS.find(x => x.slug === slug);
+  if (!f) return;
+  stopAnim();
+
+  const hasPortrait = slug !== 'player';
+  const view = document.getElementById('fighter-view');
+  view.innerHTML = `
+    <div class="fighter-header">
+      ${hasPortrait ? `<img class="ref-img" src="${portraitPath(slug)}" alt="${f.name} portrait" onerror="this.style.display='none'">` : ''}
+      <img class="ref-img" src="${enemyPath(slug)}" alt="${f.name} sprite" onerror="this.style.display='none'">
+      <div class="fighter-info">
+        <h2>${f.name}</h2>
+        <div class="title">${f.title}</div>
+      </div>
+    </div>
+
+    <div class="anim-stage">
+      <h3>Animation Player</h3>
+      <div class="player-wrap">
+        <div class="sprite-viewport" id="viewport">
+          <img id="spriteA" class="front" src="${posePath(slug, f.poses[0])}" alt="sprite">
+          <img id="spriteB" class="behind" src="${posePath(slug, f.poses[0])}" alt="sprite">
+        </div>
+        <div class="pose-desc" id="pose-desc"></div>
+        <div class="player-controls" id="player-controls"></div>
+        <div class="speed-control">
+          <span>Speed</span>
+          <input type="range" id="speed-slider" min="0.3" max="2.5" value="1" step="0.1">
+          <span id="speed-label">1.0x</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-label">All Poses (${f.poses.length})</div>
+    <div class="pose-grid" id="pose-grid"></div>
+  `;
+
+  spriteA = document.getElementById('spriteA');
+  spriteB = document.getElementById('spriteB');
+  viewport = document.getElementById('viewport');
+  activeFront = 'A';
+
+  const grid = document.getElementById('pose-grid');
+  f.poses.forEach(pose => {
+    const card = document.createElement('div');
+    card.className = 'pose-card';
+    card.dataset.pose = pose;
+    card.innerHTML = `
+      <img src="${posePath(slug, pose)}" alt="${pose}">
+      <div class="label">${POSE_LABELS[pose] || pose}</div>
+    `;
+    card.addEventListener('click', () => {
+      stopAnim();
+      showPose(slug, pose);
+      document.getElementById('pose-desc').textContent = POSE_LABELS[pose] || pose;
+      document.querySelectorAll('.player-controls button').forEach(b => b.classList.remove('active'));
+    });
+    grid.appendChild(card);
+  });
+
+  const sequences = getAnimSequences(f);
+  const controls = document.getElementById('player-controls');
+  sequences.forEach(seq => {
+    const btn = document.createElement('button');
+    btn.textContent = seq.name;
+    btn.addEventListener('click', () => playAnim(slug, seq, btn));
+    controls.appendChild(btn);
+  });
+
+  const slider = document.getElementById('speed-slider');
+  const label = document.getElementById('speed-label');
+  slider.addEventListener('input', () => {
+    speedMul = parseFloat(slider.value);
+    label.textContent = speedMul.toFixed(1) + 'x';
+  });
+}
+
+function playAnim(slug, seq, btn) {
+  stopAnim();
+  document.querySelectorAll('.player-controls button').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+
+  animFrame = 0;
+  const desc = document.getElementById('pose-desc');
+
+  function tick() {
+    const frame = seq.frames[animFrame];
+    showPose(slug, frame.pose);
+    desc.textContent = `${seq.name} — ${POSE_LABELS[frame.pose] || frame.pose}`;
+
+    animFrame = (animFrame + 1) % seq.frames.length;
+    animTimer = setTimeout(tick, frame.ms / speedMul);
+  }
+  tick();
+}
+
+function stopAnim() {
+  if (animTimer) { clearTimeout(animTimer); animTimer = null; }
+}
+
+buildRoster();
+selectFighter('player');
+</script>
+</body>
+</html>

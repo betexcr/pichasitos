@@ -133,6 +133,7 @@ DEFAULT_NEG = (
 DEFAULT_FIGHTERS_JSON = Path(__file__).resolve().parent / "fighters_sd.json"
 FIGHTER_FILENAME_TEMPLATE = "enemy_{slug}_idle_v1.png"
 PORTRAIT_FILENAME_TEMPLATE = "portrait_{slug}_angry_v1.png"
+POSE_FILENAME_TEMPLATE = "enemy_{slug}_{pose_id}_v1.png"
 DEFAULT_WIDTH = 512
 DEFAULT_HEIGHT = 896
 DEFAULT_PORTRAIT_WIDTH = 512
@@ -555,6 +556,27 @@ def build_portrait_full_prompt(
     return f"{lead}, {style}"
 
 
+def build_pose_full_prompt(
+    fighter: dict,
+    pose: dict,
+    *,
+    use_break: bool = True,
+    lora_tag: str = "",
+) -> str:
+    """Build a prompt for a specific pose variant of a fighter."""
+    solo_lead = SOLO_ONE_BEAST if fighter.get("style_variant") == "bull" else SOLO_ONE_PERSON
+    anchor = visual_anchor_from_fighter(fighter)
+    core = fighter_core_from_entry(fighter)
+    pose_desc = pose.get("pose_desc", "idle standing")
+    style = style_suffix_for_fighter(fighter)
+    pose_section = f"pose and action: {pose_desc}"
+    lead_parts = [part for part in (lora_tag, solo_lead, SOLO_PROMPT_LEAD, anchor, core, pose_section) if part]
+    lead = ", ".join(lead_parts)
+    if use_break:
+        return f"{lead}, {A1111_BREAK}, {style}"
+    return f"{lead}, {style}"
+
+
 def negative_prompt_for_fighter(base_negative: str, fighter: dict) -> str:
     extra = str(fighter.get("extra_negative", "") or "").strip()
     if not extra:
@@ -595,6 +617,20 @@ def main() -> int:
         "--all-portraits",
         action="store_true",
         help=f"Same as --portraits with default {DEFAULT_FIGHTERS_JSON.name}",
+    )
+    p.add_argument(
+        "--poses",
+        type=Path,
+        nargs="?",
+        const=DEFAULT_FIGHTERS_JSON,
+        default=None,
+        metavar="PATH",
+        help=f"Batch pose variants from JSON roster (default: {DEFAULT_FIGHTERS_JSON.name})",
+    )
+    p.add_argument(
+        "--all-poses",
+        action="store_true",
+        help=f"Same as --poses with default {DEFAULT_FIGHTERS_JSON.name}",
     )
 
     p.add_argument("--negative", type=str, default=DEFAULT_NEG)
@@ -648,12 +684,19 @@ def main() -> int:
         default="",
         help='Batch: comma-separated fighter slugs to generate, e.g. "gringo,don_carlos"',
     )
+    p.add_argument(
+        "--pose-ids",
+        type=str,
+        default="",
+        help='Poses: comma-separated pose IDs to generate, e.g. "punch_left,punch_right" (default: all)',
+    )
 
     args = p.parse_args()
     lora_tag = "" if args.no_lora else resolve_lora_tag(args.lora, args.lora_weight)
 
     fighters_path: Path | None = None
     portraits_path: Path | None = None
+    poses_path: Path | None = None
     if args.all_fighters:
         fighters_path = DEFAULT_FIGHTERS_JSON
     elif args.fighters is not None:
@@ -662,6 +705,10 @@ def main() -> int:
         portraits_path = DEFAULT_FIGHTERS_JSON
     elif args.portraits is not None:
         portraits_path = args.portraits
+    if args.all_poses:
+        poses_path = DEFAULT_FIGHTERS_JSON
+    elif args.poses is not None:
+        poses_path = args.poses
 
     if fighters_path is not None:
         json_path = fighters_path if fighters_path.is_absolute() else root / fighters_path
@@ -833,8 +880,118 @@ def main() -> int:
 
         return 0
 
+    if poses_path is not None:
+        json_path = poses_path if poses_path.is_absolute() else root / poses_path
+        if not json_path.is_file():
+            print(f"ERROR: poses roster file not found: {json_path}", file=sys.stderr)
+            return 1
+        pose_reference_dir: Path | None = None
+        if args.reference_dir is not None:
+            pose_reference_dir = args.reference_dir if args.reference_dir.is_absolute() else root / args.reference_dir
+            if not pose_reference_dir.is_dir():
+                print(f"ERROR: reference dir not found: {pose_reference_dir}", file=sys.stderr)
+                return 1
+        roster = load_fighters_json(json_path)
+        if args.slugs.strip():
+            wanted = [normalize_slug(part) for part in args.slugs.split(",") if part.strip()]
+            wanted_set = set(wanted)
+            roster = [fighter for fighter in roster if normalize_slug(fighter.get("slug", "")) in wanted_set]
+            found = {normalize_slug(fighter.get("slug", "")) for fighter in roster}
+            missing = [slug for slug in wanted if slug not in found]
+            if missing:
+                print(f"ERROR: unknown fighter slug(s): {', '.join(missing)}", file=sys.stderr)
+                return 1
+        if args.limit and args.limit > 0:
+            roster = roster[: args.limit]
+        use_break = not args.no_prompt_break
+
+        wanted_pose_ids: set[str] | None = None
+        if args.pose_ids.strip():
+            wanted_pose_ids = {pid.strip() for pid in args.pose_ids.split(",") if pid.strip()}
+
+        for fighter in roster:
+            slug = str(fighter.get("slug", "unknown")).lower().replace(" ", "_")
+            fighter_poses = fighter.get("poses", [])
+            if not fighter_poses:
+                print(f"SKIP [{slug}]: no poses defined")
+                continue
+            out_dir = root / "assets" / "poses" / slug
+            fighter_negative = negative_prompt_for_fighter(args.negative, fighter)
+
+            ref_path: Path | None = None
+            if pose_reference_dir is not None:
+                ref_name = f"{args.reference_prefix}{slug}{args.reference_suffix}"
+                ref_path = pose_reference_dir / ref_name
+                if not ref_path.is_file():
+                    print(f"WARN [{slug}]: reference image not found: {ref_path}, falling back to txt2img")
+                    ref_path = None
+
+            for pose in fighter_poses:
+                if wanted_pose_ids is not None and pose.get("pose_id", "unknown") not in wanted_pose_ids:
+                    continue
+                pose_id = pose.get("pose_id", "unknown")
+                full_prompt = build_pose_full_prompt(
+                    fighter,
+                    pose,
+                    use_break=use_break,
+                    lora_tag=lora_tag,
+                )
+                out_name = POSE_FILENAME_TEMPLATE.format(slug=slug, pose_id=pose_id)
+                out_path = out_dir / out_name
+                seed_eff = resolve_seed(args.seed)
+
+                if args.dry_run:
+                    ref_info = f"\n  ref: {ref_path}" if ref_path is not None else ""
+                    print(f"{slug}/{pose_id} -> {out_path}{ref_info}\n  {full_prompt[:240]}...")
+                    continue
+
+                try:
+                    png_bytes, response_body = generate_one(
+                        args.base_url,
+                        full_prompt=full_prompt,
+                        negative_prompt=fighter_negative,
+                        steps=args.steps,
+                        cfg_scale=args.cfg,
+                        width=args.width,
+                        height=args.height,
+                        sampler_label=args.sampler,
+                        seed=seed_eff,
+                        checkpoint=args.checkpoint,
+                        clip_skip=args.clip_skip,
+                        init_image_path=ref_path,
+                        denoising_strength=args.denoising_strength if ref_path is not None else None,
+                    )
+                except RuntimeError as e:
+                    print(f"ERROR [{slug}/{pose_id}]: {e}", file=sys.stderr)
+                    return 1
+
+                metadata = build_metadata(
+                    response_body,
+                    prompt=full_prompt,
+                    negative_prompt=fighter_negative,
+                    seed_sent=seed_eff,
+                    steps=args.steps,
+                    cfg_scale=args.cfg,
+                    width=args.width,
+                    height=args.height,
+                    sampler_label=args.sampler,
+                    parent_seed=args.parent_seed,
+                    prompt_version=args.prompt_version,
+                    style=args.style,
+                    asset_type="enemy_pose",
+                )
+                metadata["pose_id"] = pose_id
+                metadata["pose_desc"] = pose.get("pose_desc", "")
+                if ref_path is not None:
+                    metadata["generation_mode"] = "img2img_reference_pose"
+                    metadata["denoising_strength"] = args.denoising_strength
+                    metadata["source_reference"] = str(ref_path)
+                save_image_and_metadata(out_path, png_bytes, metadata)
+
+        return 0
+
     if not args.prompt or not args.out:
-        p.error("provide --prompt and --out, or --fighters / --all-fighters, or --portraits / --all-portraits")
+        p.error("provide --prompt and --out, or --fighters / --all-fighters, or --portraits / --all-portraits, or --poses / --all-poses")
 
     out_path = args.out if args.out.is_absolute() else root / args.out
     prompt_parts = [part for part in (lora_tag, args.prompt) if part]

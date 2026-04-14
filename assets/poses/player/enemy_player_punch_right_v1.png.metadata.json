@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "solo muscular man from behind throwing left punch, green tank top, blue jeans, left arm fully extended forward, right arm back at chin, torso twisted right, bold outlines, flat colors, game sprite, white background",
+  "negative_prompt": "multiple people, two people, crowd, duo, pair, opponent, photorealistic, photo, 3d, watermark, text, blurry, extra limbs, anime, manga, face visible, front view",
+  "seed": 2070955820,
+  "prompt_version": "v5.2",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "punch_left",
+  "fighter_slug": "player",
+  "steps": 30,
+  "cfg_scale": 8.5,
+  "strength": 0.72,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_player_idle_v1.png",
+  "variants_generated": 4,
+  "timestamp": "2026-04-11T18:39:14.057792+00:00",
+  "validated": false
+}

@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(single quadruped bull only, realistic Malacrianza markings, black head, black neck, dark chest, white-gray torso with black speckles, salt-and-pepper gray white body and hindquarters, black lower legs, tall smooth zebu-style shoulder hump made of flesh and skin, very large hanging dewlap under neck, long upward-curving horns with dark tips, broad heavy torso, realistic long legs with correct bovine proportions, full tail visible, all four legs visible, no human torso, no hands, no humanoid muscles, no nose ring, not solid black, not solid gray, standing triumphant, head raised, bellowing, horns silhouetted, dominant bull:1.25), \"EL TORO\" enemy, full body malacrianza bull, black head and neck, dark chest, white gray speckled body, black lower legs, smooth zebu shoulder hump, huge hanging dewlap, long upward-curving horns, standing triumphant, head raised, bellowing, horns silhouetted, dominant bull, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair, human, person, rider, mounted rider, cowboy, matador, bullfighter, saddle, reins, cape, poncho, horseman, minotaur, humanoid torso, bipedal, human arms, human hands, bodybuilder anatomy, solid black body, solid gray body, tiny dewlap, short horns, cropped body, cut off horns, missing tail, missing legs, close-up, stubby legs, short legs, tiny legs, hairy hump, mane, fur crest, fluffy hump, horse mane",
+  "seed": 703944491,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "victory",
+  "fighter_slug": "bull",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_bull_idle_v1.png",
+  "timestamp": "2026-04-11T07:00:16.235794+00:00",
+  "validated": false
+}

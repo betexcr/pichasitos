@@ -129,6 +129,13 @@ class AudioSystem {
     this._playTone(150, 0.06, 'square', 0.2);
   }
 
+  hitImpact(strength) {
+    const s = Math.min(1, Math.max(0, strength || 0.5));
+    this._noise(0.06 + s * 0.1, 0.15 + s * 0.25);
+    this._playTone(100 + (1 - s) * 100, 0.04 + s * 0.08, 'square', 0.15 + s * 0.2);
+    if (s > 0.7) this._playTone(60, 0.12, 'sawtooth', s * 0.15);
+  }
+
   block() {
     this._playTone(200, 0.04, 'square', 0.15);
     this._noise(0.03, 0.1);
@@ -172,6 +179,59 @@ class AudioSystem {
       setTimeout(() => {
         this._playTone(300 + Math.random() * 400, 0.08, 'square', 0.08);
       }, i * 50);
+    }
+  }
+
+  crowdReaction(type) {
+    switch (type) {
+      case 'cheer':
+        this.crowdCheer();
+        break;
+      case 'gasp':
+        this._noise(0.15, 0.1);
+        this._playTone(600, 0.08, 'sine', 0.06);
+        setTimeout(() => this._playTone(500, 0.1, 'sine', 0.04), 80);
+        break;
+      case 'boo':
+        this._noise(0.4, 0.12);
+        for (let i = 0; i < 4; i++) {
+          setTimeout(() => this._playTone(150 + Math.random() * 100, 0.12, 'sawtooth', 0.06), i * 80);
+        }
+        break;
+    }
+  }
+
+  transitionSwoosh() {
+    this._ensure();
+    const t = this.ctx.currentTime;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(800, t);
+    osc.frequency.exponentialRampToValueAtTime(200, t + 0.15);
+    gain.gain.setValueAtTime(0.1, t);
+    gain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+    osc.connect(gain);
+    gain.connect(this.ctx.destination);
+    osc.start(t);
+    osc.stop(t + 0.2);
+    this._noise(0.1, 0.08);
+  }
+
+  startAmbience() {
+    if (this._ambienceInterval) return;
+    this._ambienceInterval = setInterval(() => {
+      this._noise(0.5, 0.02);
+      if (Math.random() > 0.6) {
+        this._playTone(200 + Math.random() * 200, 0.15, 'sine', 0.015);
+      }
+    }, 2000);
+  }
+
+  stopAmbience() {
+    if (this._ambienceInterval) {
+      clearInterval(this._ambienceInterval);
+      this._ambienceInterval = null;
     }
   }
 
@@ -291,14 +351,16 @@ class AudioSystem {
     const interval = 60000 / bpm / 2;
     let step = 0;
     const patterns = {
-      fiesta: [262,330,392,330, 349,392,440,392, 262,330,392,523, 440,392,349,330],
-      fight:  [196,196,262,196, 233,233,262,294, 196,196,262,349, 330,294,262,233],
-      boss:   [131,131,165,131, 131,165,196,165, 175,175,196,233, 262,233,196,165],
+      fiesta:  [262,330,392,330, 349,392,440,392, 262,330,392,523, 440,392,349,330],
+      fight:   [196,196,262,196, 233,233,262,294, 196,196,262,349, 330,294,262,233],
+      boss:    [131,131,165,131, 131,165,196,165, 175,175,196,233, 262,233,196,165],
+      victory: [523,523,659,784, 659,784,1047,784, 523,659,784,1047, 1175,1047,784,659],
     };
     const bassPatterns = {
-      fiesta: [131,0,165,0, 175,0,196,0, 131,0,165,0, 220,0,175,0],
-      fight:  [98,0,98,131, 117,0,117,147, 98,0,98,175, 165,0,131,0],
-      boss:   [65,0,65,0, 65,82,98,82, 87,0,87,117, 131,117,98,0],
+      fiesta:  [131,0,165,0, 175,0,196,0, 131,0,165,0, 220,0,175,0],
+      fight:   [98,0,98,131, 117,0,117,147, 98,0,98,175, 165,0,131,0],
+      boss:    [65,0,65,0, 65,82,98,82, 87,0,87,117, 131,117,98,0],
+      victory: [262,0,330,0, 330,0,392,0, 262,0,330,0, 392,0,262,0],
     };
     const melody = patterns[type] || patterns.fight;
     const bass = bassPatterns[type] || bassPatterns.fight;

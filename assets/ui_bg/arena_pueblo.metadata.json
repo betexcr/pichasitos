@@ -1,0 +1,14 @@
+{
+  "project": "pichasitos",
+  "prompt": "Costa Rican pueblo night fiesta arena, string lights, wooden fence, dirt ring, small crowd silhouettes, tropical trees, starry sky, warm golden light, western cartoon style, bold outlines, flat colors, wide landscape, game background, no characters",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, people, characters, fighters, faces, anime, manga",
+  "seed": 3857020511,
+  "asset_type": "ui_background",
+  "name": "arena_pueblo",
+  "steps": 30,
+  "cfg_scale": 8.0,
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "timestamp": "2026-04-12T10:10:01.477141+00:00"
+}

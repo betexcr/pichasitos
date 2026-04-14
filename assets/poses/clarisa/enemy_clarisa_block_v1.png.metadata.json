@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(long straight black hair, large gold hoop earrings, hot pink blouse, skintight white pants, red high heels, very long acrylic nails, tiny designer purse on shoulder, pink smartphone tucked in purse, holding purse up as shield, cringing behind it, protecting face:1.25), \"CLARISA\" enemy, hot pink blouse, white pants, red heels, hoop earrings, designer purse, rich girl, holding purse up as shield, cringing behind it, protecting face, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "seed": 374748585,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "block",
+  "fighter_slug": "clarisa",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_clarisa_idle_v1.png",
+  "timestamp": "2026-04-11T06:28:33.151601+00:00",
+  "validated": false
+}

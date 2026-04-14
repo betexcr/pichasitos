@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(black baseball cap tilted low, charcoal gray t-shirt, black skinny jeans, black sneakers, thin chain necklace, single visible gold tooth, spitting to the side, chin up, gold tooth displayed, disrespectful smirk:1.25), \"PANZAEPERRA\" enemy, tilted black cap, charcoal t-shirt, black skinny jeans, black sneakers, gold tooth, spitting to the side, chin up, gold tooth displayed, disrespectful smirk, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "seed": 2082331692,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "taunt",
+  "fighter_slug": "panzaeperra",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_panzaeperra_idle_v1.png",
+  "timestamp": "2026-04-11T06:32:18.902487+00:00",
+  "validated": false
+}

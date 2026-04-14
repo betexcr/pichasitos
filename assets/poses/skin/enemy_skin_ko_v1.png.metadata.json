@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(completely bald pale scalp stubble, huge flesh-tunnel ear plugs, dark gray ribbed tank top, black cargo pants, silver wallet chain, visible knuckle and forearm tattoos, falling straight back like a felled tree, stiff, finally stopped:1.25), \"SKIN\" enemy, completely bald, huge ear gauges, dark gray tank top, black cargo pants, forearm tattoos, falling straight back like a felled tree, stiff, finally stopped, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "seed": 3546665578,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "ko",
+  "fighter_slug": "skin",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_skin_idle_v1.png",
+  "timestamp": "2026-04-11T06:53:56.744989+00:00",
+  "validated": false
+}

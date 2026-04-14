@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(adult Indigenous Central American man, brown skin, masculine face, short black hair or tightly tied-back black hair, jade bead necklace and earrings, geometric ochre green face paint on cheeks and forehead, fully bare chest and bare shoulders, dark green wrapped pants, leather sandals, traditional native warrior styling, no modern shirt, no modern jacket, no shawl, no poncho, no draped shoulder cloth, drawing back with both hands, deep stance, gathering earth energy:1.25), \"EL INDIO\" enemy, Indigenous Central American man, bare chest and bare shoulders, large jade bead necklace, ochre face paint, dark green pants, stern guardian, drawing back with both hands, deep stance, gathering earth energy, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair, woman, female, breasts, feminine face, long flowing female hair, conquistador, viking, cowboy, samurai, generic modern man, shirt, tunic, poncho, shawl, robe, cape, shoulder cloth, draped cloth, scarf",
+  "seed": 2357260440,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "windup",
+  "fighter_slug": "el_indio",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_el_indio_idle_v1.png",
+  "timestamp": "2026-04-11T06:56:47.113587+00:00",
+  "validated": false
+}

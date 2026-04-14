@@ -836,8 +836,90 @@ const PLAYER_SPRITE = {
 };
 
 class SpriteSystem {
-  constructor() {
+  static POSE_MAP = {
+    'idle': 'idle', 'idle2': 'idle',
+    'punch_left': 'punch_left', 'punch_right': 'punch_right',
+    'windup_left': 'idle', 'windup_right': 'idle',
+    'hurt': 'hurt', 'block': 'block', 'ko': 'ko',
+    'recovery': 'idle', 'taunt': 'taunt', 'charge': 'sig_attack',
+    'special': 'sig_attack', 'victory': 'victory',
+    'sig_swing': 'sig_attack', 'sig_rush': 'sig_attack',
+    'sig_throw': 'sig_attack', 'sig_grab': 'sig_attack',
+    'sig_ground': 'sig_attack', 'sig_combo': 'sig_attack',
+    'sig_counter': 'sig_attack',
+  };
+
+  static POSE_OFFSETS = {
+    punch_left:  { dx: -6, dy: -2, scaleBoost: 0.06 },
+    punch_right: { dx:  6, dy: -2, scaleBoost: 0.06 },
+    windup:      { dx:  0, dy:  2, scaleBoost: 0.03 },
+    hurt:        { dx:  0, dy:  3, scaleBoost: -0.04 },
+    ko:          { dx:  0, dy:  8, scaleBoost: -0.08 },
+    block:       { dx:  0, dy:  1, scaleBoost: 0.02 },
+    taunt:       { dx:  0, dy: -1, scaleBoost: 0.04 },
+    sig_attack:  { dx: -4, dy: -3, scaleBoost: 0.08 },
+    victory:     { dx:  0, dy: -2, scaleBoost: 0.05 },
+    idle:        { dx:  0, dy:  0, scaleBoost: 0 },
+  };
+
+  static PLAYER_POSE_OFFSETS = {
+    punch_left:  { dx: -3, dy: -8, scaleBoost: 0.05 },
+    punch_right: { dx:  3, dy: -8, scaleBoost: 0.05 },
+    windup:      { dx:  0, dy:  2, scaleBoost: 0.03 },
+    hurt:        { dx:  0, dy:  4, scaleBoost: -0.04 },
+    ko:          { dx:  0, dy:  6, scaleBoost: -0.06 },
+    block:       { dx:  0, dy:  1, scaleBoost: 0.02 },
+    taunt:       { dx:  0, dy: -1, scaleBoost: 0.04 },
+    sig_attack:  { dx:  0, dy: -10, scaleBoost: 0.08 },
+    victory:     { dx:  0, dy: -3, scaleBoost: 0.05 },
+    idle:        { dx:  0, dy:  0, scaleBoost: 0 },
+  };
+
+  static TRANSITION_FRAMES = 24;
+
+  constructor(assets) {
     this._cache = {};
+    this._assets = assets || null;
+    this._poseState = {};
+    this._bottomPadCache = {};
+  }
+
+  static KNOWN_BOTTOM_PAD = {
+    'player': 0.234, 'don_carlos': 0.223, 'michiquito': 0.229,
+    'bull': 0.072, 'gringo': 0.057, 'panzaeperra': 0.059,
+    'anai': 0.031, 'hitmena': 0.010, 'don_alvaro': 0.010,
+    'persefone': 0.006, 'clarisa': 0, 'karen': 0,
+    'carretastar': 0, 'skin': 0, 'el_indio': 0,
+  };
+
+  _getBottomPad(img, cacheKey) {
+    if (this._bottomPadCache[cacheKey] != null) return this._bottomPadCache[cacheKey];
+    try {
+      const c = document.createElement('canvas');
+      c.width = img.naturalWidth;
+      c.height = img.naturalHeight;
+      const ctx = c.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      const data = ctx.getImageData(0, 0, c.width, c.height).data;
+      const w = c.width, h = c.height;
+      for (let row = h - 1; row >= 0; row--) {
+        for (let x = 0; x < w; x++) {
+          if (data[(row * w + x) * 4 + 3] > 0) {
+            this._bottomPadCache[cacheKey] = (h - 1 - row) / h;
+            return this._bottomPadCache[cacheKey];
+          }
+        }
+      }
+    } catch (e) {
+      for (const [slug, pad] of Object.entries(SpriteSystem.KNOWN_BOTTOM_PAD)) {
+        if (cacheKey.includes(slug)) {
+          this._bottomPadCache[cacheKey] = pad;
+          return pad;
+        }
+      }
+    }
+    this._bottomPadCache[cacheKey] = 0;
+    return 0;
   }
 
   static ANIM = {
@@ -940,14 +1022,92 @@ class SpriteSystem {
     ctx.drawImage(sprite, Math.floor(x) - 1, Math.floor(y) - 1);
   }
 
+  _getPoseTransition(charName, poseKey) {
+    if (!this._poseState[charName]) {
+      this._poseState[charName] = { current: poseKey, prev: null, t: 1 };
+    }
+    const ps = this._poseState[charName];
+    if (ps.current !== poseKey) {
+      ps.prev = ps.current;
+      ps.current = poseKey;
+      ps.t = 0;
+    }
+    if (ps.t < 1) {
+      ps.t = Math.min(1, ps.t + 1 / SpriteSystem.TRANSITION_FRAMES);
+    }
+    return ps;
+  }
+
+  _advanceTick() {
+    if (!this._tick) this._tick = 0;
+    const now = Date.now();
+    if (this._lastTickFrame === now) return;
+    this._lastTickFrame = now;
+    if (!this._lastTickTime || now - this._lastTickTime >= 16) {
+      this._tick++;
+      this._lastTickTime = now;
+    }
+  }
+
+  _getBottomPadForSrc(src) {
+    for (const [slug, pad] of Object.entries(SpriteSystem.KNOWN_BOTTOM_PAD)) {
+      if (src.includes(slug)) return pad;
+    }
+    return 0;
+  }
+
+  _drawPoseImage(ctx, img, x, y, scale, poseKey, alpha, t) {
+    const off = SpriteSystem.POSE_OFFSETS[poseKey] || SpriteSystem.POSE_OFFSETS.idle;
+    const eased = t * t * (3 - 2 * t);
+    const dx = off.dx * eased;
+    const dy = off.dy * eased;
+    const sBoost = 1 + off.scaleBoost * eased;
+
+    let breatheY = 0;
+    let breatheScale = 1;
+    if (poseKey === 'idle' && t >= 1) {
+      breatheY = Math.sin((this._tick || 0) * 0.04) * 1.5;
+      breatheScale = 1 + Math.sin((this._tick || 0) * 0.04) * 0.01;
+    }
+
+    const drawH = 110 * (scale / 3) * sBoost * breatheScale;
+    const aspect = img.naturalWidth / img.naturalHeight;
+    const drawW = drawH * aspect;
+    const bPad = this._getBottomPadForSrc(img.src);
+    const drawX = x + dx - drawW / 2;
+    const drawY = y + dy + breatheY - drawH * (1 - bPad) + 8;
+    ctx.save();
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.shadowColor = 'rgba(0,0,0,0.65)';
+    ctx.shadowBlur = 1.5;
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.drawImage(img, drawX, drawY, drawW, drawH);
+    ctx.restore();
+  }
+
   drawOpponent(ctx, charData, anim, frame, x, y, scale) {
+    this._advanceTick();
+    if (this._assets && this._assets.hasPoses(charData.name)) {
+      const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
+      const ps = this._getPoseTransition(charData.name, poseKey);
+      const frameCount = this._assets.getPoseFrameCount(charData.name, ps.current);
+      const poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
+      const curImg = this._assets.getPoseImage(charData.name, ps.current, poseFrame);
+
+      if (curImg) {
+        this._drawPoseImage(ctx, curImg, x, y, scale, ps.current, 1, ps.t);
+        return;
+      }
+    }
     if (charData.build === 'bull') { this._drawBull(ctx, charData, anim, frame, x, y, scale); return; }
     const spriteKey = this._getSpriteKey(charData.name);
     const sd = SPRITE_DATA[spriteKey];
     const frames = SpriteSystem.ANIM[anim] || SpriteSystem.ANIM.idle;
     const f = frames[frame % frames.length];
-    const ps = Math.max(1, Math.floor(scale * 1.2));
-    if (sd) this._drawDetailed(ctx, charData, sd, f, x, y, ps, anim);
+    const pxSz = Math.max(1, Math.floor(scale * 1.2));
+    if (sd) this._drawDetailed(ctx, charData, sd, f, x, y, pxSz, anim);
     else this._drawFallback(ctx, charData, f, x, y, scale);
   }
 
@@ -1132,6 +1292,36 @@ class SpriteSystem {
   }
 
   drawPlayer(ctx, anim, frame, x, y, s) {
+    this._advanceTick();
+    if (this._assets && this._assets.hasPoses('PLAYER')) {
+      const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
+      const ps = this._getPoseTransition('__PLAYER__', poseKey);
+      const frameCount = this._assets.getPoseFrameCount('PLAYER', poseKey);
+      const poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
+      const curImg = this._assets.getPoseImage('PLAYER', poseKey, poseFrame);
+      if (curImg) {
+        const poseOff = SpriteSystem.PLAYER_POSE_OFFSETS[ps.current] || SpriteSystem.PLAYER_POSE_OFFSETS.idle;
+        const pEased = ps.t < 1 ? ps.t * ps.t * (3 - 2 * ps.t) : 1;
+        const pDx = poseOff.dx * pEased;
+        const pDy = poseOff.dy * pEased;
+        const drawH = 110 * (s / 2);
+        const aspect = curImg.naturalWidth / curImg.naturalHeight;
+        const drawW = drawH * aspect;
+        const bPad = this._getBottomPadForSrc(curImg.src);
+        const drawX = x + pDx - drawW / 2;
+        const drawY = y + pDy - drawH * (1 - bPad) + 10;
+        ctx.save();
+        ctx.globalAlpha = 1;
+        ctx.globalCompositeOperation = 'source-over';
+        ctx.shadowColor = 'rgba(0,0,0,0.65)';
+        ctx.shadowBlur = 1.5;
+        ctx.shadowOffsetX = 0;
+        ctx.shadowOffsetY = 0;
+        ctx.drawImage(curImg, drawX, drawY, drawW, drawH);
+        ctx.restore();
+        return;
+      }
+    }
     const frames = SpriteSystem.ANIM[anim] || SpriteSystem.ANIM.idle;
     const f = frames[frame % frames.length];
     const [hx,hy,tx,ty,lax,lay,rax,ray,lfist,rfist] = f;

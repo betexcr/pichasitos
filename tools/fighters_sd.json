@@ -5,7 +5,19 @@
     "stereotype": "working-class tico festival everyman hero",
     "visual_anchor": "green tank top, yellow side stripes, dark blue jeans, brown work boots, confident grin",
     "must_wear": "short black hair, green tank top with gold-yellow side stripes, dark blue jeans, brown work boots, green cloth hand wraps, no gloves",
-    "pose": "cocky grin, chin lifted, festival everyman confidence"
+    "pose": "cocky grin, chin lifted, festival everyman confidence",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "relaxed fighting stance, fists near chest, weight on back foot, cocky grin"},
+      {"pose_id": "punch_left", "pose_desc": "left cross punch fully extended forward, weight shifted forward, determined face"},
+      {"pose_id": "punch_right", "pose_desc": "right hook punch extended to the side, torso rotated, fierce expression"},
+      {"pose_id": "hurt", "pose_desc": "recoiling backward from a hit, head snapped to the side, grimacing in pain"},
+      {"pose_id": "block", "pose_desc": "arms crossed in front of face and chest, defensive crouch, bracing for impact"},
+      {"pose_id": "ko", "pose_desc": "falling backward, arms limp, eyes closed, knocked unconscious"},
+      {"pose_id": "windup", "pose_desc": "pulling right fist back behind ear, coiling torso, intense focus"},
+      {"pose_id": "taunt", "pose_desc": "beckoning opponent with one hand, cocky smirk, chin up"},
+      {"pose_id": "sig_attack", "pose_desc": "massive overhead two-fisted slam, jumping forward, screaming battle cry"},
+      {"pose_id": "victory", "pose_desc": "arms raised in triumph, fists pumped overhead, wide victorious grin"}
+    ]
   },
   {
     "slug": "don_carlos",
@@ -14,7 +26,19 @@
     "visual_anchor": "open white shirt over huge belly, black mustache, gold chain, chrome microphone cord, karaoke showman",
     "must_wear": "balding head, black mustache, sweaty white short-sleeve dress shirt open over huge belly, black slacks, brown dress shoes, thick gold rope chain, chrome microphone hanging from neck on a cord",
     "pose": "sleazy karaoke-star smirk, belly-forward bravado, loud barrio showman energy",
-    "extra_negative": "woman, wife, duet partner, backup singer, companion, mariachi, second singer, second person, side person"
+    "extra_negative": "woman, wife, duet partner, backup singer, companion, mariachi, second singer, second person, side person",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "standing with belly forward, one hand on microphone cord, showman smirk"},
+      {"pose_id": "punch_left", "pose_desc": "swinging left fist in wide haymaker, belly momentum carrying the punch"},
+      {"pose_id": "punch_right", "pose_desc": "right uppercut from below, belly thrust forward, microphone swinging"},
+      {"pose_id": "hurt", "pose_desc": "stumbling backward clutching belly, microphone flying, shocked expression"},
+      {"pose_id": "block", "pose_desc": "arms wrapped around belly protectively, hunching forward, gritting teeth"},
+      {"pose_id": "ko", "pose_desc": "flat on back, belly pointing up, microphone on floor beside him, unconscious"},
+      {"pose_id": "windup", "pose_desc": "pulling microphone back like a weapon, winding up a big swing"},
+      {"pose_id": "taunt", "pose_desc": "singing into microphone dramatically, one arm extended, showman pose"},
+      {"pose_id": "sig_attack", "pose_desc": "charging belly-first like a battering ram, arms back, screaming"},
+      {"pose_id": "victory", "pose_desc": "singing triumphantly into microphone, one foot forward on ground, showman bow"}
+    ]
   },
   {
     "slug": "gringo",
@@ -23,7 +47,19 @@
     "visual_anchor": "visible messy blond hair under backwards red cap, coral orange t-shirt, khaki cargo shorts, fanny pack, sunburned tourist",
     "must_wear": "clearly visible messy blond hair and blond sideburns, bright red backwards baseball cap, coral-orange t-shirt, khaki cargo shorts, white crew socks, brown hiking shoes, nylon fanny pack on waist, folded paper map sticking out cargo pocket, pink sunburn on arms and face, no brown hair, no black hair",
     "pose": "confused angry tourist glare, stubborn macho frustration",
-    "extra_negative": "brown hair, black hair, dark hair, brunette hair, beard"
+    "extra_negative": "brown hair, black hair, dark hair, brunette hair, beard",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "confused fighting stance, fists up awkwardly, sunburned face scowling"},
+      {"pose_id": "punch_left", "pose_desc": "punching downward with LEFT arm only, left fist extended forward and down, right arm pulled back behind body, clumsy swing, fanny pack bouncing, leaning forward aggressively"},
+      {"pose_id": "punch_right", "pose_desc": "wild right haymaker, cap nearly falling off, desperate swing"},
+      {"pose_id": "hurt", "pose_desc": "stumbling sideways, cap flying off, grabbing sunburned face in pain"},
+      {"pose_id": "block", "pose_desc": "cowering behind raised arms, fearful grimace, tourist panic"},
+      {"pose_id": "ko", "pose_desc": "sprawled face-down, cap on ground, fanny pack spilled open, unconscious"},
+      {"pose_id": "windup", "pose_desc": "pulling fist back clumsily, squinting one eye, trying to aim"},
+      {"pose_id": "taunt", "pose_desc": "holding up phone to take selfie, oblivious smug grin"},
+      {"pose_id": "sig_attack", "pose_desc": "swinging fanny pack overhead like a flail, wild desperate attack"},
+      {"pose_id": "victory", "pose_desc": "taking victory selfie with phone, thumbs up, sunburned grin"}
+    ]
   },
   {
     "slug": "clarisa",
@@ -31,7 +67,19 @@
     "stereotype": "rich fresa San Jose daddy's girl",
     "visual_anchor": "hot pink blouse, white pants, red heels, hoop earrings, designer purse, rich girl",
     "must_wear": "long straight black hair, large gold hoop earrings, hot pink blouse, skintight white pants, red high heels, very long acrylic nails, tiny designer purse on shoulder, pink smartphone tucked in purse",
-    "pose": "elitist disgusted sneer, spoiled rich-girl confidence"
+    "pose": "elitist disgusted sneer, spoiled rich-girl confidence",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "standing with hip cocked, one hand on hip, disgusted sneer, nails displayed"},
+      {"pose_id": "punch_left", "pose_desc": "slapping with left hand, acrylic nails extended like claws, furious face"},
+      {"pose_id": "punch_right", "pose_desc": "scratching with right hand nails forward, vicious swipe"},
+      {"pose_id": "hurt", "pose_desc": "stumbling in heels, hair messed up, shrieking in horror at ruined look"},
+      {"pose_id": "block", "pose_desc": "holding purse up as shield, cringing behind it, protecting face"},
+      {"pose_id": "ko", "pose_desc": "collapsed on ground, heels broken, hair tangled, phone cracked beside her"},
+      {"pose_id": "windup", "pose_desc": "pulling purse back to swing, teeth bared, furious diva rage"},
+      {"pose_id": "taunt", "pose_desc": "taking selfie with phone, peace sign, mocking pouty lips"},
+      {"pose_id": "sig_attack", "pose_desc": "rapid claw swipe combo with both hands, nails flashing, frenzy of scratches"},
+      {"pose_id": "victory", "pose_desc": "posing for selfie over defeated area, hair flip, smug victorious smirk"}
+    ]
   },
   {
     "slug": "panzaeperra",
@@ -39,7 +87,19 @@
     "stereotype": "skinny calle arrimado gold tooth",
     "visual_anchor": "tilted black cap, charcoal t-shirt, black skinny jeans, black sneakers, gold tooth",
     "must_wear": "black baseball cap tilted low, charcoal gray t-shirt, black skinny jeans, black sneakers, thin chain necklace, single visible gold tooth",
-    "pose": "street punk glare, cocky chin-up contempt"
+    "pose": "street punk glare, cocky chin-up contempt",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "hunched street fighter stance, cap low over eyes, gold tooth glinting"},
+      {"pose_id": "punch_left", "pose_desc": "quick left jab punching downward toward camera, wiry arm driving straight down at viewer, hunched forward aggressively, street-smart precision"},
+      {"pose_id": "punch_right", "pose_desc": "dirty right hook punching downward toward camera, fist driving straight down at viewer, leaning forward aggressively, gold tooth bared in snarl"},
+      {"pose_id": "hurt", "pose_desc": "reeling sideways, cap knocked crooked, spitting blood"},
+      {"pose_id": "block", "pose_desc": "ducking low with arms tight, street-smart defensive crouch"},
+      {"pose_id": "ko", "pose_desc": "crumpled on ground, cap fallen off, chain broken, face down"},
+      {"pose_id": "windup", "pose_desc": "reaching behind back as if grabbing something, menacing grin"},
+      {"pose_id": "taunt", "pose_desc": "spitting to the side, chin up, gold tooth displayed, disrespectful smirk"},
+      {"pose_id": "sig_attack", "pose_desc": "headbutt lunge, cap-first dive forward, arms back, full commitment"},
+      {"pose_id": "victory", "pose_desc": "standing tall triumphantly, cap adjusted low, arms crossed, cold contempt"}
+    ]
   },
   {
     "slug": "michiquito",
@@ -48,7 +108,19 @@
     "visual_anchor": "hot pink polo, cream pants, slick side-part hair, flashy gold watch, smug rich kid",
     "must_wear": "neat dark brown side-part hair gelled flat, hot pink polo shirt, cream pants, tan leather shoes, oversized flashy gold wristwatch, expensive rich-kid styling, no beard, no older face",
     "pose": "smug trust-fund brat smirk, showing-off rich-kid arrogance",
-    "extra_negative": "door, doorway, room interior, furniture, window, wall decoration, house interior, office interior, background prop, adult man, second person, father figure, bodyguard, cropped giant person, partial person at edge, twin, duplicate rich kid, two men, duo"
+    "extra_negative": "door, doorway, room interior, furniture, window, wall decoration, house interior, office interior, background prop, adult man, second person, father figure, bodyguard, cropped giant person, partial person at edge, twin, duplicate rich kid, two men, duo",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "casual rich-kid stance, one hand adjusting watch, smug smirk"},
+      {"pose_id": "punch_left", "pose_desc": "slapping forward with LEFT hand only, left wrist limp and extended, right arm pulled back behind body, disgusted face, reluctant fighter"},
+      {"pose_id": "punch_right", "pose_desc": "right cross punching downward toward camera, watch-hand fist driving straight down at viewer, leaning forward aggressively, using watch as brass knuckles"},
+      {"pose_id": "hurt", "pose_desc": "stumbling back in shock, hair messed up, horrified at getting dirty"},
+      {"pose_id": "block", "pose_desc": "arms up protecting hair and face, whimpering defensive pose"},
+      {"pose_id": "ko", "pose_desc": "lying on ground, polo shirt dirty, watch cracked, hair disheveled, out cold"},
+      {"pose_id": "windup", "pose_desc": "pulling back watch-hand fist, squinting, trying to look tough"},
+      {"pose_id": "taunt", "pose_desc": "showing off gold watch, pointing at it, mocking opponent's poverty"},
+      {"pose_id": "sig_attack", "pose_desc": "throwing money bills while punching, entitled rich-kid fury"},
+      {"pose_id": "victory", "pose_desc": "brushing dirt off polo, adjusting hair, disgusted at having to fight"}
+    ]
   },
   {
     "slug": "hitmena",
@@ -57,7 +129,19 @@
     "visual_anchor": "wild dark purple-black hair, dark olive green shirt, olive cargo pants, black boots, purple fabric wraps, fierce woman fighter",
     "must_wear": "adult woman only, feminine face, wild dark purple-black hair blown back, dark olive-green short-sleeve shirt, olive cargo pants, black combat boots, silver nose ring, long purple fabric wraps or scarves in hands or trailing from arms, no dreadlocks, no juggling clubs",
     "pose": "activist glare, scrappy circus fighter intensity",
-    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest"
+    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "acrobatic fighting stance, purple wraps trailing, hair wild, fierce glare"},
+      {"pose_id": "punch_left", "pose_desc": "spinning left strike with purple wrap whipping around, circus agility"},
+      {"pose_id": "punch_right", "pose_desc": "right elbow strike, close combat, wrap coiled around forearm"},
+      {"pose_id": "hurt", "pose_desc": "knocked sideways, hair flying, wraps tangled, pained expression"},
+      {"pose_id": "block", "pose_desc": "wraps crossed in front like a shield, crouched defensive, ready to counter"},
+      {"pose_id": "ko", "pose_desc": "collapsed forward on knees, hair covering face, wraps pooled around her"},
+      {"pose_id": "windup", "pose_desc": "spinning wraps overhead like a lasso, building momentum, intense focus"},
+      {"pose_id": "taunt", "pose_desc": "raised fist salute, defiant feminist warrior pose, wraps streaming"},
+      {"pose_id": "sig_attack", "pose_desc": "flying kick with wraps trailing behind like wings, full aerial attack"},
+      {"pose_id": "victory", "pose_desc": "standing tall, fist raised, wraps billowing, triumphant activist pose"}
+    ]
   },
   {
     "slug": "karen",
@@ -66,7 +150,19 @@
     "visual_anchor": "adult woman, dark buzzcut, feminine face, dark red muscle shirt, black cargo pants, combat boots, lip piercing",
     "must_wear": "adult woman only, feminine face, visible bust, very short dark buzzcut hair, dark red muscle shirt, black cargo pants, black combat boots, silver lip ring and eyebrow piercings",
     "pose": "furious entitled scream face, confrontational manager energy",
-    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest"
+    "extra_negative": "man, male, beard, mustache, masculine face, broad male chest",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "aggressive wide stance, fists clenched at sides, screaming face, veins popping"},
+      {"pose_id": "punch_left", "pose_desc": "vicious left hook punching downward toward camera, fist driving straight down at viewer, full body leaning forward aggressively, screaming mid-punch"},
+      {"pose_id": "punch_right", "pose_desc": "straight right cross punching downward toward camera, fist driving straight down at viewer, boot planted forward, leaning forward aggressively, maximum aggression"},
+      {"pose_id": "hurt", "pose_desc": "stumbling back, hand on jaw, furious indignation at being hit"},
+      {"pose_id": "block", "pose_desc": "forearms crossed high, chin tucked, stubborn defensive wall"},
+      {"pose_id": "ko", "pose_desc": "face-down on ground, boots splayed, finally silenced, unconscious"},
+      {"pose_id": "windup", "pose_desc": "pulling both fists back, leaning forward, red-faced rage building"},
+      {"pose_id": "taunt", "pose_desc": "pointing finger in opponent face, mouth wide open screaming, demanding manager"},
+      {"pose_id": "sig_attack", "pose_desc": "flying tackle lunge, full body commitment, berserker rage charge"},
+      {"pose_id": "victory", "pose_desc": "standing with arms crossed, chin up, satisfied smirk, superiority pose"}
+    ]
   },
   {
     "slug": "carretastar",
@@ -74,7 +170,19 @@
     "stereotype": "drunk sabanero tope Palmares cowboy",
     "visual_anchor": "huge black mustache, straw cowboy hat, dark brown jacket over western shirt, raised frothy beer mug, sabanero cowboy",
     "must_wear": "huge thick black mustache, straw cowboy hat with dark band, dark brown western jacket over brown shirt or vest, raised frothy beer mug, olive green pants, large belt buckle, brown cowboy styling, no clean-shaven face",
-    "pose": "drunk cowboy swagger, wild party grin, sabanero menace"
+    "pose": "drunk cowboy swagger, wild party grin, sabanero menace",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "swaying drunkenly, beer mug in one hand, other fist ready, lopsided grin"},
+      {"pose_id": "punch_left", "pose_desc": "wild drunken left swing, beer sloshing, off-balance but powerful"},
+      {"pose_id": "punch_right", "pose_desc": "smashing beer mug forward as a weapon, frothy splash"},
+      {"pose_id": "hurt", "pose_desc": "stumbling backward, hat falling off, beer spilling, indignant drunk"},
+      {"pose_id": "block", "pose_desc": "holding hat down with one hand, other arm blocking, hunched"},
+      {"pose_id": "ko", "pose_desc": "slumped against invisible wall, hat over face, beer mug empty beside him"},
+      {"pose_id": "windup", "pose_desc": "chugging from beer mug for power, one eye closed, winding up"},
+      {"pose_id": "taunt", "pose_desc": "raising beer mug high in toast, bellowing drunkenly, hat tipped back"},
+      {"pose_id": "sig_attack", "pose_desc": "spinning lariat with one arm while drinking with the other, drunk tornado"},
+      {"pose_id": "victory", "pose_desc": "boot on ground, beer raised in triumph, mustache grin, cowboy celebration"}
+    ]
   },
   {
     "slug": "persefone",
@@ -83,7 +191,19 @@
     "visual_anchor": "pink space buns, black mesh crop top, fishnet tights, glowstick bracelets, pacifier necklace",
     "must_wear": "neon pink space buns hairstyle, black mesh crop top over black bralette, black shorts, hot pink fishnet tights, chunky platform sneakers, glowstick bracelets on both wrists, baby pacifier on thick silver chain necklace",
     "pose": "wild rave smile, wide eyes, chaotic club-kid confidence",
-    "extra_negative": "neon ring, portal, laser beams, club stage, concert stage, rave poster, energy circle, glowing background disc, cosmic backdrop"
+    "extra_negative": "neon ring, portal, laser beams, club stage, concert stage, rave poster, energy circle, glowing background disc, cosmic backdrop",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "bouncing rave stance, glowstick bracelets glowing, wide-eyed manic grin"},
+      {"pose_id": "punch_left", "pose_desc": "spinning left backfist, platform shoes pivoting, glowsticks trailing"},
+      {"pose_id": "punch_right", "pose_desc": "right uppercut, jumping from platform shoes, pacifier bouncing"},
+      {"pose_id": "hurt", "pose_desc": "stumbling in platform shoes, space buns coming loose, shocked face"},
+      {"pose_id": "block", "pose_desc": "crossed arms with glowstick bracelets forming an X-guard, crouched"},
+      {"pose_id": "ko", "pose_desc": "collapsed on platform shoes, glowsticks scattered, pacifier on ground, passed out"},
+      {"pose_id": "windup", "pose_desc": "dancing wind-up, spinning glowsticks in circles, building kinetic energy"},
+      {"pose_id": "taunt", "pose_desc": "rave dancing mockingly, tongue out, peace signs, bouncing on platforms"},
+      {"pose_id": "sig_attack", "pose_desc": "flying spinning kick off platform shoes, glowsticks spiraling, full rave fury"},
+      {"pose_id": "victory", "pose_desc": "dancing victory, arms up, glowsticks raised, ecstatic rave celebration pose"}
+    ]
   },
   {
     "slug": "don_alvaro",
@@ -91,7 +211,19 @@
     "stereotype": "fat tico metalero patches and chains",
     "visual_anchor": "long black hair, full beard, black metal shirt, torn black jeans, heavy metal stare",
     "must_wear": "long straight black hair, full black beard, black death-metal t-shirt covered in white sew-on patches, torn black jeans, black sneakers, silver wallet chain, studded black wristband",
-    "pose": "manic metalhead stare, tongue-out ferocity"
+    "pose": "manic metalhead stare, tongue-out ferocity",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "heavy metal stance, hair hanging, chain swinging, manic stare"},
+      {"pose_id": "punch_left", "pose_desc": "massive left hook, hair swinging, wallet chain whipping around"},
+      {"pose_id": "punch_right", "pose_desc": "right sledgehammer fist from above, hair flying up, brutal force"},
+      {"pose_id": "hurt", "pose_desc": "staggering sideways, hair in face, snarling through pain"},
+      {"pose_id": "block", "pose_desc": "arms crossed with studded wristbands forward, headbanging defensive stance"},
+      {"pose_id": "ko", "pose_desc": "face-down, hair spread on ground, chain pooled beside him, defeated"},
+      {"pose_id": "windup", "pose_desc": "headbanging to build momentum, hair whipping, fists clenching"},
+      {"pose_id": "taunt", "pose_desc": "devil horns hand gesture, tongue out, headbanging, metal scream"},
+      {"pose_id": "sig_attack", "pose_desc": "charging headfirst, hair streaming back, chain swinging, berserker charge"},
+      {"pose_id": "victory", "pose_desc": "standing with arms spread, head thrown back, primal metal scream"}
+    ]
   },
   {
     "slug": "anai",
@@ -100,7 +232,19 @@
     "visual_anchor": "rasta tam hat red gold green, loose green shirt, khaki pants, sandals, calm fighter",
     "must_wear": "slim Black man, knit tam hat with red gold green stripes, loose forest-green shirt, khaki loose pants, simple brown sandals, woven bead bracelet",
     "pose": "calm smile, rooted island confidence, unbothered fighter focus",
-    "extra_negative": "woman, second person, dance partner, backup dancer, companion, duo pose, second figure, extra arms, extra legs"
+    "extra_negative": "woman, second person, dance partner, backup dancer, companion, duo pose, second figure, extra arms, extra legs",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "relaxed capoeira-like stance, weight shifting, calm smile, hands open"},
+      {"pose_id": "punch_left", "pose_desc": "flowing left palm strike, capoeira grace, calm focused expression"},
+      {"pose_id": "punch_right", "pose_desc": "right elbow strike from ginga motion, fluid island rhythm"},
+      {"pose_id": "hurt", "pose_desc": "swaying backward absorbing hit, tam hat shifted, calm pain"},
+      {"pose_id": "block", "pose_desc": "open-palm parry, redirecting force, meditative defensive flow"},
+      {"pose_id": "ko", "pose_desc": "seated on ground, leaning back on hands, tam hat fallen, peaceful defeat"},
+      {"pose_id": "windup", "pose_desc": "low ginga crouch, hands circling, building rhythmic energy"},
+      {"pose_id": "taunt", "pose_desc": "peace sign, warm smile, beckoning opponent calmly, no malice"},
+      {"pose_id": "sig_attack", "pose_desc": "spinning capoeira kick, leg extended high, tam hat flying, graceful power"},
+      {"pose_id": "victory", "pose_desc": "seated meditation pose, eyes closed, peaceful smile, inner calm"}
+    ]
   },
   {
     "slug": "skin",
@@ -108,7 +252,19 @@
     "stereotype": "silent tattooed wall ear gauges",
     "visual_anchor": "completely bald, huge ear gauges, dark gray tank top, black cargo pants, forearm tattoos",
     "must_wear": "completely bald pale scalp stubble, huge flesh-tunnel ear plugs, dark gray ribbed tank top, black cargo pants, silver wallet chain, visible knuckle and forearm tattoos",
-    "pose": "deadpan menace, silent bouncer intimidation"
+    "pose": "deadpan menace, silent bouncer intimidation",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "immovable bouncer stance, arms slightly out, dead-eyed stare, tattooed fists"},
+      {"pose_id": "punch_left", "pose_desc": "mechanical left straight, tattooed arm extended, zero expression"},
+      {"pose_id": "punch_right", "pose_desc": "devastating right cross, knuckle tattoos forward, still expressionless"},
+      {"pose_id": "hurt", "pose_desc": "barely flinching, head turned slightly, annoyed more than hurt"},
+      {"pose_id": "block", "pose_desc": "forearms up like concrete walls, unmoved, absorbing everything"},
+      {"pose_id": "ko", "pose_desc": "falling straight back like a felled tree, stiff, finally stopped"},
+      {"pose_id": "windup", "pose_desc": "slowly pulling massive fist back, cracking neck, measured violence"},
+      {"pose_id": "taunt", "pose_desc": "cracking knuckles, tilting head slowly, silent threat"},
+      {"pose_id": "sig_attack", "pose_desc": "two-handed overhead slam, full bodyweight behind it, earth-shaking impact"},
+      {"pose_id": "victory", "pose_desc": "standing motionless, arms at sides, same dead stare, unchanged"}
+    ]
   },
   {
     "slug": "el_indio",
@@ -117,7 +273,19 @@
     "visual_anchor": "Indigenous Central American man, bare chest and bare shoulders, large jade bead necklace, ochre face paint, dark green pants, stern guardian",
     "must_wear": "adult Indigenous Central American man, brown skin, masculine face, short black hair or tightly tied-back black hair, jade bead necklace and earrings, geometric ochre green face paint on cheeks and forehead, fully bare chest and bare shoulders, dark green wrapped pants, leather sandals, traditional native warrior styling, no modern shirt, no modern jacket, no shawl, no poncho, no draped shoulder cloth",
     "pose": "dignified stern focus, ancestral guardian calm, grounded warrior presence",
-    "extra_negative": "woman, female, breasts, feminine face, long flowing female hair, conquistador, viking, cowboy, samurai, generic modern man, shirt, tunic, poncho, shawl, robe, cape, shoulder cloth, draped cloth, scarf"
+    "extra_negative": "woman, female, breasts, feminine face, long flowing female hair, conquistador, viking, cowboy, samurai, generic modern man, shirt, tunic, poncho, shawl, robe, cape, shoulder cloth, draped cloth, scarf",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "grounded warrior stance, jade beads hanging, face paint visible, stern dignity"},
+      {"pose_id": "punch_left", "pose_desc": "powerful left palm strike driving downward toward camera, arm extended straight down at viewer, rooted stance leaning forward aggressively, ancestral warrior power"},
+      {"pose_id": "punch_right", "pose_desc": "right hammerfist smashing downward toward camera, fist driving straight down at viewer, stepping forward leaning aggressively, face paint marking glowing"},
+      {"pose_id": "hurt", "pose_desc": "absorbing hit stoically, one step back, pained but unbowed"},
+      {"pose_id": "block", "pose_desc": "crossed forearms, jade beads swaying, immovable guardian wall"},
+      {"pose_id": "ko", "pose_desc": "kneeling, one hand on ground, head bowed, dignified even in defeat"},
+      {"pose_id": "windup", "pose_desc": "drawing back with both hands, deep stance, gathering earth energy"},
+      {"pose_id": "taunt", "pose_desc": "beating chest once, war cry, jade beads bouncing, primal challenge"},
+      {"pose_id": "sig_attack", "pose_desc": "leaping ground slam, both fists hitting earth, shockwave erupting"},
+      {"pose_id": "victory", "pose_desc": "standing with arms crossed over chest, eyes closed, ancestral prayer pose"}
+    ]
   },
   {
     "slug": "bull",
@@ -127,6 +295,18 @@
     "visual_anchor": "full body malacrianza bull, black head and neck, dark chest, white gray speckled body, black lower legs, smooth zebu shoulder hump, huge hanging dewlap, long upward-curving horns",
     "must_wear": "single quadruped bull only, realistic Malacrianza markings, black head, black neck, dark chest, white-gray torso with black speckles, salt-and-pepper gray white body and hindquarters, black lower legs, tall smooth zebu-style shoulder hump made of flesh and skin, very large hanging dewlap under neck, long upward-curving horns with dark tips, broad heavy torso, realistic long legs with correct bovine proportions, full tail visible, all four legs visible, no human torso, no hands, no humanoid muscles, no nose ring, not solid black, not solid gray",
     "pose": "stubborn aggressive fiesta bull menace, head slightly lowered, chest forward, powerful territorial stance, whole body fully visible, broadside three-quarter view, long legs planted naturally",
-    "extra_negative": "human, person, rider, mounted rider, cowboy, matador, bullfighter, saddle, reins, cape, poncho, horseman, minotaur, humanoid torso, bipedal, human arms, human hands, bodybuilder anatomy, solid black body, solid gray body, tiny dewlap, short horns, cropped body, cut off horns, missing tail, missing legs, close-up, stubby legs, short legs, tiny legs, hairy hump, mane, fur crest, fluffy hump, horse mane"
+    "extra_negative": "human, person, rider, mounted rider, cowboy, matador, bullfighter, saddle, reins, cape, poncho, horseman, minotaur, humanoid torso, bipedal, human arms, human hands, bodybuilder anatomy, solid black body, solid gray body, tiny dewlap, short horns, cropped body, cut off horns, missing tail, missing legs, close-up, stubby legs, short legs, tiny legs, hairy hump, mane, fur crest, fluffy hump, horse mane",
+    "poses": [
+      {"pose_id": "idle", "pose_desc": "standing broadside, head low, horns forward, snorting, tail swishing, ready to charge"},
+      {"pose_id": "charge", "pose_desc": "full galloping charge head-on, horns aimed forward, dust trailing, furious momentum"},
+      {"pose_id": "horn_left", "pose_desc": "sweeping head left, left horn slashing upward, powerful neck muscles taut"},
+      {"pose_id": "horn_right", "pose_desc": "sweeping head right, right horn slashing upward, aggressive side swipe"},
+      {"pose_id": "hurt", "pose_desc": "staggering sideways from hit, legs bracing, snorting in pain, head shaking"},
+      {"pose_id": "stomp", "pose_desc": "rearing front legs and slamming down, ground impact, dust cloud, furious stomp"},
+      {"pose_id": "ko", "pose_desc": "collapsed on side, legs folded, horns resting on ground, exhausted, defeated"},
+      {"pose_id": "taunt", "pose_desc": "pawing ground with front hoof, snorting steam, head lowered, about to charge"},
+      {"pose_id": "sig_charge", "pose_desc": "explosive full-speed charge, head down, horns aimed, dust storm behind, unstoppable"},
+      {"pose_id": "victory", "pose_desc": "standing triumphant, head raised, bellowing, horns silhouetted, dominant bull"}
+    ]
   }
 ]

@@ -3,6 +3,181 @@ class UIManager {
     this.r = renderer;
   }
 
+  drawTitleScreen(stateTick, tick) {
+    const ctx = this.r.ctx;
+    const W = this.r.W;
+    const H = this.r.H;
+
+    ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
+    ctx.fillRect(0, 0, W, H);
+
+    const titleBg = this.r.assets ? this.r.assets.getBackground('title_bg') : null;
+    if (titleBg) {
+      ctx.globalAlpha = 0.4;
+      ctx.drawImage(titleBg, 0, 0, titleBg.width, titleBg.height, 0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+
+    this.r.drawFireworks(tick);
+    this.r.drawSarchiBorder();
+
+    ctx.save();
+    ctx.globalAlpha = 0.12;
+    ctx.translate(W / 2, 80);
+    const rosetteRot = tick * 0.005;
+    for (let i = 0; i < 12; i++) {
+      const angle = rosetteRot + (i / 12) * Math.PI * 2;
+      const rx = Math.cos(angle) * 55;
+      const ry = Math.sin(angle) * 55;
+      this.r.drawSarchiRosette(rx, ry, 10);
+    }
+    ctx.restore();
+
+    this.r.drawSarchiRosette(W / 2 - 70, 20, 16);
+    this.r.drawSarchiRosette(W / 2 + 70, 20, 16);
+
+    const introAlpha = Math.min(1, stateTick / 20);
+    ctx.save();
+    ctx.globalAlpha = introAlpha;
+
+    const titlePulse = 1 + Math.sin(tick * 0.06) * 0.05;
+    ctx.save();
+    ctx.globalAlpha = introAlpha * (0.1 + Math.sin(tick * 0.06) * 0.06);
+    ctx.fillStyle = CONST.COLORS.GOLD;
+    this.r._drawText(CONST.TEXT.TITLE, W / 2, 48, 'center', 4.2 * titlePulse + 0.4);
+    ctx.restore();
+
+    ctx.globalAlpha = introAlpha;
+    ctx.fillStyle = CONST.COLORS.GOLD;
+    this.r._drawText(CONST.TEXT.TITLE, W / 2, 50, 'center', 4.2 * titlePulse);
+
+    ctx.fillStyle = CONST.COLORS.WHITE;
+    this.r._drawText(CONST.TEXT.SUBTITLE, W / 2, 90, 'center', 1.5);
+
+    this.r.drawSarchiStripe(30, 108, W - 60);
+
+    if (stateTick > 30 && Math.floor(tick / 18) % 2 === 0) {
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      this.r._drawText('PRESS START', W / 2, 135, 'center', 2.0);
+    }
+
+    ctx.fillStyle = CONST.COLORS.YELLOW;
+    this.r._drawText('EL JUEGO DE PICHAZO', W / 2, 165, 'center', 1.0);
+
+    const tejaRot = tick * 0.08;
+    this.r.drawTeja(W / 2 - 30, 190, 12, tejaRot);
+    this.r.drawTeja(W / 2 + 30, 190, 12, -tejaRot);
+
+    ctx.restore();
+  }
+
+  drawWorldMap(currentIndex, circuit, stateTick, tick) {
+    const ctx = this.r.ctx;
+    const W = this.r.W;
+    const H = this.r.H;
+
+    ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
+    ctx.fillRect(0, 0, W, H);
+
+    const mapBg = this.r.assets ? this.r.assets.getBackground('map_bg') : null;
+    if (mapBg) {
+      ctx.globalAlpha = 0.5;
+      ctx.drawImage(mapBg, 0, 0, mapBg.width, mapBg.height, 0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
+
+    const circuitInfo = CONST.CIRCUITS[circuit];
+    ctx.fillStyle = CONST.COLORS.GOLD;
+    this.r._drawText(circuitInfo ? circuitInfo.name : 'MAPA', W / 2, 8, 'center', 1.4);
+
+    const nodes = CONST.MAP_NODES;
+    for (let i = 0; i < nodes.length - 1; i++) {
+      if (nodes[i].circuit === nodes[i + 1].circuit) {
+        const a = nodes[i];
+        const b = nodes[i + 1];
+        const beaten = i < currentIndex;
+        ctx.strokeStyle = beaten ? CONST.COLORS.GOLD : 'rgba(255,255,255,0.15)';
+        ctx.lineWidth = beaten ? 2 : 1;
+        ctx.beginPath();
+        ctx.moveTo(a.x, a.y);
+        ctx.lineTo(b.x, b.y);
+        ctx.stroke();
+      }
+    }
+
+    for (let i = 0; i < nodes.length; i++) {
+      const node = nodes[i];
+      const isCurrent = i === currentIndex;
+      const isBeaten = i < currentIndex;
+      const isLocked = node.circuit > circuit;
+
+      const r = isCurrent ? 10 : 8;
+
+      if (isLocked) {
+        ctx.fillStyle = 'rgba(40,40,60,0.8)';
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = CONST.COLORS.GRAY;
+        this.r._drawText('?', node.x, node.y - 3, 'center', 1.0);
+        continue;
+      }
+
+      if (isCurrent) {
+        const pulse = 0.6 + Math.sin(tick * 0.1) * 0.4;
+        ctx.save();
+        ctx.globalAlpha = pulse * 0.3;
+        ctx.fillStyle = CONST.COLORS.GOLD;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r + 4, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+
+      const portrait = (i < OPPONENT_DATA.length)
+        ? (this.r.assets ? this.r.assets.getPortraitImage(OPPONENT_DATA[i].name) : null)
+        : (i === OPPONENT_DATA.length ? (this.r.assets ? this.r.assets.getPortraitImage('EL TORO') : null) : null);
+
+      if (portrait) {
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.clip();
+        ctx.drawImage(portrait, node.x - r, node.y - r, r * 2, r * 2);
+        ctx.restore();
+      } else {
+        const circColors = [CONST.COLORS.GREEN, CONST.COLORS.YELLOW, CONST.COLORS.ORANGE, CONST.COLORS.RED];
+        ctx.fillStyle = circColors[node.circuit] || CONST.COLORS.WHITE;
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+        ctx.fill();
+      }
+
+      ctx.strokeStyle = isCurrent ? CONST.COLORS.GOLD : (isBeaten ? CONST.COLORS.GREEN : CONST.COLORS.WHITE);
+      ctx.lineWidth = isCurrent ? 2 : 1;
+      ctx.beginPath();
+      ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
+      ctx.stroke();
+
+      if (isBeaten) {
+        ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+        this.r._drawText('V', node.x, node.y - 3, 'center', 0.7);
+      }
+
+      if (isCurrent) {
+        const oppName = i < OPPONENT_DATA.length ? OPPONENT_DATA[i].name :
+                       (i === OPPONENT_DATA.length ? 'EL TORO' : '???');
+        ctx.fillStyle = CONST.COLORS.WHITE;
+        this.r._drawText(oppName, node.x, node.y + r + 6, 'center', 0.7);
+      }
+    }
+
+    if (stateTick > 15 && Math.floor(tick / 20) % 2 === 0) {
+      ctx.fillStyle = CONST.COLORS.NEON_GREEN;
+      this.r._drawText('PRESS START', W / 2, H - 16, 'center', 1.2);
+    }
+  }
+
   drawAttractMode(tick, credits, highScores, onlineData) {
     const ctx = this.r.ctx;
     const W = this.r.W;
@@ -31,6 +206,12 @@ class UIManager {
   }
 
   _drawTitleScreen(ctx, W, H, tick, onlineData) {
+    const titleBg = this.r.assets ? this.r.assets.getBackground('title_bg') : null;
+    if (titleBg) {
+      ctx.globalAlpha = 0.35;
+      ctx.drawImage(titleBg, 0, 0, titleBg.width, titleBg.height, 0, 0, W, H);
+      ctx.globalAlpha = 1;
+    }
     this.r.drawFireworks(tick);
 
     ctx.save();
@@ -115,7 +296,18 @@ class UIManager {
         if (entry.lastDefeated) {
           var oppData = this._findOpponentData(entry.lastDefeated);
           if (oppData) {
-            this.r.sprites.drawOpponentHead(ctx, oppData, frame, 72, y + 6, 0.8);
+            var pImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name);
+            if (pImg) {
+              var pS = 14;
+              ctx.save();
+              ctx.beginPath();
+              this._roundedRect(ctx, 72 - pS / 2, y + 6 - pS / 2, pS, pS, 2);
+              ctx.clip();
+              this._drawPortraitCropped(ctx, pImg, 72 - pS / 2, y + 6 - pS / 2, pS, pS, oppData.name);
+              ctx.restore();
+            } else {
+              this.r.sprites.drawOpponentHead(ctx, oppData, frame, 72, y + 6, 0.8);
+            }
           }
         }
         ctx.fillStyle = color;
@@ -221,7 +413,13 @@ class UIManager {
       const y = startY + row * rowH;
       const frame = Math.floor(tick / 12) % 2;
 
-      this.r.sprites.drawOpponentHead(ctx, entry.data, frame, 24, y + 10, 1.3);
+      const thumbImg = this.r.assets && this.r.assets.getPortraitImage(entry.data.name);
+      if (thumbImg) {
+        const thumbS = 22;
+        this._drawPortraitCropped(ctx, thumbImg, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, entry.data.name);
+      } else {
+        this.r.sprites.drawOpponentHead(ctx, entry.data, frame, 24, y + 10, 1.3);
+      }
 
       ctx.fillStyle = entry.circuitColor;
       this.r._drawText(entry.data.name, 48, y, 'left', 1.1);
@@ -473,7 +671,18 @@ class UIManager {
       const a = Math.min(1, (stateTick - showAt) / 10);
       ctx.globalAlpha = a;
       const y = 66 + i * rowH;
-      this.r.sprites.drawOpponentHead(ctx, opp, Math.floor(stateTick / 10) % 2, 36, y + 10, 1.2);
+      const portraitImg = this.r.assets && this.r.assets.getPortraitImage(opp.name);
+      if (portraitImg) {
+        const pS = 28;
+        ctx.save();
+        ctx.beginPath();
+        this._roundedRect(ctx, 36 - pS / 2, y + 10 - pS / 2, pS, pS, 4);
+        ctx.clip();
+        this._drawPortraitCropped(ctx, portraitImg, 36 - pS / 2, y + 10 - pS / 2, pS, pS, opp.name);
+        ctx.restore();
+      } else {
+        this.r.sprites.drawOpponentHead(ctx, opp, Math.floor(stateTick / 10) % 2, 36, y + 10, 1.2);
+      }
       ctx.fillStyle = CONST.COLORS.WHITE;
       this.r._drawText(opp.name, 68, y, 'left', 1.2);
       ctx.fillStyle = CONST.COLORS.GRAY;
@@ -494,28 +703,67 @@ class UIManager {
     ctx.fillRect(0, 0, W, H);
     this.r.drawSarchiBorder();
 
-    const spriteX = 54;
-    const spriteY = 68;
-    const spriteScale = 3.5;
+    const portraitImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name);
     const spriteAlpha = Math.min(1, stateTick / 15);
 
-    if (spriteAlpha > 0) {
-      const spotGrad = ctx.createRadialGradient(spriteX, spriteY + 10, 0, spriteX, spriteY + 10, 55);
-      const spotA = spriteAlpha * 0.25;
-      spotGrad.addColorStop(0, `rgba(255,255,255,${spotA})`);
-      spotGrad.addColorStop(0.5, `rgba(100,100,180,${spotA * 0.4})`);
+    if (portraitImg) {
+      const pW = 108;
+      const pH = 108;
+      const px = 10;
+      const py = 14;
+
+      ctx.globalAlpha = spriteAlpha;
+      ctx.save();
+      ctx.beginPath();
+      this._roundedRect(ctx, px, py, pW, pH, 6);
+      ctx.clip();
+
+      const bgGrad = ctx.createLinearGradient(px, py, px, py + pH);
+      const portraitBgColors = {
+        'DON CARLOS': '#3a1a0a', 'GRINGO': '#1a2a3a', 'CLARISA': '#3a1a2a',
+        'PANZAEPERRA': '#2a2a0a', 'MICHIQUITO': '#3a1a2a', 'HITMENA': '#1a1a3a',
+        'KAREN': '#2a0a2a', 'CARRETASTAR': '#2a1a0a', 'PERSEFONE': '#1a0a2a',
+        'DON ALVARO': '#1a2a1a', 'ANAI': '#2a1a2a', 'SKIN': '#1a1a1a',
+        'EL INDIO': '#2a1a0a',
+      };
+      const pc = portraitBgColors[oppData.name] || '#2a1a3a';
+      bgGrad.addColorStop(0, pc);
+      bgGrad.addColorStop(1, '#0a0a18');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(px, py, pW, pH);
+
+      const spotGrad = ctx.createRadialGradient(px + pW / 2, py + pH * 0.4, 0, px + pW / 2, py + pH * 0.4, pW * 0.6);
+      spotGrad.addColorStop(0, 'rgba(255,255,255,0.12)');
       spotGrad.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = spotGrad;
-      ctx.fillRect(0, 10, 120, 130);
+      ctx.fillRect(px, py, pW, pH);
+
+      this._drawPortraitCropped(ctx, portraitImg, px, py, pW, pH, oppData.name);
+      ctx.restore();
+
+      ctx.globalAlpha = spriteAlpha;
+      ctx.strokeStyle = 'rgba(255,215,0,0.6)';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      this._roundedRect(ctx, px, py, pW, pH, 6);
+      ctx.stroke();
+
+      ctx.strokeStyle = 'rgba(255,215,0,0.2)';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      this._roundedRect(ctx, px - 2, py - 2, pW + 4, pH + 4, 8);
+      ctx.stroke();
+      ctx.globalAlpha = 1;
+    } else {
+      const spriteX = 54;
+      const spriteY = 68;
+      ctx.globalAlpha = spriteAlpha;
+      const frame = Math.floor(stateTick / 12) % 2;
+      this.r.sprites.drawOpponentHead(ctx, oppData, frame, spriteX, spriteY, 3.5);
+      ctx.globalAlpha = 1;
     }
 
-    ctx.globalAlpha = spriteAlpha;
-    const frame = Math.floor(stateTick / 12) % 2;
-    this.r.sprites.drawOpponentHead(ctx, oppData, frame, spriteX, spriteY, spriteScale);
-    ctx.globalAlpha = 1;
-
-    // Name and title on the right side
-    const textX = W / 2 + 28;
+    const textX = W / 2 + 42;
     const nameAlpha = Math.min(1, stateTick / 20);
     ctx.globalAlpha = nameAlpha;
     ctx.fillStyle = CONST.COLORS.WHITE;
@@ -527,9 +775,21 @@ class UIManager {
       this.r._drawText(oppData.title, textX, 38, 'center', 1);
     }
 
-    // Quote with typewriter effect at bottom
-    if (stateTick > 30 && oppData.quote) {
-      const quoteLines = oppData.quote.split('\n');
+    if (stateTick > 60) {
+      this._drawStatBar(ctx, 'VIT', oppData.health / 180, W / 2 + 14, 58, W / 2 - 32, CONST.COLORS.GREEN, stateTick - 60);
+      this._drawStatBar(ctx, 'VEL', oppData.speed, W / 2 + 14, 78, W / 2 - 32, CONST.COLORS.LIGHT_BLUE, stateTick - 70);
+    }
+
+    let quoteText = oppData.quote;
+    if (oppData.quotes && oppData.quotes.length > 0) {
+      if (this._lastQuoteChar !== oppData.name) {
+        this._lastQuoteChar = oppData.name;
+        this._quoteIdx = Math.floor(Math.random() * oppData.quotes.length);
+      }
+      quoteText = oppData.quotes[this._quoteIdx];
+    }
+    if (stateTick > 30 && quoteText) {
+      const quoteLines = quoteText.split('\n');
       const totalChars = quoteLines.join('').length;
       const charsVisible = Math.min(totalChars, Math.floor((stateTick - 30) / 1.5));
       let charCount = 0;
@@ -541,18 +801,52 @@ class UIManager {
         if (charsVisible <= lineStart) break;
         const visible = Math.min(line.length, charsVisible - lineStart);
         const text = line.substring(0, visible);
-        this.r._drawText(text, W / 2, 140 + i * 14, 'center', 1);
+        this.r._drawText(text, W / 2, 134 + i * 14, 'center', 1);
         charCount = lineEnd;
       }
     }
 
-    // Stat bars
-    if (stateTick > 60) {
-      this._drawStatBar(ctx, 'VIT', oppData.health / 180, W / 2 + 4, 58, W / 2 - 22, CONST.COLORS.GREEN, stateTick - 60);
-      this._drawStatBar(ctx, 'VEL', oppData.speed, W / 2 + 4, 78, W / 2 - 22, CONST.COLORS.LIGHT_BLUE, stateTick - 70);
-    }
-
     this.r.drawSarchiStripe(20, H - 20, W - 40);
+  }
+
+  static PORTRAIT_CROPS = {
+    'DON CARLOS':   { top: 0.05, bottom: 0.15, left: 0.05, right: 0.05 },
+    'GRINGO':       { top: 0.02, bottom: 0.30, left: 0.05, right: 0.05 },
+    'CLARISA':      { top: 0.0,  bottom: 0.55, left: 0.10, right: 0.15 },
+    'PANZAEPERRA':  { top: 0.02, bottom: 0.28, left: 0.05, right: 0.05 },
+    'MICHIQUITO':   { top: 0.0,  bottom: 0.50, left: 0.10, right: 0.10 },
+    'HITMENA':      { top: 0.05, bottom: 0.45, left: 0.05, right: 0.05 },
+    'EL INDIO':     { top: 0.02, bottom: 0.25, left: 0.05, right: 0.05 },
+    'DON ALVARO':   { top: 0.0,  bottom: 0.25, left: 0.0,  right: 0.05 },
+    'ANAI':         { top: 0.0,  bottom: 0.65, left: 0.15, right: 0.15 },
+    'PERSEFONE':    { top: 0.0,  bottom: 0.60, left: 0.15, right: 0.15 },
+    'SKIN':         { top: 0.02, bottom: 0.22, left: 0.05, right: 0.05 },
+    'KAREN':        { top: 0.15, bottom: 0.30, left: 0.0,  right: 0.20 },
+    'CARRETASTAR':  { top: 0.0,  bottom: 0.35, left: 0.25, right: 0.0  },
+    'BULL':         { top: 0.0,  bottom: 0.30, left: 0.10, right: 0.0  },
+    'PLAYER':       { top: 0.02, bottom: 0.22, left: 0.05, right: 0.05 },
+  };
+
+  _drawPortraitCropped(ctx, img, dx, dy, dw, dh, charName) {
+    const crop = (charName && UIManager.PORTRAIT_CROPS[charName]) || { top: 0.05, bottom: 0.30, left: 0.05, right: 0.05 };
+    const sx = img.naturalWidth * crop.left;
+    const sy = img.naturalHeight * crop.top;
+    const sw = img.naturalWidth * (1 - crop.left - crop.right);
+    const sh = img.naturalHeight * (1 - crop.top - crop.bottom);
+    ctx.drawImage(img, sx, sy, sw, sh, dx, dy, dw, dh);
+  }
+
+  _roundedRect(ctx, x, y, w, h, r) {
+    ctx.moveTo(x + r, y);
+    ctx.lineTo(x + w - r, y);
+    ctx.arcTo(x + w, y, x + w, y + r, r);
+    ctx.lineTo(x + w, y + h - r);
+    ctx.arcTo(x + w, y + h, x + w - r, y + h, r);
+    ctx.lineTo(x + r, y + h);
+    ctx.arcTo(x, y + h, x, y + h - r, r);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + r, y, r);
+    ctx.closePath();
   }
 
   _drawStatBar(ctx, label, fraction, x, y, w, color, animTick) {
@@ -687,17 +981,42 @@ class UIManager {
     if (stateTick > 70 && defeatQuote) {
       const alpha = Math.min(1, (stateTick - 70) / 20);
       ctx.globalAlpha = alpha;
-      ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
-      this.r._drawText('"' + defeatQuote + '"', W / 2, 122, 'center', 0.9);
+
+      const defeatedPortrait = this.r.assets && this.r.assets.getPortraitImage(oppName);
+      if (defeatedPortrait) {
+        const pSize = 32;
+        const pAlpha = 0.5 + Math.sin(stateTick * 0.04) * 0.1;
+        ctx.globalAlpha = alpha * pAlpha;
+        this._drawPortraitCropped(ctx, defeatedPortrait, W / 2 - pSize / 2, 108, pSize, pSize, oppName);
+        ctx.globalAlpha = alpha;
+        ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
+        this.r._drawText('"' + defeatQuote + '"', W / 2, 146, 'center', 0.9);
+      } else {
+        ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
+        this.r._drawText('"' + defeatQuote + '"', W / 2, 122, 'center', 0.9);
+      }
       ctx.globalAlpha = 1;
     }
 
     if (score !== undefined) {
       ctx.fillStyle = CONST.COLORS.GOLD;
-      this.r._drawText('PUNTOS: ' + score, W / 2, 146, 'center', 1.4);
+      const scoreY = this.r.assets && this.r.assets.getPortraitImage(oppName) ? 164 : 146;
+      this.r._drawText('PUNTOS: ' + score, W / 2, scoreY, 'center', 1.4);
     }
 
     this.r._updateParticles(ctx);
+
+    const victoryImg = this.r.assets && this.r.assets.getPoseImage('PLAYER', 'victory');
+    if (victoryImg && stateTick > 10) {
+      const vAlpha = Math.min(1, (stateTick - 10) / 20);
+      const bounce = Math.sin(stateTick * 0.08) * 3;
+      ctx.globalAlpha = vAlpha;
+      const vh = 70;
+      const va = victoryImg.naturalWidth / victoryImg.naturalHeight;
+      const vw = vh * va;
+      ctx.drawImage(victoryImg, W / 2 - vw / 2, H - vh - 8 + bounce, vw, vh);
+      ctx.globalAlpha = 1;
+    }
 
     this.r.drawSarchiRosette(W / 2, H - 28, 12);
   }

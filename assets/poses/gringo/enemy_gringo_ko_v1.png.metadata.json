@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(clearly visible messy blond hair and blond sideburns, bright red backwards baseball cap, coral-orange t-shirt, khaki cargo shorts, white crew socks, brown hiking shoes, nylon fanny pack on waist, folded paper map sticking out cargo pocket, pink sunburn on arms and face, no brown hair, no black hair, sprawled face-down, cap on ground, fanny pack spilled open, unconscious:1.25), \"GRINGO\" enemy, visible messy blond hair under backwards red cap, coral orange t-shirt, khaki cargo shorts, fanny pack, sunburned tourist, sprawled face-down, cap on ground, fanny pack spilled open, unconscious, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair, brown hair, black hair, dark hair, brunette hair, beard",
+  "seed": 2464421083,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "ko",
+  "fighter_slug": "gringo",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_gringo_idle_v1.png",
+  "timestamp": "2026-04-11T06:25:56.666467+00:00",
+  "validated": false
+}

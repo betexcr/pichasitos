@@ -22,20 +22,19 @@ body.touch-device {
     inset 0 0 60px 8px rgba(0,0,0,0.4);
 }
 canvas#game {
-  image-rendering: pixelated;
-  image-rendering: crisp-edges;
+  image-rendering: auto;
   display: block;
   position: relative;
   z-index: 1;
 }
 canvas#glow {
-  image-rendering: pixelated;
+  image-rendering: auto;
   position: absolute; top: 0; left: 0;
   width: 100%; height: 100%;
   pointer-events: none; z-index: 2;
   mix-blend-mode: screen;
-  opacity: 0.15;
-  filter: blur(1px) brightness(1.1);
+  opacity: 0.08;
+  filter: blur(1px) brightness(1.05);
 }
 #scanlines {
   position: absolute; top: 0; left: 0;

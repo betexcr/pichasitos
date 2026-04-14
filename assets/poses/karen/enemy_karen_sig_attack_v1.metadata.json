@@ -1,0 +1,23 @@
+{
+  "project": "pichasitos",
+  "prompt": "<lora:punchout_style:0.75>, (((single full-body character))), exactly one character only, exactly one human only, one person total, solo fighter, isolated subject, zero extra people, zero side characters, zero background people, no crowd, no audience, no duplicate faces, no duplicate bodies, whole body visible head to toe, both feet visible, centered in frame, single character concept art, arcade opponent design sheet, one fighter only, solo subject, centered, isolated, not a group shot, not a duo, not a trio, simple blank backdrop only, no backdrop graphics, not fashion illustration, not poster art, (adult woman, dark buzzcut, feminine face, dark red muscle shirt, black cargo pants, combat boots, lip piercing:1.25), \"KAREN\" enemy. entitled rude woman manager meme quejas, aggressive woman fighter, not male. Costume and worn accessories: adult woman only, feminine face, visible bust, very short dark buzzcut hair, dark red muscle shirt, black cargo pants, black combat boots, silver lip ring and eyebrow piercings. Expression and attitude: furious entitled scream face, confrontational manager energy, pose and action: flying tackle lunge, full body commitment, berserker rage charge, BREAK, Super Punch-Out inspired promotional character concept art, 1990s SNES arcade illustration, western cartoon caricature, hand-painted cel finish, clean ink outlines, smooth cel shading, bold highlights on skin and cloth, exaggerated expressive face, thick brows, strong jaw, oversized forearms and hands, readable silhouette, non-anime face design, full body head to toe, simple warm off-white seamless backdrop, empty background, no scenery, no stage, no poster layout",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, multiple characters, extra character, second person, third person, duo, trio, group shot, team, crowd, audience, background person, sidekick, lineup, character sheet, sprite sheet, collage, contact sheet, duplicate, duplicate face, duplicate body, clone, twins, triplets, mirrored duplicate, abstract backdrop shape, abstract background blob, spotlight shape, paint splash background, halo backdrop, pedestal, platform, podium, rock, boulder, floor blob, ground shadow blob, giant shadow oval, background text, giant letters, typography, poster, poster design, graphic design, infographic, logo mark, emblem, badge, symbol, icon, sign, sunburst, rays, radial burst, target shape, background pattern, giant circle, giant ring, giant shape behind character, boxing gloves, boxing ring, ring ropes, stage, theater stage, archway, spotlight background, mouthguard, cropped, missing feet, bust only, fashion illustration, fashion sketch, runway pose, glamour pose, catalog pose, selfie pose, model pose, arms crossed, hands on hips, peace sign, thumbs up, casual standing pose, relaxed stance, holding microphone, singing into microphone, holding smartphone, taking selfie, holding map, holding beer bottle, anime, manga, chibi, kawaii, moe, anime eyes, anime face, anime hair, cel anime, shoujo, bishounen, man, male, beard, mustache, masculine face, broad male chest",
+  "seed": 1731265292,
+  "parent_seed": null,
+  "prompt_version": "v4.2",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy_pose",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "sampler": "DPM++ SDE Karras",
+  "width": 512,
+  "height": 896,
+  "model": "westernAnimation_v1",
+  "timestamp": "2026-04-12T04:17:45.771932+00:00",
+  "validated": false,
+  "pose_id": "sig_attack",
+  "pose_desc": "flying tackle lunge, full body commitment, berserker rage charge",
+  "generation_mode": "img2img_reference_pose",
+  "denoising_strength": 0.55,
+  "source_reference": "/Users/alberto/pichasitos copy/assets/poses/karen/enemy_karen_idle_v1.png"
+}

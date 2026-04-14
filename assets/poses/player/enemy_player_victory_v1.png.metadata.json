@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(short black hair, green tank top with gold-yellow side stripes, dark blue jeans, brown work boots, green cloth hand wraps, no gloves, arms raised in triumph, fists pumped overhead, wide victorious grin:1.25), \"PLAYER\" enemy, green tank top, yellow side stripes, dark blue jeans, brown work boots, confident grin, arms raised in triumph, fists pumped overhead, wide victorious grin, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "seed": 4148188593,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "victory",
+  "fighter_slug": "player",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_player_idle_v1.png",
+  "timestamp": "2026-04-11T06:21:43.189892+00:00",
+  "validated": false
+}

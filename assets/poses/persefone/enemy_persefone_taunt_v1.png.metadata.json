@@ -1,0 +1,22 @@
+{
+  "project": "pichasitos",
+  "prompt": "(neon pink space buns hairstyle, black mesh crop top over black bralette, black shorts, hot pink fishnet tights, chunky platform sneakers, glowstick bracelets on both wrists, baby pacifier on thick silver chain necklace, rave dancing mockingly, tongue out, peace signs, bouncing on platforms:1.25), \"PERSEFONE\" enemy, pink space buns, black mesh crop top, fishnet tights, glowstick bracelets, pacifier necklace, rave dancing mockingly, tongue out, peace signs, bouncing on platforms, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair, neon ring, portal, laser beams, club stage, concert stage, rave poster, energy circle, glowing background disc, cosmic backdrop",
+  "seed": 2701238671,
+  "parent_seed": null,
+  "prompt_version": "v4.3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "taunt",
+  "fighter_slug": "persefone",
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "strength": 0.7,
+  "sampler": "PNDMScheduler",
+  "width": 512,
+  "height": 512,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_persefone_idle_v1.png",
+  "timestamp": "2026-04-11T06:46:35.568790+00:00",
+  "validated": false
+}

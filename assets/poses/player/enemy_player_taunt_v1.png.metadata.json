@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "solo muscular man from behind taunting, green tank top, blue jeans, one hand beckoning come here, other hand on hip, cocky lean, bold outlines, flat colors, game sprite, white background",
+  "negative_prompt": "multiple people, two people, crowd, duo, pair, opponent, photorealistic, photo, 3d, watermark, text, blurry, extra limbs, anime, manga, face visible, front view",
+  "seed": 2883831238,
+  "prompt_version": "v5.2",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "taunt",
+  "fighter_slug": "player",
+  "steps": 30,
+  "cfg_scale": 8.5,
+  "strength": 0.72,
+  "model": "westernAnimation_v1",
+  "reference_image": "enemy_player_idle_v1.png",
+  "variants_generated": 4,
+  "timestamp": "2026-04-11T18:42:00.150061+00:00",
+  "validated": false
+}

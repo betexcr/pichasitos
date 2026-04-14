@@ -59,7 +59,7 @@ class Player {
     }
 
     this.animTimer++;
-    if (this.animTimer >= 8) { this.animTimer = 0; this.animFrame = (this.animFrame + 1) % 2; }
+    if (this.animTimer >= 14) { this.animTimer = 0; this.animFrame = (this.animFrame + 1) % 2; }
 
     // Handle ongoing state timer
     if (this.stateTimer > 0) {
@@ -202,6 +202,8 @@ class Player {
     return null;
   }
 
+  setVictory() { this.state = 'victory'; this.stateTimer = 0; }
+
   getAnimState() {
     switch (this.state) {
       case 'windup_left': return 'windup_left';
@@ -213,6 +215,7 @@ class Player {
       case 'block': return 'block';
       case 'hurt': case 'winded': return 'hurt';
       case 'ko': return 'ko';
+      case 'victory': return 'victory';
       default: return 'idle';
     }
   }

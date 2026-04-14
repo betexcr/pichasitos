@@ -12,6 +12,7 @@ if (!CanvasRenderingContext2D.prototype.ellipse) {
 const CONST = {
   WIDTH: 256,
   HEIGHT: 224,
+  RENDER_SCALE: 3,
 
   COLORS: {
     RED: '#C41E3A',
@@ -73,6 +74,7 @@ const CONST = {
     TITLE: 'title',
     INTRO: 'intro',
     CIRCUIT_INTRO: 'circuit_intro',
+    WORLD_MAP: 'world_map',
     OPPONENT_INTRO: 'opponent_intro',
     FIGHT: 'fight',
     ROUND_END: 'round_end',
@@ -85,11 +87,37 @@ const CONST = {
     OPERATOR: 'operator',
   },
 
+  MAP_NODES: [
+    { x: 70,  y: 160, circuit: 0 },
+    { x: 120, y: 140, circuit: 0 },
+    { x: 165, y: 155, circuit: 0 },
+
+    { x: 60,  y: 110, circuit: 1 },
+    { x: 110, y: 95,  circuit: 1 },
+    { x: 155, y: 108, circuit: 1 },
+
+    { x: 80,  y: 65,  circuit: 2 },
+    { x: 128, y: 50,  circuit: 2 },
+    { x: 176, y: 62,  circuit: 2 },
+
+    { x: 55,  y: 30,  circuit: 3 },
+    { x: 100, y: 18,  circuit: 3 },
+    { x: 148, y: 25,  circuit: 3 },
+    { x: 195, y: 35,  circuit: 3 },
+  ],
+
   CIRCUITS: [
     { name: 'CIRCUITO DEL PUEBLO', color: '#228B22', opponents: [0, 1, 2] },
     { name: 'CIRCUITO DE LA FERIA', color: '#EAA221', opponents: [3, 4, 5] },
     { name: 'CIRCUITO DEL REDONDEL', color: '#CC5500', opponents: [6, 7, 8] },
     { name: 'CIRCUITO DE LA MUERTE', color: '#C41E3A', opponents: [9, 10, 11, 12] },
+  ],
+
+  CIRCUIT_BACKGROUNDS: [
+    'arena_pueblo',
+    'arena_feria',
+    'arena_redondel',
+    'arena_muerte',
   ],
 
   PLAYER: {
@@ -101,15 +129,15 @@ const CONST = {
     PUNCH_STAMINA_COST: 7,
     STAMINA_REGEN: 0.3,
     GUARO_PER_HIT: 7,
-    DODGE_FRAMES: 9,
+    DODGE_FRAMES: 14,
     BLOCK_DAMAGE_MULT: 0.30,
-    PUNCH_WINDUP: 5,
-    PUNCH_ACTIVE: 3,
-    PUNCH_RECOVERY: 7,
-    SPECIAL_WINDUP: 6,
-    SPECIAL_ACTIVE: 4,
-    SPECIAL_RECOVERY: 10,
-    HURT_DURATION: 18,
+    PUNCH_WINDUP: 9,
+    PUNCH_ACTIVE: 6,
+    PUNCH_RECOVERY: 12,
+    SPECIAL_WINDUP: 10,
+    SPECIAL_ACTIVE: 7,
+    SPECIAL_RECOVERY: 14,
+    HURT_DURATION: 24,
     WINDED_DURATION: 50,
     COMBO_DAMAGE_CAP: 4,
     STALE_MOVE_PENALTY: 0.75,

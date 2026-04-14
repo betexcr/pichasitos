@@ -6,28 +6,34 @@ class Renderer {
     return 'rgba(' + r + ',' + g + ',' + b + ',' + alpha + ')';
   }
 
-  constructor(canvas) {
+  constructor(canvas, assets) {
     this.canvas = canvas || document.getElementById('game');
-    this.canvas.width = CONST.WIDTH;
-    this.canvas.height = CONST.HEIGHT;
+    const S = CONST.RENDER_SCALE || 1;
+    this.canvas.width = CONST.WIDTH * S;
+    this.canvas.height = CONST.HEIGHT * S;
     this.W = CONST.WIDTH;
     this.H = CONST.HEIGHT;
+    this._scale = S;
     this.ctx = this.canvas.getContext('2d');
-    this.ctx.imageSmoothingEnabled = false;
+    this.ctx.scale(S, S);
+    this.ctx.imageSmoothingEnabled = true;
+    this.ctx.imageSmoothingQuality = 'high';
 
     this.glowCanvas = document.getElementById('glow');
     if (this.glowCanvas) {
-      this.glowCanvas.width = CONST.WIDTH;
-      this.glowCanvas.height = CONST.HEIGHT;
+      this.glowCanvas.width = CONST.WIDTH * S;
+      this.glowCanvas.height = CONST.HEIGHT * S;
       try {
         this.glowCtx = this.glowCanvas.getContext('2d');
+        this.glowCtx.scale(S, S);
       } catch (e) {
         this.glowCtx = null;
       }
     }
     this.screenWrap = document.getElementById('screen-wrap');
 
-    this.sprites = new SpriteSystem();
+    this.assets = assets || null;
+    this.sprites = new SpriteSystem(this.assets);
 
     this.screenShakeX = 0;
     this.screenShakeY = 0;
@@ -47,6 +53,10 @@ class Renderer {
 
     this.irisWipe = null;
     this.hitStop = 0;
+
+    this._transition = null;
+    this._transitionBuffer = null;
+    this._currentCircuit = 0;
 
     this._impactStar = null;
     this._sweatDrops = [];
@@ -166,7 +176,7 @@ class Renderer {
     const h = Math.floor(CONST.HEIGHT * scale);
     this.canvas.style.width = w + 'px';
     this.canvas.style.height = h + 'px';
-    this.canvas.style.imageRendering = 'pixelated';
+    this.canvas.style.imageRendering = 'auto';
     if (this.screenWrap) {
       this.screenWrap.style.width = w + 'px';
       this.screenWrap.style.height = h + 'px';
@@ -181,7 +191,9 @@ class Renderer {
   postProcess() {
     if (this.glowCtx) {
       try {
-        this.glowCtx.clearRect(0, 0, CONST.WIDTH, CONST.HEIGHT);
+        this.glowCtx.save();
+        this.glowCtx.setTransform(1, 0, 0, 1, 0, 0);
+        this.glowCtx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.glowCtx.globalCompositeOperation = 'source-over';
         this.glowCtx.drawImage(this.canvas, 0, 0);
         this.glowCtx.globalCompositeOperation = 'lighter';
@@ -192,6 +204,7 @@ class Renderer {
         this.glowCtx.drawImage(this.canvas, 0, 1);
         this.glowCtx.globalAlpha = 1;
         this.glowCtx.globalCompositeOperation = 'source-over';
+        this.glowCtx.restore();
       } catch (e) {
         this.glowCtx = null;
       }
@@ -307,18 +320,32 @@ class Renderer {
 
   // ── Arena ──
 
+  setCircuit(circuit) {
+    this._currentCircuit = circuit;
+  }
+
   drawArena(tick) {
     const c = this.ctx;
     const W = CONST.WIDTH;
 
-    const grad = c.createLinearGradient(0, 0, 0, 100);
-    grad.addColorStop(0, '#030310');
-    grad.addColorStop(0.3, '#060620');
-    grad.addColorStop(0.6, '#0A0A2E');
-    grad.addColorStop(0.85, '#111144');
-    grad.addColorStop(1, '#181850');
-    c.fillStyle = grad;
-    c.fillRect(0, 0, W, 100);
+    const bgName = CONST.CIRCUIT_BACKGROUNDS[this._currentCircuit];
+    const bgImg = bgName && this.assets ? this.assets.getBackground(bgName) : null;
+    if (bgImg) {
+      const arenaH = 100;
+      const aspect = bgImg.width / bgImg.height;
+      const drawW = W;
+      const drawH = drawW / aspect;
+      c.drawImage(bgImg, 0, 0, bgImg.width, bgImg.height, 0, arenaH - drawH, drawW, drawH);
+    } else {
+      const grad = c.createLinearGradient(0, 0, 0, 100);
+      grad.addColorStop(0, '#030310');
+      grad.addColorStop(0.3, '#060620');
+      grad.addColorStop(0.6, '#0A0A2E');
+      grad.addColorStop(0.85, '#111144');
+      grad.addColorStop(1, '#181850');
+      c.fillStyle = grad;
+      c.fillRect(0, 0, W, 100);
+    }
 
     const milkyWayAlpha = 0.02;
     c.fillStyle = `rgba(120,130,180,${milkyWayAlpha})`;
@@ -1141,8 +1168,8 @@ class Renderer {
     this.drawArena(tick);
 
     const oppX = CONST.WIDTH / 2 + opponent.swayOffset;
-    const oppY = 100;
-    const oppScale = 3;
+    const oppY = 155;
+    const oppScale = 3.8;
     const oppData = opponent.data;
     const oppAnim = opponent.getAnimState();
 
@@ -1152,7 +1179,7 @@ class Renderer {
       const pulse = Math.sin(tick * 0.4) * 0.15 + 0.15;
       c.globalAlpha = pulse;
       c.fillStyle = tellColor;
-      c.fillRect(oppX - 35, oppY - 25, 70, 90);
+      c.fillRect(oppX - 40, oppY - 80, 80, 100);
       c.globalAlpha = 1;
 
       if (isSig) {
@@ -1161,9 +1188,9 @@ class Renderer {
           const angle = (i / lineCount) * Math.PI * 2 + tick * 0.15;
           const len = 20 + Math.sin(tick * 0.3 + i) * 8;
           const sx = oppX + Math.cos(angle) * 15;
-          const sy = oppY + 30 + Math.sin(angle) * 20;
+          const sy = oppY - 30 + Math.sin(angle) * 20;
           const ex = oppX + Math.cos(angle) * (15 + len);
-          const ey = oppY + 30 + Math.sin(angle) * (20 + len * 0.6);
+          const ey = oppY - 30 + Math.sin(angle) * (20 + len * 0.6);
           c.globalAlpha = 0.35;
           c.strokeStyle = tellColor;
           c.lineWidth = 1;
@@ -1176,7 +1203,7 @@ class Renderer {
       }
 
       const exclPulse = Math.sin(tick * 0.5) * 2;
-      const exY = oppY - 26 + exclPulse;
+      const exY = oppY - 85 + exclPulse;
       c.fillStyle = isSig ? CONST.COLORS.RED : CONST.COLORS.YELLOW;
       c.fillRect(oppX - 1, exY, 3, 6);
       c.fillRect(oppX - 1, exY + 8, 3, 2);
@@ -1184,27 +1211,26 @@ class Renderer {
 
     c.fillStyle = 'rgba(0,0,0,0.15)';
     c.beginPath();
-    c.ellipse(oppX, oppY + 68, 22, 6, 0, 0, Math.PI * 2);
+    c.ellipse(oppX, oppY + 8, 26, 7, 0, 0, Math.PI * 2);
     c.fill();
     c.fillStyle = 'rgba(0,0,0,0.28)';
     c.beginPath();
-    c.ellipse(oppX, oppY + 68, 16, 4, 0, 0, Math.PI * 2);
+    c.ellipse(oppX, oppY + 8, 18, 5, 0, 0, Math.PI * 2);
     c.fill();
 
+    c.save();
+    c.globalAlpha = 1;
+    c.globalCompositeOperation = 'source-over';
+    this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
+    c.restore();
     if (this.oppHitFlashTimer > 0) {
       const flashT = this.oppHitFlashTimer / 8;
-      if (Math.floor(this.oppHitFlashTimer) % 2 === 0) {
-        this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
-      }
       c.save();
       c.globalAlpha = Math.min(0.9, flashT * 0.8);
       c.globalCompositeOperation = 'lighter';
       this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
-      c.globalCompositeOperation = 'source-over';
       c.restore();
       this.oppHitFlashTimer--;
-    } else {
-      this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
     }
 
     this._drawImpactStar(c);
@@ -1214,11 +1240,11 @@ class Renderer {
       const blockPulse = Math.sin(tick * 0.35) * 0.08 + 0.12;
       c.fillStyle = `rgba(100,180,255,${blockPulse})`;
       c.beginPath();
-      c.arc(oppX, oppY + 20, 18, 0, Math.PI * 2);
+      c.arc(oppX, oppY - 30, 22, 0, Math.PI * 2);
       c.fill();
 
       const crossX = oppX;
-      const crossY = oppY + 15;
+      const crossY = oppY - 35;
       c.strokeStyle = `rgba(180,220,255,${blockPulse * 2.5})`;
       c.lineWidth = 2;
       c.beginPath();
@@ -1242,24 +1268,25 @@ class Renderer {
     }
 
     if (opponent.signaturePhraseTimer > 0 && opponent.signaturePhrase) {
-      this._drawSignaturePhrase(c, opponent.signaturePhrase, oppX, oppY - 10, tick, opponent.signaturePhraseTimer);
+      this._drawSignaturePhrase(c, opponent.signaturePhrase, oppX, oppY - 70, tick, opponent.signaturePhraseTimer);
     }
 
     if (opponent.signatureEffect && opponent.signatureEffectTimer > 0) {
-      this._drawSignatureEffect(c, opponent.signatureEffect, oppX, oppY + 20, tick, oppScale);
+      this._drawSignatureEffect(c, opponent.signatureEffect, oppX, oppY - 30, tick, oppScale);
     }
 
     const pOffset = player.getDrawOffset();
     const playerX = CONST.WIDTH / 2 + pOffset.x + player.swayOffset;
-    const playerY = 178 + pOffset.y;
+    const playerY = 202 + pOffset.y;
+    const playerScale = 2.8;
 
     c.fillStyle = 'rgba(0,0,0,0.12)';
     c.beginPath();
-    c.ellipse(playerX, 202, 18, 5, 0, 0, Math.PI * 2);
+    c.ellipse(playerX, 212, 22, 6, 0, 0, Math.PI * 2);
     c.fill();
     c.fillStyle = 'rgba(0,0,0,0.22)';
     c.beginPath();
-    c.ellipse(playerX, 202, 12, 3, 0, 0, Math.PI * 2);
+    c.ellipse(playerX, 212, 15, 4, 0, 0, Math.PI * 2);
     c.fill();
 
     if (player.rampage) {
@@ -1268,22 +1295,22 @@ class Renderer {
       c.fillStyle = auraCols[Math.floor(tick * 0.15) % auraCols.length];
       c.globalAlpha = auraAlpha;
       c.beginPath();
-      c.ellipse(playerX, playerY + 6, 20, 28, 0, 0, Math.PI * 2);
+      c.ellipse(playerX, playerY + 6, 24, 34, 0, 0, Math.PI * 2);
       c.fill();
       c.globalAlpha = 1;
     }
 
     if (this.hitFlashTimer > 0) {
-      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, 2);
+      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, playerScale);
       c.save();
       c.globalAlpha = Math.min(1, this.hitFlashTimer / 2);
       c.globalCompositeOperation = 'lighter';
-      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, 2);
+      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, playerScale);
       c.globalCompositeOperation = 'source-over';
       c.restore();
       this.hitFlashTimer--;
     } else {
-      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, 2);
+      this.sprites.drawPlayer(c, player.getAnimState(), player.animFrame, playerX, playerY, playerScale);
     }
 
     this._drawSpeedLines(c, player, opponent, tick);
@@ -2095,7 +2122,7 @@ class Renderer {
     if (this._dodgeGhost && this._dodgeGhost.life > 0) {
       const g = this._dodgeGhost;
       c.globalAlpha = (g.life / g.maxLife) * 0.35;
-      this.sprites.drawPlayer(c, g.anim, g.frame, g.x, g.y, 2);
+      this.sprites.drawPlayer(c, g.anim, g.frame, g.x, g.y, 2.8);
       c.globalAlpha = 1;
       g.life--;
     }
@@ -2344,6 +2371,102 @@ class Renderer {
       c.fillStyle = CONST.COLORS.DARK_BROWN;
       this._drawText('100', x, y - 3, 'center', 0.7);
     }
+  }
+
+  // ── Screen Transitions ──
+
+  startTransition(type, durationFrames, callback) {
+    if (!this._transitionBuffer) {
+      this._transitionBuffer = document.createElement('canvas');
+      this._transitionBuffer.width = this.canvas.width;
+      this._transitionBuffer.height = this.canvas.height;
+    }
+    const bufCtx = this._transitionBuffer.getContext('2d');
+    bufCtx.setTransform(1, 0, 0, 1, 0, 0);
+    bufCtx.drawImage(this.canvas, 0, 0);
+
+    this._transition = {
+      type: type || 'fade_black',
+      duration: durationFrames || 30,
+      frame: 0,
+      callback: callback || null,
+      midFired: false,
+    };
+  }
+
+  updateTransition() {
+    const t = this._transition;
+    if (!t) return false;
+
+    t.frame++;
+    const progress = Math.min(1, t.frame / t.duration);
+    const half = progress <= 0.5 ? progress * 2 : (1 - progress) * 2;
+
+    if (progress > 0.5 && !t.midFired) {
+      t.midFired = true;
+      if (t.callback) t.callback();
+    }
+
+    const c = this.ctx;
+    c.save();
+    c.setTransform(1, 0, 0, 1, 0, 0);
+
+    if (progress <= 0.5 && this._transitionBuffer) {
+      c.drawImage(this._transitionBuffer, 0, 0);
+    }
+
+    switch (t.type) {
+      case 'fade_black':
+        c.fillStyle = `rgba(0,0,0,${half})`;
+        c.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        break;
+      case 'fade_white':
+        c.fillStyle = `rgba(255,255,255,${half})`;
+        c.fillRect(0, 0, this.canvas.width, this.canvas.height);
+        break;
+      case 'slide_left': {
+        const S = this._scale;
+        const offset = (1 - half) * this.canvas.width;
+        if (progress <= 0.5) {
+          c.clearRect(0, 0, this.canvas.width, this.canvas.height);
+          c.drawImage(this._transitionBuffer, -((progress * 2) * this.canvas.width), 0);
+        } else {
+          c.save();
+          c.setTransform(S, 0, 0, S, offset, 0);
+          c.restore();
+        }
+        break;
+      }
+      case 'dissolve': {
+        const blockSize = 8 * this._scale;
+        const cols = Math.ceil(this.canvas.width / blockSize);
+        const rows = Math.ceil(this.canvas.height / blockSize);
+        const total = cols * rows;
+        const revealed = Math.floor(total * (1 - half));
+        c.fillStyle = '#000';
+        let seed = 12345;
+        for (let i = 0; i < total; i++) {
+          seed = (seed * 16807) % 2147483647;
+          if ((seed % total) < revealed) {
+            const bx = (i % cols) * blockSize;
+            const by = Math.floor(i / cols) * blockSize;
+            c.fillRect(bx, by, blockSize, blockSize);
+          }
+        }
+        break;
+      }
+    }
+
+    c.restore();
+
+    if (progress >= 1) {
+      this._transition = null;
+    }
+    return true;
+  }
+
+  get transitioning() {
+    return !!this._transition;
   }
 
   clear() {
