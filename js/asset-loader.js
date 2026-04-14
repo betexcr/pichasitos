@@ -1,5 +1,5 @@
 class AssetLoader {
-  static ASSET_VERSION = '20260414_v2_poses_fixed';
+  static ASSET_VERSION = '20260414_v3_arena_jpg';
   static SLUGS = {
     'DON CARLOS':   'don_carlos',
     'GRINGO':       'gringo',
@@ -34,10 +34,13 @@ class AssetLoader {
 
   static MAX_FRAMES = 3;
 
+  /** Full list (player + priority fighters first, then arenas, title/map, etc.). */
   static BACKGROUNDS = [
     'arena_pueblo', 'arena_feria', 'arena_redondel', 'arena_muerte',
     'title_bg', 'map_bg',
   ];
+
+  static UI_MAP_TITLE_BACKGROUNDS = ['title_bg', 'map_bg'];
 
   static MONSTERS = [
     'monster_cadejos', 'monster_segua', 'monster_llorona',
@@ -143,19 +146,30 @@ class AssetLoader {
     this._loadPromise = (async () => {
       try {
         await Promise.all(
-          AssetLoader.BACKGROUNDS.map(bgName =>
+          priority.flatMap(slug => [
+            this._loadEnemyIdle(slug),
+            ...this._loadAllPosesForSlug(slug),
+          ])
+        );
+
+        const arenaKeys =
+          typeof CONST !== 'undefined' && CONST.CIRCUIT_BACKGROUNDS
+            ? CONST.CIRCUIT_BACKGROUNDS
+            : ['arena_pueblo', 'arena_feria', 'arena_redondel', 'arena_muerte'];
+        await Promise.all(
+          arenaKeys.map(bgName =>
+            this._loadImage(`assets/ui_bg/${bgName}.jpg`).then(img => {
+              if (img) this._backgrounds[bgName] = img;
+            })
+          )
+        );
+        await Promise.all(
+          AssetLoader.UI_MAP_TITLE_BACKGROUNDS.map(bgName =>
             this._loadImage(`assets/ui_bg/${bgName}.png`).then(img => {
               if (img) this._backgrounds[bgName] = img;
             })
           )
         );
-
-        const phase2 = [];
-        for (const slug of priority) {
-          phase2.push(this._loadEnemyIdle(slug));
-          phase2.push(...this._loadAllPosesForSlug(slug));
-        }
-        await Promise.all(phase2);
 
         await Promise.all(slugs.map(s => this._loadPortraitsForSlug(s)));
 
@@ -191,7 +205,7 @@ class AssetLoader {
 
   get loaded() { return this._loaded; }
 
-  /** True after backgrounds, player + Don Carlos poses, and all portraits are in memory. */
+  /** True after player + Don Carlos poses, backgrounds, and all portraits are in memory. */
   get priorityReady() { return this._priorityReady; }
 
   /**
