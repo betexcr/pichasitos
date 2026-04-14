@@ -555,6 +555,18 @@ class Game {
 
   _render() {
     this.renderer.clear();
+    if (!this.assets.priorityReady) {
+      const ctx = this.renderer.ctx;
+      ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
+      ctx.fillRect(0, 0, CONST.WIDTH, CONST.HEIGHT);
+      ctx.fillStyle = CONST.COLORS.GOLD;
+      this.renderer._drawText('CARGANDO...', CONST.WIDTH / 2, CONST.HEIGHT / 2 - 10, 'center', 1.2);
+      ctx.fillStyle = CONST.COLORS.GRAY;
+      this.renderer._drawText('Un momento', CONST.WIDTH / 2, CONST.HEIGHT / 2 + 8, 'center', 0.85);
+      if (this.renderer.irisWipe) this.renderer.updateIrisWipe();
+      if (this.renderer.transitioning) this.renderer.updateTransition();
+      return;
+    }
     switch (this.state) {
       case CONST.STATES.ATTRACT: {
         const onlineData = this.online && this.online.enabled ? {
@@ -583,6 +595,18 @@ class Game {
       }
       case CONST.STATES.FIGHT:
         if (this.player && this.opponent) {
+          const isBullF = this.currentOpponentIndex >= OPPONENT_DATA.length;
+          const oppDF = isBullF ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          if (!this.assets.areFightAssetsReady(this.currentCircuit, oppDF.name)) {
+            const ctx = this.renderer.ctx;
+            ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
+            ctx.fillRect(0, 0, CONST.WIDTH, CONST.HEIGHT);
+            ctx.fillStyle = CONST.COLORS.GOLD;
+            this.renderer._drawText('CARGANDO ARENA...', CONST.WIDTH / 2, CONST.HEIGHT / 2 - 10, 'center', 1.1);
+            ctx.fillStyle = CONST.COLORS.GRAY;
+            this.renderer._drawText('Un momento', CONST.WIDTH / 2, CONST.HEIGHT / 2 + 8, 'center', 0.85);
+            break;
+          }
           this.renderer.drawFightScene(this.player, this.opponent, this.tick);
           this.renderer.drawHUD(this.player, this.opponent, this.roundTime, this.round, this.currentCircuit, this.score);
           if (this.stateTick < 60) {
@@ -597,8 +621,12 @@ class Game {
         break;
       case CONST.STATES.ROUND_END:
         if (this.player && this.opponent) {
-          this.renderer.drawFightScene(this.player, this.opponent, this.tick);
-          this.renderer.drawHUD(this.player, this.opponent, this.roundTime, this.round, this.currentCircuit, this.score);
+          const isBullR = this.currentOpponentIndex >= OPPONENT_DATA.length;
+          const oppDR = isBullR ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          if (this.assets.areFightAssetsReady(this.currentCircuit, oppDR.name)) {
+            this.renderer.drawFightScene(this.player, this.opponent, this.tick);
+            this.renderer.drawHUD(this.player, this.opponent, this.roundTime, this.round, this.currentCircuit, this.score);
+          }
           this.ui.drawRoundEnd(this.roundWinner, this.stateTick, this.koLine);
         }
         break;
@@ -610,10 +638,14 @@ class Game {
       }
       case CONST.STATES.FIGHT_LOSE:
         if (this.player && this.opponent) {
-          this.renderer.drawFightScene(this.player, this.opponent, this.tick);
-          this.renderer.ctx.fillStyle = 'rgba(0,0,0,0.5)';
-          this.renderer.ctx.fillRect(0, 0, this.renderer.W, this.renderer.H);
-          this.renderer.drawCenteredText(CONST.TEXT.LOSE_LINES[0], 100, CONST.COLORS.RED, 2);
+          const isBullL = this.currentOpponentIndex >= OPPONENT_DATA.length;
+          const oppDL = isBullL ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          if (this.assets.areFightAssetsReady(this.currentCircuit, oppDL.name)) {
+            this.renderer.drawFightScene(this.player, this.opponent, this.tick);
+            this.renderer.ctx.fillStyle = 'rgba(0,0,0,0.5)';
+            this.renderer.ctx.fillRect(0, 0, this.renderer.W, this.renderer.H);
+            this.renderer.drawCenteredText(CONST.TEXT.LOSE_LINES[0], 100, CONST.COLORS.RED, 2);
+          }
         }
         break;
       case CONST.STATES.CONTINUE_SCREEN:

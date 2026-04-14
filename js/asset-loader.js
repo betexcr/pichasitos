@@ -52,6 +52,7 @@ class AssetLoader {
     this._backgrounds = {};
     this._monsters = {};
     this._loaded = false;
+    this._priorityReady = false;
     this._loadPromise = null;
   }
 
@@ -68,89 +69,147 @@ class AssetLoader {
     });
   }
 
-  preload() {
-    if (this._loadPromise) return this._loadPromise;
+  /** First-circuit fighters: load before other opponents so Pueblo / first fight never flashes v1 sprites. */
+  static PRIORITY_SLUGS = ['player', 'don_carlos'];
 
+  _loadEnemyIdle(slug) {
+    return this._loadImage(`assets/enemies/enemy_${slug}_idle_v2.png`)
+      .then(img => img || this._loadImage(`assets/enemies/enemy_${slug}_idle_v1.png`))
+      .then(img => { if (img) this._enemies[slug] = img; });
+  }
+
+  _loadPortraitsForSlug(slug) {
+    return Promise.all([
+      this._loadImage(`assets/portraits/portrait_${slug}_angry_v1.png`).then(img => {
+        if (!this._portraits[slug]) this._portraits[slug] = {};
+        if (img) this._portraits[slug].angry = img;
+      }),
+      this._loadImage(`assets/portraits/portrait_${slug}_intro_v1.png`).then(img => {
+        if (!this._portraits[slug]) this._portraits[slug] = {};
+        if (img) this._portraits[slug].intro = img;
+      }),
+    ]);
+  }
+
+  _loadAllPosesForSlug(slug) {
     const tasks = [];
-    const slugs = Object.values(AssetLoader.SLUGS);
-
-    for (const slug of slugs) {
+    for (const pose of AssetLoader.POSES) {
+      const filePose = (slug === 'bull' && AssetLoader.BULL_POSE_ALIASES[pose]) || pose;
       tasks.push(
-        this._loadImage(`assets/enemies/enemy_${slug}_idle_v2.png`)
-          .then(img => img || this._loadImage(`assets/enemies/enemy_${slug}_idle_v1.png`))
-          .then(img => { if (img) this._enemies[slug] = img; })
-      );
-      tasks.push(
-        this._loadImage(`assets/portraits/portrait_${slug}_angry_v1.png`)
+        this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2.png`)
+          .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1.png`))
           .then(img => {
-            if (!this._portraits[slug]) this._portraits[slug] = {};
-            if (img) this._portraits[slug].angry = img;
+            if (img) {
+              if (!this._poses[slug]) this._poses[slug] = {};
+              if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
+              this._poses[slug][pose][0] = img;
+            }
           })
       );
-      tasks.push(
-        this._loadImage(`assets/portraits/portrait_${slug}_intro_v1.png`)
-          .then(img => {
-            if (!this._portraits[slug]) this._portraits[slug] = {};
-            if (img) this._portraits[slug].intro = img;
-          })
-      );
-      for (const pose of AssetLoader.POSES) {
-        const filePose = (slug === 'bull' && AssetLoader.BULL_POSE_ALIASES[pose]) || pose;
+      for (let f = 2; f <= AssetLoader.MAX_FRAMES; f++) {
         tasks.push(
-          this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2.png`)
-            .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1.png`))
+          this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2_f${f}.png`)
+            .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1_f${f}.png`))
             .then(img => {
               if (img) {
                 if (!this._poses[slug]) this._poses[slug] = {};
                 if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
-                this._poses[slug][pose][0] = img;
+                this._poses[slug][pose][f - 1] = img;
               }
             })
         );
-        for (let f = 2; f <= AssetLoader.MAX_FRAMES; f++) {
-          tasks.push(
-            this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2_f${f}.png`)
-              .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1_f${f}.png`))
-              .then(img => {
-                if (img) {
-                  if (!this._poses[slug]) this._poses[slug] = {};
-                  if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
-                  this._poses[slug][pose][f - 1] = img;
-                }
-              })
+      }
+    }
+    return tasks;
+  }
+
+  _finalizePortraitFallbacks() {
+    const slugs = Object.values(AssetLoader.SLUGS);
+    for (const slug of slugs) {
+      if (!this._portraits[slug]) this._portraits[slug] = {};
+      if (!this._portraits[slug].intro) {
+        const idlePose = this._poses[slug] && this._poses[slug]['idle'] && this._poses[slug]['idle'][0];
+        if (idlePose) this._portraits[slug].intro = idlePose;
+      }
+    }
+  }
+
+  preload() {
+    if (this._loadPromise) return this._loadPromise;
+
+    const slugs = Object.values(AssetLoader.SLUGS);
+    const priority = AssetLoader.PRIORITY_SLUGS;
+
+    this._loadPromise = (async () => {
+      try {
+        await Promise.all(
+          AssetLoader.BACKGROUNDS.map(bgName =>
+            this._loadImage(`assets/ui_bg/${bgName}.png`).then(img => {
+              if (img) this._backgrounds[bgName] = img;
+            })
+          )
+        );
+
+        const phase2 = [];
+        for (const slug of priority) {
+          phase2.push(this._loadEnemyIdle(slug));
+          phase2.push(...this._loadAllPosesForSlug(slug));
+        }
+        await Promise.all(phase2);
+
+        await Promise.all(slugs.map(s => this._loadPortraitsForSlug(s)));
+
+        this._priorityReady = true;
+
+        const phase4 = [];
+        for (const slug of slugs) {
+          if (priority.indexOf(slug) >= 0) continue;
+          phase4.push(this._loadEnemyIdle(slug));
+          phase4.push(...this._loadAllPosesForSlug(slug));
+        }
+        for (const mName of AssetLoader.MONSTERS) {
+          phase4.push(
+            this._loadImage(`assets/monsters/${mName}.png`).then(img => {
+              if (img) this._monsters[mName] = img;
+            })
           );
         }
+        await Promise.all(phase4);
+
+        this._finalizePortraitFallbacks();
+        this._loaded = true;
+      } catch (e) {
+        console.error('AssetLoader.preload failed:', e);
+        this._finalizePortraitFallbacks();
+        this._priorityReady = true;
+        this._loaded = true;
       }
-    }
+    })();
 
-    for (const bgName of AssetLoader.BACKGROUNDS) {
-      tasks.push(
-        this._loadImage(`assets/ui_bg/${bgName}.png`)
-          .then(img => { if (img) this._backgrounds[bgName] = img; })
-      );
-    }
-
-    for (const mName of AssetLoader.MONSTERS) {
-      tasks.push(
-        this._loadImage(`assets/monsters/${mName}.png`)
-          .then(img => { if (img) this._monsters[mName] = img; })
-      );
-    }
-
-    this._loadPromise = Promise.all(tasks).then(() => {
-      for (const slug of slugs) {
-        if (!this._portraits[slug]) this._portraits[slug] = {};
-        if (!this._portraits[slug].intro) {
-          const idlePose = this._poses[slug] && this._poses[slug]['idle'] && this._poses[slug]['idle'][0];
-          if (idlePose) this._portraits[slug].intro = idlePose;
-        }
-      }
-      this._loaded = true;
-    });
     return this._loadPromise;
   }
 
   get loaded() { return this._loaded; }
+
+  /** True after backgrounds, player + Don Carlos poses, and all portraits are in memory. */
+  get priorityReady() { return this._priorityReady; }
+
+  /**
+   * Ready to render a fight: circuit background + player idle + this opponent's idle.
+   * While the rest of the roster (phase 4) loads, we wait until this opponent's data exists.
+   * After full preload(), allow the fight even if an image failed (avoid soft-lock).
+   */
+  areFightAssetsReady(circuitIndex, opponentName) {
+    if (!this._priorityReady) return false;
+    const bgKey = typeof CONST !== 'undefined' && CONST.CIRCUIT_BACKGROUNDS
+      ? CONST.CIRCUIT_BACKGROUNDS[circuitIndex]
+      : null;
+    if (!bgKey || !this.getBackground(bgKey)) return false;
+    const pIdle = this.getPoseImage('PLAYER', 'idle', 0);
+    const oIdle = this.getPoseImage(opponentName, 'idle', 0);
+    if (pIdle && oIdle) return true;
+    return !!this._loaded;
+  }
 
   getEnemyImage(nameOrSlug) {
     const slug = AssetLoader.SLUGS[nameOrSlug] || nameOrSlug;

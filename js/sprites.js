@@ -1337,9 +1337,12 @@ class SpriteSystem {
     if (this._assets && this._assets.hasPoses('PLAYER')) {
       const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
       const ps = this._getPoseTransition('__PLAYER__', poseKey);
-      const frameCount = this._assets.getPoseFrameCount('PLAYER', poseKey);
+      const frameCount = this._assets.getPoseFrameCount('PLAYER', ps.current);
       const poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
-      const curImg = this._assets.getPoseImage('PLAYER', poseKey, poseFrame);
+      let curImg = this._assets.getPoseImage('PLAYER', ps.current, poseFrame);
+      if (curImg && (!curImg.complete || curImg.naturalWidth < 1)) curImg = null;
+      if (!curImg) curImg = this._assets.getPoseImage('PLAYER', 'idle', 0);
+      if (curImg && (!curImg.complete || curImg.naturalWidth < 1)) curImg = null;
       if (curImg) {
         const poseOff = SpriteSystem.PLAYER_POSE_OFFSETS[ps.current] || SpriteSystem.PLAYER_POSE_OFFSETS.idle;
         const pEased = ps.t < 1 ? ps.t * ps.t * (3 - 2 * ps.t) : 1;

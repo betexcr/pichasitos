@@ -36,6 +36,134 @@ header h1 {
 }
 header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
 
+.announcement-wrap {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 16px 0;
+}
+.announcement-wrap[hidden] { display: none !important; }
+.announcement-inner {
+  position: relative;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.35);
+  background: linear-gradient(180deg, #14142e 0%, #0a0a1a 100%);
+}
+.announce-brand {
+  text-align: center;
+  padding: 14px 40px 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+.announce-logo {
+  display: block;
+  font-size: clamp(1.1rem, 3vw, 1.45rem);
+  letter-spacing: 0.35em;
+  color: var(--gold);
+  font-weight: 800;
+}
+.announce-sub {
+  display: block;
+  font-size: 0.72rem;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.18em;
+}
+.announce-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .announce-columns { grid-template-columns: 1fr; }
+}
+.announce-col {
+  padding: 14px 16px 18px;
+}
+.announce-col-sprites {
+  border-right: 1px solid var(--border);
+}
+@media (max-width: 900px) {
+  .announce-col-sprites {
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+  }
+}
+.announce-heading {
+  font-size: 0.78rem;
+  letter-spacing: 0.28em;
+  margin: 0 0 12px;
+  text-align: center;
+  font-weight: 700;
+}
+.announce-heading.sprites {
+  color: var(--accent);
+  text-shadow: 0 0 14px rgba(57,255,20,0.25);
+}
+.announce-heading.circuits { color: var(--gold); }
+.announce-idle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(68px, 1fr));
+  gap: 8px;
+}
+.announce-idle-cell {
+  text-align: center;
+  min-width: 0;
+}
+.announce-idle-img {
+  width: 100%;
+  max-width: 88px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+  background: linear-gradient(135deg, #1a1a35 0%, #0e0e20 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.08);
+}
+.announce-idle-name {
+  display: block;
+  font-size: 0.58rem;
+  color: var(--muted);
+  margin-top: 4px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.announce-circuits-visual img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+}
+.announce-dismiss {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.2);
+  background: rgba(10,10,26,0.75);
+  color: var(--text);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+  transition: background 0.15s, border-color 0.15s;
+}
+.announce-dismiss:hover {
+  background: rgba(255,215,0,0.2);
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
 .roster {
   display: flex;
   flex-wrap: wrap;
@@ -434,6 +562,13 @@ header p { color: var(--muted); margin-top: 6px; font-size: 0.95rem; }
   <h1>Pichasitos</h1>
   <p>Fighter Roster &amp; Animation Preview</p>
 </header>
+
+<div class="announcement-wrap" id="announcement-banner" role="region" aria-label="Update announcement">
+  <div class="announcement-inner">
+    <button type="button" class="announce-dismiss" id="announcement-dismiss" aria-label="Dismiss announcement">&times;</button>
+    <img src="assets/promo/pichasitos-announcement-banner.png" alt="PICHASITOS — New sprites and new circuits" width="1200" height="400" loading="lazy" decoding="async" />
+  </div>
+</div>
 
 <section class="arena-section" id="arena-section">
   <div class="section-label" style="max-width:1100px;margin:0 auto;padding:20px 16px 0;">Arena Backgrounds (4 Circuits) — click a card for the in-game view</div>
@@ -1382,6 +1517,20 @@ selectFighter('player');
   }
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && modal && modal.classList.contains('is-open')) closeArenaGameView();
+  });
+})();
+
+(function initAnnouncementBanner() {
+  const KEY = 'pichasitos-announce-dismissed';
+  const wrap = document.getElementById('announcement-banner');
+  const btn = document.getElementById('announcement-dismiss');
+  if (!wrap || !btn) return;
+  try {
+    if (localStorage.getItem(KEY) === '1') wrap.hidden = true;
+  } catch (_) { /* private mode */ }
+  btn.addEventListener('click', () => {
+    wrap.hidden = true;
+    try { localStorage.setItem(KEY, '1'); } catch (_) {}
   });
 })();
 </script>
