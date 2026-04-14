@@ -1,0 +1,7 @@
+# Static deploy only — exclude local SD pipeline and tooling (large / not needed in browser)
+external/
+tools/
+.git/
+.cursor/
+docs/
+node_modules/
