@@ -20,6 +20,7 @@ class Game {
     this.idleTimer = 0; this.operatorKeyTimer = 0;
     this._introSpeechDone = false;
     this._oppIntroSpeechDone = false;
+    this._oppIntroQuote = '';
 
     this.score = 0;
     this.roundDamageTaken = 0;
@@ -32,6 +33,7 @@ class Game {
 
     this._continueBoost = false;
     this._continueBoostRoundOnly = false;
+    this._fightWinHandled = false;
 
     this.online = new OnlineScoreboard();
     this.online.init();
@@ -245,6 +247,7 @@ class Game {
     if (this._consumePress('start') && this.stateTick > 20) {
       this.audio.menuConfirm();
       this._oppIntroSpeechDone = false;
+      this._oppIntroQuote = '';
       this._changeState(CONST.STATES.OPPONENT_INTRO, 'fade_black');
     }
   }
@@ -253,11 +256,13 @@ class Game {
     const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
     const opp = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
     this.assets.preloadFighterBundle(opp.name);
-    if (!this._oppIntroSpeechDone && this.stateTick === 10) {
-      const quoteText = opp.quotes
+    if (!this._oppIntroQuote) {
+      this._oppIntroQuote = opp.quotes
         ? opp.quotes[Math.floor(Math.random() * opp.quotes.length)]
         : opp.quote;
-      if (quoteText) this.audio.speakOpponent(quoteText, opp.name);
+    }
+    if (!this._oppIntroSpeechDone && this.stateTick >= 10) {
+      if (this._oppIntroQuote) this.audio.speakOpponent(this._oppIntroQuote, opp.name);
       this._oppIntroSpeechDone = true;
     }
     if (this._consumePress('start') && this.stateTick > 30) { this.audio.menuConfirm(); this._startFight(); }
@@ -306,8 +311,14 @@ class Game {
     if (!this.player.isPunching()) this.playerHitThisSwing = false;
     if (!this.opponent.isAttacking()) this.opponentHitThisAttack = false;
 
-    if (this.opponent.signaturePhraseTimer === 49 && this.opponent.signaturePhrase) {
+    if (
+      this.opponent.signaturePhrase &&
+      !this.opponent._voicePlayed &&
+      this.opponent._phraseVoiceStart > 0 &&
+      this.opponent.signaturePhraseTimer <= this.opponent._phraseVoiceStart - 1
+    ) {
       this.audio.speakOpponent(this.opponent.signaturePhrase, this.opponent.data.name);
+      this.opponent._voicePlayed = true;
     }
     if (this.opponent.signatureEffect && this.opponent.signatureEffectTimer === this.opponent.currentPattern.attackFrames + 14) {
       this.audio.signatureAttack(this.opponent.signatureEffect);
@@ -455,6 +466,7 @@ class Game {
         this.koWinLine = CONST.TEXT.KO_LINES[Math.floor(Math.random()*CONST.TEXT.KO_LINES.length)];
         const dqSrc = this.opponent && this.opponent.data && this.opponent.data.defeatQuotes;
         this.defeatQuote = dqSrc ? dqSrc[Math.floor(Math.random()*dqSrc.length)] : '';
+        this._fightWinHandled = false;
         this._changeState(CONST.STATES.FIGHT_WIN, 'fade_black'); return;
       }
       if (this.opponentRoundsWon >= Math.ceil(CONST.ROUNDS_PER_FIGHT/2)) { this.audio.roundLose(); this._changeState(CONST.STATES.FIGHT_LOSE, 'fade_black'); return; }
@@ -468,7 +480,9 @@ class Game {
   }
 
   _updateFightWin() {
+    if (this._fightWinHandled) return;
     if (this._consumePress('start') && this.stateTick > 40) {
+      this._fightWinHandled = true;
       const fightBonus = CONST.POINTS.FIGHT_WIN_BASE * (this.currentOpponentIndex + 1);
       this._addScore(fightBonus);
       this._advanceToNextOpponent();
@@ -483,7 +497,7 @@ class Game {
       this._changeState(CONST.STATES.VICTORY, 'fade_white'); return;
     }
     if (this.currentOpponentIndex >= OPPONENT_DATA.length) {
-      this.audio.stopMusic(); this._oppIntroSpeechDone = false; this._changeState(CONST.STATES.OPPONENT_INTRO); return;
+      this.audio.stopMusic(); this._oppIntroSpeechDone = false; this._oppIntroQuote = ''; this._changeState(CONST.STATES.OPPONENT_INTRO); return;
     }
     const newCircuit = OPPONENT_DATA[this.currentOpponentIndex].circuit;
     if (newCircuit !== this.currentCircuit) {
@@ -614,7 +628,7 @@ class Game {
       case CONST.STATES.OPPONENT_INTRO: {
         const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
         if (isBull) this.ui.drawBullIntro(this.stateTick);
-        else this.ui.drawOpponentIntro(OPPONENT_DATA[this.currentOpponentIndex], this.stateTick);
+        else this.ui.drawOpponentIntro(OPPONENT_DATA[this.currentOpponentIndex], this.stateTick, this._oppIntroQuote);
         break;
       }
       case CONST.STATES.FIGHT:

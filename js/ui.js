@@ -219,10 +219,10 @@ class UIManager {
 
       const portrait = (i < OPPONENT_DATA.length)
         ? (this.r.assets ? this.r.assets.getPortraitImage(OPPONENT_DATA[i].name, 'intro') : null)
-        : (i === OPPONENT_DATA.length ? (this.r.assets ? this.r.assets.getPortraitImage('EL TORO', 'intro') : null) : null);
+        : (i === OPPONENT_DATA.length ? (this.r.assets ? this.r.assets.getPortraitImage(TORO_DATA.name, 'intro') : null) : null);
 
       if (portrait) {
-        const charName = (i < OPPONENT_DATA.length) ? OPPONENT_DATA[i].name : (i === OPPONENT_DATA.length ? 'EL TORO' : null);
+        const charName = (i < OPPONENT_DATA.length) ? OPPONENT_DATA[i].name : (i === OPPONENT_DATA.length ? TORO_DATA.name : null);
         ctx.save();
         ctx.beginPath();
         ctx.arc(node.x, node.y, r, 0, Math.PI * 2);
@@ -250,7 +250,7 @@ class UIManager {
 
       if (isCurrent) {
         const oppName = i < OPPONENT_DATA.length ? OPPONENT_DATA[i].name :
-                       (i === OPPONENT_DATA.length ? 'EL TORO' : '???');
+                       (i === OPPONENT_DATA.length ? TORO_DATA.name : '???');
         ctx.fillStyle = CONST.COLORS.WHITE;
         this.r._drawText(oppName, node.x, node.y + r + 6, 'center', 0.7);
       }
@@ -870,7 +870,7 @@ class UIManager {
     this.r.drawSarchiRosette(W - 30, H - 18, 8);
   }
 
-  drawOpponentIntro(oppData, stateTick) {
+  drawOpponentIntro(oppData, stateTick, introQuote) {
     const ctx = this.r.ctx;
     const W = this.r.W;
     const H = this.r.H;
@@ -936,8 +936,8 @@ class UIManager {
       this._drawStatBar(ctx, 'VEL', oppData.speed, W / 2 + 14, 78, W / 2 - 32, CONST.COLORS.LIGHT_BLUE, stateTick - 70);
     }
 
-    let quoteText = oppData.quote;
-    if (oppData.quotes && oppData.quotes.length > 0) {
+    let quoteText = introQuote || oppData.quote;
+    if (!quoteText && oppData.quotes && oppData.quotes.length > 0) {
       if (this._lastQuoteChar !== oppData.name) {
         this._lastQuoteChar = oppData.name;
         this._quoteIdx = Math.floor(Math.random() * oppData.quotes.length);
@@ -976,6 +976,7 @@ class UIManager {
     'DON CARLOS': { top: 0.04, bottom: 0.46, left: 0.08, right: 0.08, fit: 'cover', alignX: 0.5, alignY: 0.30 },
     'PANZAEPERRA': { top: 0.04, bottom: 0.36, left: 0.12, right: 0.12, fit: 'cover', alignX: 0.5, alignY: 0.32 },
     'EL TORO': { top: 0.02, bottom: 0.38, left: 0.06, right: 0.06, fit: 'cover', alignX: 0.5, alignY: 0.34 },
+    'EL TORO MALACRIANZA': { top: 0.02, bottom: 0.38, left: 0.06, right: 0.06, fit: 'cover', alignX: 0.5, alignY: 0.34 },
   };
 
   _drawPortraitCropped(ctx, img, dx, dy, dw, dh, charName, mode) {
@@ -1050,6 +1051,9 @@ class UIManager {
     const ctx = this.r.ctx;
     const W = this.r.W;
     const H = this.r.H;
+    const bullName = typeof TORO_DATA !== 'undefined' ? TORO_DATA.name : 'EL TORO MALACRIANZA';
+    const bullTitle = typeof TORO_DATA !== 'undefined' ? TORO_DATA.title : 'MALACRIANZA';
+    const portraitImg = this.r.assets && this.r.assets.getPortraitImage(bullName, 'intro');
 
     const shakeX = stateTick > 20 ? (Math.random() - 0.5) * 4 : 0;
     const shakeY = stateTick > 20 ? (Math.random() - 0.5) * 4 : 0;
@@ -1066,36 +1070,60 @@ class UIManager {
 
     if (stateTick > 15) {
       const bullAlpha = Math.min(1, (stateTick - 15) / 25);
-      const spotGrad = ctx.createRadialGradient(W/2, 65, 0, W/2, 65, 60);
+      const spotGrad = ctx.createRadialGradient(W / 2, 72, 0, W / 2, 72, 72);
       spotGrad.addColorStop(0, `rgba(196,30,58,${bullAlpha * 0.2})`);
       spotGrad.addColorStop(1, 'rgba(0,0,0,0)');
       ctx.fillStyle = spotGrad;
       ctx.fillRect(0, 0, W, H);
       ctx.globalAlpha = bullAlpha;
-      const frame = Math.floor(stateTick / 8) % 2;
-      this.r.sprites.drawOpponentHead(ctx, TORO_DATA, frame, W / 2, 55, 3.5);
+
+      if (portraitImg) {
+        const pW = 132;
+        const pH = 132;
+        const px = W / 2 - pW / 2;
+        const py = 6;
+        ctx.save();
+        ctx.beginPath();
+        this._roundedRect(ctx, px, py, pW, pH, 8);
+        ctx.clip();
+        this._drawPortraitCropped(ctx, portraitImg, px, py, pW, pH, bullName, 'full');
+        ctx.restore();
+        ctx.strokeStyle = 'rgba(196,30,58,0.85)';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        this._roundedRect(ctx, px, py, pW, pH, 8);
+        ctx.stroke();
+        ctx.strokeStyle = 'rgba(255,215,0,0.35)';
+        ctx.lineWidth = 1;
+        ctx.beginPath();
+        this._roundedRect(ctx, px - 2, py - 2, pW + 4, pH + 4, 10);
+        ctx.stroke();
+      } else {
+        const frame = Math.floor(stateTick / 8) % 2;
+        this.r.sprites.drawOpponentHead(ctx, TORO_DATA, frame, W / 2, 55, 3.5);
+      }
       ctx.globalAlpha = 1;
     }
 
     if (stateTick > 10) {
       ctx.fillStyle = CONST.COLORS.RED;
-      this.r._drawText('EL TORO', W / 2, 110, 'center', 3);
+      this.r._drawText(bullName, W / 2, 148, 'center', 1.6);
     }
     if (stateTick > 30) {
       ctx.fillStyle = CONST.COLORS.DARK_RED;
-      this.r._drawText('MALACRIANZA', W / 2, 138, 'center', 1.8);
+      this.r._drawText(bullTitle, W / 2, 166, 'center', 1.4);
     }
 
     if (Math.floor(stateTick / 6) % 2 === 0 && stateTick > 50) {
       ctx.fillStyle = CONST.COLORS.YELLOW;
-      this.r._drawText('!! PELIGRO !!', W / 2, 162, 'center', 1.5);
+      this.r._drawText('!! PELIGRO !!', W / 2, 186, 'center', 1.5);
     }
 
     if (stateTick > 40) {
       const barsAlpha = Math.min(1, (stateTick - 40) / 20);
       ctx.globalAlpha = barsAlpha;
-      this._drawStatBar(ctx, 'VIT', 1.0, 24, 186, W - 48, CONST.COLORS.RED, stateTick - 40);
-      this._drawStatBar(ctx, 'VEL', TORO_DATA.speed, 24, 202, W - 48, CONST.COLORS.ORANGE, stateTick - 50);
+      this._drawStatBar(ctx, 'VIT', 1.0, 24, 206, W - 48, CONST.COLORS.RED, stateTick - 40);
+      this._drawStatBar(ctx, 'VEL', TORO_DATA.speed, 24, 222, W - 48, CONST.COLORS.ORANGE, stateTick - 50);
       ctx.globalAlpha = 1;
     }
 

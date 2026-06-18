@@ -414,6 +414,9 @@ class OpponentAI {
     this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
     this.signatureEffect = null; this.signatureEffectTimer = 0;
     this.lastSigUsedTick = -999;
+    this._gameTick = 0;
+    this._phraseVoiceStart = 0;
+    this._voicePlayed = false;
   }
 
   applyDifficultyModifiers(mod) {
@@ -441,15 +444,18 @@ class OpponentAI {
     this.playerDodgeCount = { left: 0, right: 0, duck: 0 };
     this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
     this.signatureEffect = null; this.signatureEffectTimer = 0; this.lastSigUsedTick = -999;
+    this._phraseVoiceStart = 0; this._voicePlayed = false;
   }
 
   resetRound() {
     this.health = this.maxHealth; this.state = 'idle'; this.stateTimer = 0;
     this.currentPattern = null; this.comboHitsLeft = 0; this.actionCooldown = 15;
     this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
+    this._phraseVoiceStart = 0; this._voicePlayed = false;
   }
 
   update(playerState, tick) {
+    this._gameTick = tick || 0;
     this.swayOffset += 0.03 * this.swayDir;
     if (Math.abs(this.swayOffset) > 1.2) this.swayDir *= -1;
     this.animTimer++;
@@ -552,13 +558,22 @@ class OpponentAI {
 
   _startAttack(p) {
     this.currentPattern = p;
+    this._voicePlayed = false;
+    this._phraseVoiceStart = 0;
+    this.signaturePhrase = '';
+    this.signaturePhraseTimer = 0;
     if (p.type === 'signature') {
-      this.lastSigUsedTick = Date.now();
+      this.lastSigUsedTick = this._gameTick;
       const sp = p.phrases || (p.phrase ? [p.phrase] : null);
-      if (sp) { this.signaturePhrase = sp[Math.floor(Math.random() * sp.length)]; this.signaturePhraseTimer = 50; }
+      if (sp) {
+        this.signaturePhrase = sp[Math.floor(Math.random() * sp.length)];
+        this.signaturePhraseTimer = 50;
+        this._phraseVoiceStart = 50;
+      }
     } else if (this.data.taunts && this.data.taunts.length > 0 && Math.random() < 0.18) {
       this.signaturePhrase = this.data.taunts[Math.floor(Math.random() * this.data.taunts.length)];
       this.signaturePhraseTimer = 35;
+      this._phraseVoiceStart = 35;
     }
     this.state = 'tell'; this.stateTimer = this._adj(p.tellFrames + (this._tellBonusFrames || 0));
   }

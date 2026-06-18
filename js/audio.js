@@ -8,16 +8,17 @@ class AudioSystem {
 
   _initOnInteraction() {
     const handler = () => {
-      if (!this.ctx) {
-        this.ctx = new (window.AudioContext || window.webkitAudioContext)();
-      }
+      this._ensure();
       document.removeEventListener('keydown', handler);
+      document.removeEventListener('pointerdown', handler);
     };
     document.addEventListener('keydown', handler);
+    document.addEventListener('pointerdown', handler);
   }
 
   _ensure() {
     if (!this.ctx) this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    if (this.ctx.state === 'suspended') this.ctx.resume().catch(() => {});
   }
 
   _playTone(freq, dur, type = 'square', vol = 0.3) {
@@ -64,7 +65,8 @@ class AudioSystem {
     const vol = profile.vol || 0.12;
     const variance = profile.variance || 60;
 
-    const chars = text.replace(/[^A-Za-z0-9 ]/g, '').split('');
+    const normalized = text.normalize('NFD').replace(/\p{M}/gu, '');
+    const chars = normalized.replace(/[^A-Za-z0-9 ]/g, '').split('');
     let delay = 0;
     chars.forEach((ch, i) => {
       if (ch === ' ') { delay += speed * 1.5; return; }
