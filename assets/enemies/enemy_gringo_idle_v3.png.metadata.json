@@ -1,0 +1,24 @@
+{
+  "project": "pichasitos",
+  "prompt": "GRINGO enemy idle v3 copied from pose idle v3 for announcement and versus views.",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, gloves, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v4.6-gringo-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "gringo",
+  "width": 512,
+  "height": 512,
+  "model": "cursor-generate-image",
+  "source_image": "assets/poses/gringo/enemy_gringo_idle_v3.png",
+  "validated": false,
+  "timestamp": "2026-06-18T02:17:11.516155+00:00",
+  "character_canvas_size": {
+    "width": 189,
+    "height": 278
+  },
+  "scale_normalized": true,
+  "scale_reference": "humanoid enemies target ~278px standing height inside 512x512 canvas",
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "height_normalized_at": "2026-06-18T02:49:25.592976+00:00"
+}

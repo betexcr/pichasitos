@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "PANZAEPERRA intro portrait, thin dark-skinned street kid, black cap, gray tank top, gold tooth, bare hands/wrists if visible, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, hand coverings, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-panzaeperra-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "panzaeperra",
+  "variant": "intro",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T03:18:02.414559+00:00"
+}

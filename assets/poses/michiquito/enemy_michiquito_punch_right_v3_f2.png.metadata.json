@@ -1,0 +1,44 @@
+{
+  "project": "pichasitos",
+  "prompt": "MICHIQUITO enemy, young rich kid, neat dark side-parted hair, hot pink polo, cream pants, tan shoes, oversized gold watch, bare hands, no gloves, no hand wraps, right bare fist punch forward/downward, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, hand coverings, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-michiquito-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "punch_right",
+  "frame": 2,
+  "fighter_slug": "michiquito",
+  "special_move": null,
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 212,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 150,
+    "y": 117
+  },
+  "height_normalized": false,
+  "height_normalization_target": null,
+  "background_removed_by": "edge-connected light/checker background flood fill",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T03:40:55.449326+00:00",
+  "frame_copy_source": "assets/poses/michiquito/enemy_michiquito_punch_right_v3.png",
+  "frame_copy_reason": "keep v3 animation frames consistent and prevent fallback to older v1 art",
+  "skin_color_normalized": true,
+  "skin_color_reference": "assets/poses/michiquito/enemy_michiquito_idle_v3.png",
+  "skin_color_mean_before": [
+    185.07,
+    135.09,
+    88.61
+  ],
+  "skin_color_mean_after": [
+    185.63,
+    134.97,
+    83.73
+  ],
+  "skin_color_pixels_adjusted": 6207,
+  "skin_color_normalized_at": "2026-06-18T03:40:58.510513+00:00"
+}

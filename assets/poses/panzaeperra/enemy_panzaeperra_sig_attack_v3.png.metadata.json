@@ -1,0 +1,54 @@
+{
+  "project": "pichasitos",
+  "prompt": "PANZAEPERRA enemy, thin dark-skinned street kid, black cap, gray tank top, dark pants, dark shoes, gold tooth, bare hands and bare wrists, no gloves, no hand wraps, POLVAZO signature, throwing dust cloud forward/downward, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, hand coverings, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-panzaeperra-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "sig_attack",
+  "frame": 1,
+  "fighter_slug": "panzaeperra",
+  "special_move": "POLVAZO",
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 292,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 110,
+    "y": 117
+  },
+  "height_normalized": false,
+  "height_normalization_target": null,
+  "background_removed_by": "edge-connected light background flood fill",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T03:18:35.528180+00:00",
+  "skin_color_normalized": true,
+  "skin_color_reference": "assets/poses/panzaeperra/enemy_panzaeperra_idle_v3.png",
+  "skin_color_mean_before": [
+    118.11,
+    93.78,
+    70.64
+  ],
+  "skin_color_mean_after": [
+    115.61,
+    88.3,
+    63.91
+  ],
+  "skin_color_pixels_adjusted": 14672,
+  "skin_color_normalized_at": "2026-06-18T03:25:05.362435+00:00",
+  "skin_color_strict_pass": true,
+  "skin_color_mean_before_strict": [
+    115.61,
+    88.3,
+    63.91
+  ],
+  "skin_color_mean_after_strict": [
+    111.47,
+    84.72,
+    60.44
+  ],
+  "skin_color_pixels_adjusted_strict": 13486
+}

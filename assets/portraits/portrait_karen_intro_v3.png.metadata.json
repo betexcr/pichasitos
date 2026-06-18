@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "KAREN intro portrait, stocky middle-aged white woman, short side-swept blonde bob haircut with darker roots, navy-purple puff-sleeve blouse, blue jeans, black shoes, small earrings, bare hands, no gloves, reference-photo-inspired hair and blouse, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, tank top, buzzcut, shaved head, red shirt, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-karen-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "karen",
+  "variant": "intro",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "reference_image": "provided Karen photo reference",
+  "validated": false,
+  "timestamp": "2026-06-18T04:20:09.840179+00:00"
+}

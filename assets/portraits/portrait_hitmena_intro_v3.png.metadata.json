@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "HITMENA intro portrait, golden dreadlocks, nose ring, purple top, juggling clubs, bare hands if visible, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, hand coverings, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-hitmena-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "hitmena",
+  "variant": "intro",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T04:02:08.012424+00:00"
+}

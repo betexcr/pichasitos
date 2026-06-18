@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "El Toro Malacrianza Costa Rican Malacrianza-style bull, black head and neck, dark chest, white-gray speckled body, black lower legs, smooth zebu shoulder hump, large hanging dewlap, long upward-curving horns, non-humanoid bull, angry portrait, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines",
+  "negative_prompt": "human, humanoid, minotaur, rider, saddle, horse, text, logo, watermark, cropped horns, photorealistic, 3d render",
+  "prompt_version": "v5.0-bull-portraits-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "bull",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:25:06.285344+00:00"
+}

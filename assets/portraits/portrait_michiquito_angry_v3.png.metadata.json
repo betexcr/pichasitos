@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "MICHIQUITO angry portrait, young rich kid, neat dark side-parted hair, hot pink polo, gold watch, bare hands if visible, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, hand coverings, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-michiquito-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "michiquito",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T03:40:16.385518+00:00"
+}

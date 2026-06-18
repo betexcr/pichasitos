@@ -1,5 +1,7 @@
 class AssetLoader {
-  static ASSET_VERSION = '20260414_v3_arena_jpg';
+  static ASSET_VERSION = typeof PICHASITOS_CACHE_VERSION !== 'undefined'
+    ? PICHASITOS_CACHE_VERSION
+    : '20260618_bull_player_red_gloves_v3';
   static SLUGS = {
     'DON CARLOS':   'don_carlos',
     'GRINGO':       'gringo',
@@ -15,14 +17,19 @@ class AssetLoader {
     'SKIN':         'skin',
     'EL INDIO':     'el_indio',
     'EL TORO':      'bull',
+    'EL TORO MALACRIANZA': 'bull',
     'PLAYER':       'player',
   };
 
-  static POSES = [
-    'idle', 'punch_left', 'punch_right', 'hurt', 'block',
-    'dodge_left', 'dodge_back', 'dodge_right',
-    'ko', 'windup', 'taunt', 'sig_attack', 'victory',
+  /** Fight order (matches OPPONENT_DATA + bull finale). */
+  static FIGHT_SLUGS = [
+    'don_carlos', 'gringo', 'clarisa', 'panzaeperra', 'michiquito', 'hitmena',
+    'karen', 'carretastar', 'persefone', 'don_alvaro', 'anai', 'skin', 'el_indio', 'bull',
   ];
+
+  static FIGHT_CIRCUIT_BY_INDEX = [0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 3, 3];
+
+  static CIRCUIT_ARENAS = ['arena_pueblo', 'arena_feria', 'arena_redondel', 'arena_muerte'];
 
   static BULL_POSE_ALIASES = {
     'punch_left':  'horn_left',
@@ -32,21 +39,13 @@ class AssetLoader {
     'sig_attack':  'sig_charge',
   };
 
-  static MAX_FRAMES = 3;
-
-  /** Full list (player + priority fighters first, then arenas, title/map, etc.). */
-  static BACKGROUNDS = [
-    'arena_pueblo', 'arena_feria', 'arena_redondel', 'arena_muerte',
-    'title_bg', 'map_bg',
-  ];
-
   static UI_MAP_TITLE_BACKGROUNDS = ['title_bg', 'map_bg'];
 
-  static MONSTERS = [
-    'monster_cadejos', 'monster_segua', 'monster_llorona',
-    'monster_carreta', 'monster_padre',
-    'monster_tulevieja', 'monster_mico_malo', 'monster_bruja_zarate',
-  ];
+  static FALLBACK_VERSIONS = ['v3', 'v1'];
+
+  static INITIAL_FIGHTER_SLUG = 'don_carlos';
+
+  static MANIFEST_PATH = 'assets/asset-manifest.json';
 
   constructor() {
     this._enemies = {};
@@ -54,9 +53,12 @@ class AssetLoader {
     this._poses = {};
     this._backgrounds = {};
     this._monsters = {};
-    this._loaded = false;
+    this._manifest = null;
+    this._fighterBundles = new Set();
+    this._fighterPromises = new Map();
     this._priorityReady = false;
     this._loadPromise = null;
+    this._monstersLoaded = false;
   }
 
   _slugFor(name) {
@@ -72,58 +74,156 @@ class AssetLoader {
     });
   }
 
-  /** First-circuit fighters: load before other opponents so Pueblo / first fight never flashes v1 sprites. */
-  static PRIORITY_SLUGS = ['player', 'don_carlos'];
+  async _loadManifest() {
+    if (this._manifest) return this._manifest;
+    const url = `${AssetLoader.MANIFEST_PATH}?v=${AssetLoader.ASSET_VERSION}`;
+    try {
+      const res = await fetch(url, { cache: 'no-store' });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      this._manifest = await res.json();
+      return this._manifest;
+    } catch (e) {
+      console.warn(
+        'AssetLoader: asset-manifest.json missing or unreadable. Run: python tools/generate_asset_manifest.py',
+        e
+      );
+      this._manifest = { fighters: {}, backgrounds: {}, monsters: {} };
+      return this._manifest;
+    }
+  }
+
+  _fighterEntry(slug) {
+    return (this._manifest && this._manifest.fighters && this._manifest.fighters[slug]) || null;
+  }
+
+  _manifestPath(path) {
+    if (!path) return null;
+    return this._loadImage(path);
+  }
+
+  async _loadFallbackAtStem(pathStem) {
+    for (const version of AssetLoader.FALLBACK_VERSIONS) {
+      const img = await this._loadImage(`${pathStem}_${version}.png`);
+      if (img) return img;
+    }
+    return null;
+  }
 
   _loadEnemyIdle(slug) {
-    return this._loadImage(`assets/enemies/enemy_${slug}_idle_v2.png`)
-      .then(img => img || this._loadImage(`assets/enemies/enemy_${slug}_idle_v1.png`))
-      .then(img => { if (img) this._enemies[slug] = img; });
+    const entry = this._fighterEntry(slug);
+    if (entry && entry.idle) {
+      return this._manifestPath(entry.idle).then(img => {
+        if (img) this._enemies[slug] = img;
+      });
+    }
+    const stem = `assets/enemies/enemy_${slug}_idle`;
+    return this._loadFallbackAtStem(stem).then(img => {
+      if (img) this._enemies[slug] = img;
+    });
   }
 
-  _loadPortraitsForSlug(slug) {
-    return Promise.all([
-      this._loadImage(`assets/portraits/portrait_${slug}_angry_v1.png`).then(img => {
-        if (!this._portraits[slug]) this._portraits[slug] = {};
-        if (img) this._portraits[slug].angry = img;
-      }),
-      this._loadImage(`assets/portraits/portrait_${slug}_intro_v1.png`).then(img => {
-        if (!this._portraits[slug]) this._portraits[slug] = {};
-        if (img) this._portraits[slug].intro = img;
-      }),
-    ]);
+  _loadPortrait(slug, variant) {
+    const entry = this._fighterEntry(slug);
+    const path = entry && entry.portraits && entry.portraits[variant];
+    const load = path
+      ? this._manifestPath(path)
+      : this._loadFallbackAtStem(`assets/portraits/portrait_${slug}_${variant}`);
+    return load.then(img => {
+      if (!this._portraits[slug]) this._portraits[slug] = {};
+      if (img) this._portraits[slug][variant] = img;
+    });
   }
 
-  _loadAllPosesForSlug(slug) {
-    const tasks = [];
-    for (const pose of AssetLoader.POSES) {
-      const filePose = (slug === 'bull' && AssetLoader.BULL_POSE_ALIASES[pose]) || pose;
-      tasks.push(
-        this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2.png`)
-          .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1.png`))
-          .then(img => {
-            if (img) {
-              if (!this._poses[slug]) this._poses[slug] = {};
-              if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
-              this._poses[slug][pose][0] = img;
-            }
-          })
-      );
-      for (let f = 2; f <= AssetLoader.MAX_FRAMES; f++) {
-        tasks.push(
-          this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v2_f${f}.png`)
-            .then(img => img || this._loadImage(`assets/poses/${slug}/enemy_${slug}_${filePose}_v1_f${f}.png`))
-            .then(img => {
+  _loadAllIntroPortraits() {
+    const slugs = Object.values(AssetLoader.SLUGS);
+    return Promise.all(slugs.map(slug => this._loadPortrait(slug, 'intro')));
+  }
+
+  async _loadAllPosesForSlug(slug) {
+    const entry = this._fighterEntry(slug);
+    if (entry && entry.poses) {
+      const tasks = [];
+      for (const [pose, paths] of Object.entries(entry.poses)) {
+        if (!Array.isArray(paths) || paths.length === 0) continue;
+        for (let i = 0; i < paths.length; i++) {
+          const path = paths[i];
+          tasks.push(
+            this._manifestPath(path).then(img => {
               if (img) {
                 if (!this._poses[slug]) this._poses[slug] = {};
                 if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
-                this._poses[slug][pose][f - 1] = img;
+                this._poses[slug][pose][i] = img;
               }
             })
-        );
+          );
+        }
+      }
+      await Promise.all(tasks);
+      return;
+    }
+
+    for (const pose of ['idle', 'punch_left', 'punch_right', 'hurt', 'block', 'ko', 'windup', 'taunt', 'sig_attack', 'victory']) {
+      const filePose = (slug === 'bull' && AssetLoader.BULL_POSE_ALIASES[pose]) || pose;
+      const stem = `assets/poses/${slug}/enemy_${slug}_${filePose}`;
+      const img = await this._loadFallbackAtStem(stem);
+      if (img) {
+        if (!this._poses[slug]) this._poses[slug] = {};
+        if (!this._poses[slug][pose]) this._poses[slug][pose] = [];
+        this._poses[slug][pose][0] = img;
       }
     }
-    return tasks;
+  }
+
+  _loadCircuitBackground(circuitIndex) {
+    const bgName = AssetLoader.CIRCUIT_ARENAS[circuitIndex];
+    if (!bgName || this._backgrounds[bgName]) return Promise.resolve();
+    const path = this._manifest && this._manifest.backgrounds && this._manifest.backgrounds[bgName];
+    if (path) {
+      return this._manifestPath(path).then(img => {
+        if (img) this._backgrounds[bgName] = img;
+      });
+    }
+    return this._loadImage(`assets/ui_bg/${bgName}.jpg`).then(img => {
+      if (img) this._backgrounds[bgName] = img;
+    });
+  }
+
+  _loadBackgroundByName(bgName) {
+    if (!bgName || this._backgrounds[bgName]) return Promise.resolve();
+    const path = this._manifest && this._manifest.backgrounds && this._manifest.backgrounds[bgName];
+    if (path) {
+      return this._manifestPath(path).then(img => {
+        if (img) this._backgrounds[bgName] = img;
+      });
+    }
+    return Promise.all([
+      this._loadImage(`assets/ui_bg/${bgName}.png`),
+      this._loadImage(`assets/ui_bg/${bgName}.jpg`),
+    ]).then(([png, jpg]) => {
+      const img = png || jpg;
+      if (img) this._backgrounds[bgName] = img;
+    });
+  }
+
+  _loadMonsters() {
+    if (this._monstersLoaded) return Promise.resolve();
+    this._monstersLoaded = true;
+    const manifestMonsters = (this._manifest && this._manifest.monsters) || {};
+    const names = Object.keys(manifestMonsters).length > 0
+      ? Object.keys(manifestMonsters)
+      : [
+        'monster_cadejos', 'monster_segua', 'monster_llorona',
+        'monster_carreta', 'monster_padre',
+        'monster_tulevieja', 'monster_mico_malo', 'monster_bruja_zarate',
+      ];
+    return Promise.all(
+      names.map(mName => {
+        const path = manifestMonsters[mName] || `assets/monsters/${mName}.png`;
+        return this._manifestPath(path).then(img => {
+          if (img) this._monsters[mName] = img;
+        });
+      })
+    );
   }
 
   _finalizePortraitFallbacks() {
@@ -137,92 +237,101 @@ class AssetLoader {
     }
   }
 
+  /**
+   * Full combat bundle for one fighter: idle, poses, angry portrait.
+   * Intro portraits are loaded separately at boot for the world map.
+   */
+  preloadFighterBundle(nameOrSlug) {
+    const slug = this._slugFor(nameOrSlug);
+    if (this._fighterBundles.has(slug)) return Promise.resolve();
+    if (this._fighterPromises.has(slug)) return this._fighterPromises.get(slug);
+
+    const promise = (async () => {
+      await Promise.all([
+        this._loadEnemyIdle(slug),
+        this._loadAllPosesForSlug(slug),
+        this._loadPortrait(slug, 'angry'),
+      ]);
+      this._fighterBundles.add(slug);
+      this._finalizePortraitFallbacks();
+    })();
+
+    this._fighterPromises.set(slug, promise);
+    return promise;
+  }
+
+  /**
+   * When fight N starts, preload fight N+1 (and its arena / monsters if needed).
+   */
+  preloadAheadOfFight(fightIndex) {
+    const nextIdx = fightIndex + 1;
+    if (nextIdx >= AssetLoader.FIGHT_SLUGS.length) return Promise.resolve();
+
+    const slug = AssetLoader.FIGHT_SLUGS[nextIdx];
+    const tasks = [this.preloadFighterBundle(slug)];
+
+    const circuit = AssetLoader.FIGHT_CIRCUIT_BY_INDEX[nextIdx];
+    if (circuit !== undefined) {
+      tasks.push(this._loadCircuitBackground(circuit));
+      if (circuit === 3) tasks.push(this._loadMonsters());
+    }
+
+    return Promise.all(tasks);
+  }
+
   preload() {
     if (this._loadPromise) return this._loadPromise;
 
-    const slugs = Object.values(AssetLoader.SLUGS);
-    const priority = AssetLoader.PRIORITY_SLUGS;
-
     this._loadPromise = (async () => {
       try {
-        await Promise.all(
-          priority.flatMap(slug => [
-            this._loadEnemyIdle(slug),
-            ...this._loadAllPosesForSlug(slug),
-          ])
-        );
-
-        const arenaKeys =
-          typeof CONST !== 'undefined' && CONST.CIRCUIT_BACKGROUNDS
-            ? CONST.CIRCUIT_BACKGROUNDS
-            : ['arena_pueblo', 'arena_feria', 'arena_redondel', 'arena_muerte'];
-        await Promise.all(
-          arenaKeys.map(bgName =>
-            this._loadImage(`assets/ui_bg/${bgName}.jpg`).then(img => {
-              if (img) this._backgrounds[bgName] = img;
-            })
-          )
-        );
-        await Promise.all(
-          AssetLoader.UI_MAP_TITLE_BACKGROUNDS.map(bgName =>
-            this._loadImage(`assets/ui_bg/${bgName}.png`).then(img => {
-              if (img) this._backgrounds[bgName] = img;
-            })
-          )
-        );
-
-        await Promise.all(slugs.map(s => this._loadPortraitsForSlug(s)));
-
-        this._priorityReady = true;
-
-        const phase4 = [];
-        for (const slug of slugs) {
-          if (priority.indexOf(slug) >= 0) continue;
-          phase4.push(this._loadEnemyIdle(slug));
-          phase4.push(...this._loadAllPosesForSlug(slug));
-        }
-        for (const mName of AssetLoader.MONSTERS) {
-          phase4.push(
-            this._loadImage(`assets/monsters/${mName}.png`).then(img => {
-              if (img) this._monsters[mName] = img;
-            })
-          );
-        }
-        await Promise.all(phase4);
-
+        await this._loadManifest();
+        await Promise.all([
+          this.preloadFighterBundle('player'),
+          this.preloadFighterBundle(AssetLoader.INITIAL_FIGHTER_SLUG),
+          this._loadAllIntroPortraits(),
+          this._loadCircuitBackground(0),
+          ...AssetLoader.UI_MAP_TITLE_BACKGROUNDS.map(bgName => this._loadBackgroundByName(bgName)),
+        ]);
         this._finalizePortraitFallbacks();
-        this._loaded = true;
+        this._priorityReady = true;
       } catch (e) {
         console.error('AssetLoader.preload failed:', e);
         this._finalizePortraitFallbacks();
         this._priorityReady = true;
-        this._loaded = true;
       }
     })();
 
     return this._loadPromise;
   }
 
-  get loaded() { return this._loaded; }
+  /** Dev / preview: load every fighter and arena. */
+  preloadAll() {
+    return this.preload().then(async () => {
+      const slugs = AssetLoader.FIGHT_SLUGS.filter(s => s !== AssetLoader.INITIAL_FIGHTER_SLUG);
+      await Promise.all(slugs.map(slug => this.preloadFighterBundle(slug)));
+      await Promise.all([1, 2, 3].map(i => this._loadCircuitBackground(i)));
+      await this._loadMonsters();
+    });
+  }
 
-  /** True after player + Don Carlos poses, backgrounds, and all portraits are in memory. */
+  get loaded() { return this._priorityReady; }
+
   get priorityReady() { return this._priorityReady; }
 
-  /**
-   * Ready to render a fight: circuit background + player idle + this opponent's idle.
-   * While the rest of the roster (phase 4) loads, we wait until this opponent's data exists.
-   * After full preload(), allow the fight even if an image failed (avoid soft-lock).
-   */
+  isFighterBundleReady(nameOrSlug) {
+    const slug = this._slugFor(nameOrSlug);
+    if (slug === 'player') {
+      return !!this.getPoseImage('PLAYER', 'idle', 0);
+    }
+    return this._fighterBundles.has(slug) || this.hasPoses(slug);
+  }
+
   areFightAssetsReady(circuitIndex, opponentName) {
     if (!this._priorityReady) return false;
-    const bgKey = typeof CONST !== 'undefined' && CONST.CIRCUIT_BACKGROUNDS
-      ? CONST.CIRCUIT_BACKGROUNDS[circuitIndex]
-      : null;
+    const bgKey = AssetLoader.CIRCUIT_ARENAS[circuitIndex];
     if (!bgKey || !this.getBackground(bgKey)) return false;
-    const pIdle = this.getPoseImage('PLAYER', 'idle', 0);
-    const oIdle = this.getPoseImage(opponentName, 'idle', 0);
-    if (pIdle && oIdle) return true;
-    return !!this._loaded;
+    if (!this.isFighterBundleReady('PLAYER')) return false;
+    return this.isFighterBundleReady(opponentName);
   }
 
   getEnemyImage(nameOrSlug) {

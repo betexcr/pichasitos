@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "el_indio angry portrait, muscular Indigenous Central American warrior, dark warm brown skin, short black hair in Indigenous style, ochre and green face paint, jade jewelry, small feathers, bare-chested, dark green wrapped pants, barefoot or sandals, bare hands, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime western cartoon face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-el_indio-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "el_indio",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:02:38.634444+00:00"
+}

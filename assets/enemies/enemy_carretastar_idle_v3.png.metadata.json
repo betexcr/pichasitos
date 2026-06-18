@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "CARRETASTAR enemy idle v3 copied from normalized pose idle v3 for announcement and versus views. Sabanero cowboy with hat red band, mustache, leather shirt, olive pants, spurred boots, lasso, beer mug, bare hands.",
+  "prompt_version": "v5.0-carretastar-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "carretastar",
+  "width": 512,
+  "height": 512,
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "source_image": "assets/poses/carretastar/enemy_carretastar_idle_v3.png",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T04:37:38.875938+00:00"
+}

@@ -288,8 +288,9 @@ Thin dark-skinned Rastafarian man, dreadlocks under rasta tam/beanie, dark
 green shirt, olive green pants, barefoot. Caribbean Limon style.
 
 ### Skin
-Muscular bald man, gray/silver stubble, gray shirt, dark pants, black shoes,
-ear gauges, knuckle tattoos. Silent intimidating fighter.
+Muscular bald warm peach-skinned bouncer, black ribbed tank top, black cargo
+pants, black combat boots, huge ear gauges, silver wallet chain, tattooed
+forearms and bare naked tattooed fists. Silent intimidating fighter. No gloves.
 
 ### El Indio
 Muscular indigenous warrior, dark skin, black hair in indigenous style, face

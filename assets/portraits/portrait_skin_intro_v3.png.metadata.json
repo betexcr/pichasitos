@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "SKIN portrait, bald warm peach-skinned tattooed bouncer, huge ear gauges, black ribbed tank top, calm silent intimidation intro portrait, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, boxing gloves, anime, manga, chibi, cropped face, gloves, weapons, gray skin",
+  "prompt_version": "v4.6-portraits-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "skin",
+  "variant": "intro",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/poses/skin/enemy_skin_idle_v3.png",
+    "assets/portraits/portrait_skin_angry_v1.png"
+  ],
+  "validated": false,
+  "timestamp": "2026-06-18T01:34:54.920601+00:00"
+}

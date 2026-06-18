@@ -1,0 +1,15 @@
+{
+  "project": "pichasitos",
+  "prompt": "anai angry portrait, thin dark-skinned Rastafarian man, dreadlocks under red yellow green rasta tam beanie, dark green shirt, olive green pants, barefoot, Caribbean Limon style, bare hands, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime western cartoon face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, anime, manga, chibi, cropped face",
+  "prompt_version": "v5.0-anai-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "anai",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:00:44.894037+00:00"
+}

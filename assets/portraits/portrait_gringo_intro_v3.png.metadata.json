@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "GRINGO intro portrait, sunburned blond American tourist, backward red cap, coral-orange shirt, backpack straps, confused angry tourist expression, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, boxing gloves, anime, manga, chibi, cropped face",
+  "prompt_version": "v4.6-gringo-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "gringo",
+  "variant": "intro",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/enemies/enemy_gringo_idle_v1.png",
+    "assets/portraits/portrait_gringo_angry_v1.png"
+  ],
+  "validated": false,
+  "timestamp": "2026-06-18T01:34:55.155527+00:00"
+}

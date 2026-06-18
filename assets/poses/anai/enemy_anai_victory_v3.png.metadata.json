@@ -1,0 +1,44 @@
+{
+  "project": "pichasitos",
+  "prompt": "anai enemy, thin dark-skinned Rastafarian man, dreadlocks under red yellow green rasta tam beanie, dark green shirt, olive green pants, barefoot, Caribbean Limon style, bare hands, no gloves, peace sign victory, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime western cartoon face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-anai-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "victory",
+  "frame": 1,
+  "fighter_slug": "anai",
+  "special_move": null,
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 140,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 186,
+    "y": 117
+  },
+  "height_normalized": false,
+  "height_normalization_target": null,
+  "background_removed_by": "edge-connected light background flood fill",
+  "transparent_rgb_normalized": true,
+  "transparent_rgb_pixels_normalized": 639,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:02:14.459670+00:00",
+  "skin_color_normalized": true,
+  "skin_color_reference": "assets/poses/anai/enemy_anai_idle_v3.png",
+  "skin_color_mean_before": [
+    121.87,
+    65.12,
+    30.42
+  ],
+  "skin_color_mean_after": [
+    117.29,
+    64.29,
+    32.47
+  ],
+  "skin_color_pixels_adjusted": 2287,
+  "skin_color_normalized_at": "2026-06-18T06:02:37.020911+00:00"
+}

@@ -53,7 +53,7 @@ const CONST = {
   LOGIC_FPS: 30,
   ROUND_TIME: 90,
   ROUNDS_PER_FIGHT: 3,
-  CONTINUE_TIME: 10,
+  CONTINUE_TIME: 15,
   IDLE_TIMEOUT: 60,
   TEJA_VALUE: 100,
 
@@ -124,29 +124,55 @@ const CONST = {
     MAX_HEALTH: 100,
     MAX_STAMINA: 100,
     MAX_GUARO: 100,
-    PUNCH_DAMAGE: 5,
-    SPECIAL_DAMAGE: 18,
+    PUNCH_DAMAGE: 6,
+    SPECIAL_DAMAGE: 20,
     PUNCH_STAMINA_COST: 7,
-    STAMINA_REGEN: 0.3,
-    GUARO_PER_HIT: 7,
+    STAMINA_REGEN: 0.35,
+    GUARO_PER_HIT: 8,
     DODGE_FRAMES: 14,
     BLOCK_DAMAGE_MULT: 0.30,
-    PUNCH_WINDUP: 9,
-    PUNCH_ACTIVE: 6,
-    PUNCH_RECOVERY: 12,
-    SPECIAL_WINDUP: 10,
-    SPECIAL_ACTIVE: 7,
-    SPECIAL_RECOVERY: 14,
+    PUNCH_WINDUP: 7,
+    PUNCH_ACTIVE: 5,
+    PUNCH_RECOVERY: 9,
+    SPECIAL_WINDUP: 8,
+    SPECIAL_ACTIVE: 6,
+    SPECIAL_RECOVERY: 11,
     HURT_DURATION: 24,
     WINDED_DURATION: 50,
     COMBO_DAMAGE_CAP: 4,
     STALE_MOVE_PENALTY: 0.75,
-    CHIP_STAMINA_DAMAGE: 6,
+    CHIP_STAMINA_DAMAGE: 4,
     GUARO_OVERFLOW_HITS: 8,
     RAMPAGE_DURATION: 140,
     RAMPAGE_DAMAGE_MULT: 1.5,
     RAMPAGE_STAMINA_COST_MULT: 0.5,
     RAMPAGE_SWAY_INTENSITY: 4,
+    WINDUP_PUNISH_MULT: 1.12,
+  },
+
+  /** Progression tuning — fightIndex 0 = Don Carlos … 12 = El Indio; bull uses index 13. */
+  DIFFICULTY: {
+    CONTINUE_START_HEALTH: 70,
+    HEAL_ONCE_FRACTION: 0.2,
+    getFightModifiers(fightIndex) {
+      const idx = Math.max(0, Math.min(13, fightIndex | 0));
+      if (idx >= 13) {
+        return { healthMult: 1, damageMult: 1, aggressivenessMult: 1, tellBonusFrames: 0 };
+      }
+      if (idx <= 2) {
+        return { healthMult: 0.95, damageMult: 0.92, aggressivenessMult: 0.90, tellBonusFrames: 2 };
+      }
+      if (idx <= 5) {
+        return { healthMult: 0.88, damageMult: 0.85, aggressivenessMult: 0.82, tellBonusFrames: 4 };
+      }
+      if (idx <= 8) {
+        return { healthMult: 0.92, damageMult: 0.90, aggressivenessMult: 0.88, tellBonusFrames: 2 };
+      }
+      if (idx <= 11) {
+        return { healthMult: 0.97, damageMult: 0.95, aggressivenessMult: 0.94, tellBonusFrames: 1 };
+      }
+      return { healthMult: 1, damageMult: 1, aggressivenessMult: 1, tellBonusFrames: 0 };
+    },
   },
 
   POINTS: {

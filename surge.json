@@ -1,0 +1,28 @@
+{
+  "headers": {
+    "/index.html": {
+      "Cache-Control": "public, max-age=0, must-revalidate"
+    },
+    "/sw.js": {
+      "Cache-Control": "public, max-age=0, must-revalidate"
+    },
+    "/js/cache-version.js": {
+      "Cache-Control": "public, max-age=0, must-revalidate"
+    },
+    "/assets/**": {
+      "Cache-Control": "public, max-age=31536000, immutable"
+    },
+    "/css/**": {
+      "Cache-Control": "public, max-age=86400, stale-while-revalidate=604800"
+    },
+    "/js/**": {
+      "Cache-Control": "public, max-age=3600, stale-while-revalidate=86400"
+    },
+    "/favicon.ico": {
+      "Cache-Control": "public, max-age=604800"
+    },
+    "/favicon.png": {
+      "Cache-Control": "public, max-age=604800"
+    }
+  }
+}

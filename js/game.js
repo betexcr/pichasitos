@@ -30,8 +30,15 @@ class Game {
 
     this.nameEntry = { chars: ['A','A','A'], pos: 0, done: false };
 
+    this._continueBoost = false;
+    this._continueBoostRoundOnly = false;
+
     this.online = new OnlineScoreboard();
     this.online.init();
+
+    if (typeof TestMode !== 'undefined' && TestMode.isActive()) {
+      this.arcade.credits = 99;
+    }
 
     this.input = { left:false,right:false,up:false,down:false,punchLeft:false,punchRight:false,special:false,start:false,coin:false };
     this._pressedThisFrame = {};
@@ -243,9 +250,10 @@ class Game {
   }
 
   _updateOpponentIntro() {
+    const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
+    const opp = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+    this.assets.preloadFighterBundle(opp.name);
     if (!this._oppIntroSpeechDone && this.stateTick === 10) {
-      const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-      const opp = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
       const quoteText = opp.quotes
         ? opp.quotes[Math.floor(Math.random() * opp.quotes.length)]
         : opp.quote;
@@ -258,7 +266,17 @@ class Game {
   _startFight() {
     const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
     const oppData = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
-    this.player = new Player(); this.opponent = new OpponentAI(oppData);
+    this.player = new Player();
+    this.opponent = new OpponentAI(oppData);
+    const fightIdx = isBull ? 13 : this.currentOpponentIndex;
+    if (CONST.DIFFICULTY) {
+      this.opponent.applyDifficultyModifiers(CONST.DIFFICULTY.getFightModifiers(fightIdx));
+    }
+    if (this._continueBoost) {
+      this.player.health = CONST.DIFFICULTY.CONTINUE_START_HEALTH;
+      this._continueBoostRoundOnly = true;
+      this._continueBoost = false;
+    }
     this.round = 1; this.roundTime = CONST.ROUND_TIME;
     this.playerRoundsWon = 0; this.opponentRoundsWon = 0;
     this.playerHitThisSwing = false; this.opponentHitThisAttack = false;
@@ -268,6 +286,7 @@ class Game {
     this.renderer.setCircuit(this.currentCircuit);
     this.audio.stopMusic(); this.audio.startMusic(isBull ? 'boss' : 'fight');
     this.audio.roundStart(); this._changeState(CONST.STATES.FIGHT, 'fade_black');
+    this.assets.preloadAheadOfFight(fightIdx);
   }
 
   _updateFight() {
@@ -362,12 +381,14 @@ class Game {
         this.renderer.setDodgeGhost(this.renderer.W/2, 170, dodgeAnim, 0);
         this.renderer.addDodgeDust(this.renderer.W/2, 200, this.player.state === 'dodge_left' ? 'left' : 'right');
       } else if (this.player.state==='block' && !unblockable) {
-        const dmg = Math.floor(this.opponent.getAttackDamage()*CONST.PLAYER.BLOCK_DAMAGE_MULT);
-        this.player.health = Math.max(0, this.player.health-dmg);
-        this.player.stamina = Math.max(0, this.player.stamina-(CONST.PLAYER.CHIP_STAMINA_DAMAGE||5));
+        if (typeof TestMode === 'undefined' || !TestMode.isActive()) {
+          const dmg = Math.floor(this.opponent.getAttackDamage()*CONST.PLAYER.BLOCK_DAMAGE_MULT);
+          this.player.health = Math.max(0, this.player.health-dmg);
+          this.player.stamina = Math.max(0, this.player.stamina-(CONST.PLAYER.CHIP_STAMINA_DAMAGE||5));
+          if (this.player.health<=0) { this.player.state='ko'; this.player.stateTimer=90; }
+        }
         this.audio.block(); this.renderer.addBlockParticles(this.renderer.W/2, 170);
         this._addScore(CONST.POINTS.BLOCK);
-        if (this.player.health<=0) { this.player.state='ko'; this.player.stateTimer=90; }
       } else {
         const hit = this.player.takeHit(this.opponent.getAttackDamage());
         if (hit) {
@@ -486,6 +507,7 @@ class Game {
     if (prev!==curr && this.continueTimeLeft>0) this.audio.countdown();
     if (this.arcade.hasCredits() && (this._consumePress('start')||this._consumePress('coin'))) {
       if (!this.arcade.hasCredits()) return;
+      this._continueBoost = true;
       this.arcade.spendCredit(); this.audio.menuConfirm(); this.audio.startMusic('fight'); this._startFight(); return;
     }
     if (this.continueTimeLeft <= 0) {
@@ -506,10 +528,12 @@ class Game {
       if (this.stateTick > 60) {
         const name = ne.chars.join('');
         const lastDefeated = this._getLastDefeatedName();
-        this.arcade.addHighScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
-        if (this.online) {
-          this.online.setPlayerName(name);
-          this.online.submitScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
+        if (typeof TestMode === 'undefined' || !TestMode.isActive()) {
+          this.arcade.addHighScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
+          if (this.online) {
+            this.online.setPlayerName(name);
+            this.online.submitScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
+          }
         }
         this._changeState(CONST.STATES.GAME_OVER);
       }

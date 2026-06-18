@@ -3,6 +3,7 @@
 *.pem
 *.key
 node_modules/
+.firebase/
 index 10.11.01*
 
 # SD export scratch (reference crops, one-off temp PNGs)

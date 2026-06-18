@@ -56,7 +56,6 @@ class Renderer {
 
     this._transition = null;
     this._transitionBuffer = null;
-    this._tellTintBuffer = null;
     this._currentCircuit = 0;
 
     this._impactStar = null;
@@ -1478,35 +1477,6 @@ class Renderer {
     this._drawText('G', gx - 1, gy - 2, 'left', 0.6);
   }
 
-  // Tell warning: tint only opaque opponent pixels (not a bounding box).
-  _drawOpponentTellSilhouette(c, oppX, oppY, oppScale, oppData, oppAnim, opponentFrame, pulse, tellColor) {
-    const bw = 220;
-    const bh = 260;
-    if (!this._tellTintBuffer || this._tellTintBuffer.width !== bw || this._tellTintBuffer.height !== bh) {
-      this._tellTintBuffer = document.createElement('canvas');
-      this._tellTintBuffer.width = bw;
-      this._tellTintBuffer.height = bh;
-    }
-    const b = this._tellTintBuffer;
-    const bctx = b.getContext('2d');
-    bctx.setTransform(1, 0, 0, 1, 0, 0);
-    bctx.clearRect(0, 0, bw, bh);
-    bctx.imageSmoothingEnabled = c.imageSmoothingEnabled;
-    bctx.imageSmoothingQuality = c.imageSmoothingQuality || 'high';
-    bctx.save();
-    bctx.translate(bw / 2 - oppX, bh / 2 - oppY);
-    this.sprites.drawOpponent(bctx, oppData, oppAnim, opponentFrame, oppX, oppY, oppScale);
-    bctx.restore();
-    bctx.globalCompositeOperation = 'source-in';
-    bctx.fillStyle = tellColor;
-    bctx.fillRect(0, 0, bw, bh);
-    bctx.globalCompositeOperation = 'source-over';
-    c.save();
-    c.globalAlpha = Math.min(0.28, pulse * 0.9);
-    c.drawImage(b, oppX - bw / 2, oppY - bh / 2);
-    c.restore();
-  }
-
   // ── Fight Scene ──
 
   drawFightScene(player, opponent, tick) {
@@ -1533,8 +1503,7 @@ class Renderer {
     const oppAnim = opponent.getAnimState();
     const isTell = opponent.state === 'tell';
     const isTellSig = isTell && opponent.currentPattern && opponent.currentPattern.type === 'signature';
-    const tellColor = isTell ? (isTellSig ? (oppData.accentColor || CONST.COLORS.ORANGE) : CONST.COLORS.YELLOW) : null;
-    const tellPulse = isTell ? Math.sin(tick * 0.4) * 0.15 + 0.15 : 0;
+    const tellColor = isTellSig ? (oppData.accentColor || CONST.COLORS.ORANGE) : null;
 
     c.fillStyle = 'rgba(0,0,0,0.15)';
     c.beginPath();
@@ -1550,9 +1519,6 @@ class Renderer {
     c.globalCompositeOperation = 'source-over';
     this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
     c.restore();
-    if (isTell && tellPulse > 0 && tellColor) {
-      this._drawOpponentTellSilhouette(c, oppX, oppY, oppScale, oppData, oppAnim, opponent.animFrame, tellPulse, tellColor);
-    }
     if (this.oppHitFlashTimer > 0) {
       const flashT = this.oppHitFlashTimer / 8;
       c.save();
@@ -1563,8 +1529,7 @@ class Renderer {
       this.oppHitFlashTimer--;
     }
 
-    if (isTell && tellColor) {
-      if (isTellSig) {
+    if (isTellSig && tellColor) {
         const lineCount = 6;
         for (let i = 0; i < lineCount; i++) {
           const angle = (i / lineCount) * Math.PI * 2 + tick * 0.15;
@@ -1582,48 +1547,10 @@ class Renderer {
           c.stroke();
         }
         c.globalAlpha = 1;
-      }
-
-      const exclPulse = Math.sin(tick * 0.5) * 2;
-      const exY = oppY - 85 + exclPulse;
-      c.fillStyle = isTellSig ? CONST.COLORS.RED : CONST.COLORS.YELLOW;
-      c.fillRect(oppX - 1, exY, 3, 6);
-      c.fillRect(oppX - 1, exY + 8, 3, 2);
     }
 
     this._drawImpactStar(c);
     this._drawSweatDrops(c);
-
-    if (opponent.state === 'block') {
-      const blockPulse = Math.sin(tick * 0.35) * 0.08 + 0.12;
-      c.fillStyle = `rgba(100,180,255,${blockPulse})`;
-      c.beginPath();
-      c.arc(oppX, oppY - 30, 22, 0, Math.PI * 2);
-      c.fill();
-
-      const crossX = oppX;
-      const crossY = oppY - 35;
-      c.strokeStyle = `rgba(180,220,255,${blockPulse * 2.5})`;
-      c.lineWidth = 2;
-      c.beginPath();
-      c.moveTo(crossX - 10, crossY + 8);
-      c.lineTo(crossX + 4, crossY - 8);
-      c.stroke();
-      c.beginPath();
-      c.moveTo(crossX + 10, crossY + 8);
-      c.lineTo(crossX - 4, crossY - 8);
-      c.stroke();
-
-      const sparkA = Math.sin(tick * 0.5) > 0.6 ? 0.5 : 0;
-      if (sparkA > 0) {
-        c.fillStyle = `rgba(255,255,255,${sparkA})`;
-        const sx = crossX + Math.sin(tick * 0.7) * 12;
-        const sy = crossY + Math.cos(tick * 0.6) * 8;
-        c.fillRect(Math.floor(sx), Math.floor(sy), 1, 1);
-        c.fillRect(Math.floor(sx) - 1, Math.floor(sy), 3, 1);
-        c.fillRect(Math.floor(sx), Math.floor(sy) - 1, 1, 3);
-      }
-    }
 
     if (opponent.signaturePhraseTimer > 0 && opponent.signaturePhrase) {
       this._drawSignaturePhrase(c, opponent.signaturePhrase, oppX, oppY - 70, tick, opponent.signaturePhraseTimer);

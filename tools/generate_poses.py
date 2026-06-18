@@ -3,6 +3,9 @@
 Generate all fighter pose variants using diffusers img2img pipeline.
 Uses the enemy idle sprite as reference for each fighter, generates
 each pose variant defined in fighters_sd.json.
+
+After adding or replacing sprites, refresh the runtime manifest:
+    python tools/generate_asset_manifest.py
 """
 from __future__ import annotations
 

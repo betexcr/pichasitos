@@ -1,0 +1,42 @@
+{
+  "project": "pichasitos",
+  "prompt": "CARRETASTAR enemy, muscular sabanero cowboy, tan medium skin, brown hair, huge curled black mustache, cowboy hat with red band, brown leather shirt or jacket, olive green pants, brown cowboy boots with metal spurs, lasso, beer mug, bare hands, no gloves, ESPUELAZO signature, spur kick rush, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-carretastar-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "sig_attack",
+  "frame": 2,
+  "fighter_slug": "carretastar",
+  "special_move": "ESPUELAZO",
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 387,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 62,
+    "y": 117
+  },
+  "height_normalized": false,
+  "height_normalization_target": null,
+  "background_removed_by": "edge-connected light background flood fill",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T04:37:36.920350+00:00",
+  "skin_color_normalized": true,
+  "skin_color_reference": "assets/poses/carretastar/enemy_carretastar_idle_v3.png",
+  "skin_color_mean_before": [
+    167.95,
+    106.71,
+    54.27
+  ],
+  "skin_color_mean_after": [
+    167.48,
+    106.15,
+    54.59
+  ],
+  "skin_color_pixels_adjusted": 4928,
+  "skin_color_normalized_at": "2026-06-18T04:37:38.875938+00:00"
+}

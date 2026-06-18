@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "el_indio enemy idle v3 copied from normalized pose idle v3. muscular Indigenous Central American warrior, dark warm brown skin, short black hair in Indigenous style, ochre and green face paint, jade jewelry, small feathers, bare-chested, dark green wrapped pants, barefoot or sandals, bare hands, no gloves",
+  "prompt_version": "v5.0-el_indio-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "el_indio",
+  "width": 512,
+  "height": 512,
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "source_image": "assets/poses/el_indio/enemy_el_indio_idle_v3.png",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:04:04.095097+00:00"
+}

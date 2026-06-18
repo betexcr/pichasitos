@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "DON CARLOS angry portrait, fat balding karaoke showman, black mustache, open white shirt, huge belly, gold chain, chrome microphone, bare hands, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, hand coverings, anime, manga, chibi, cropped face",
+  "prompt_version": "v4.8-don-carlos-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "don_carlos",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/poses/don_carlos/enemy_don_carlos_idle_v2.png",
+    "assets/portraits/portrait_don_carlos_intro_v1.png"
+  ],
+  "validated": false,
+  "timestamp": "2026-06-18T02:39:31.028177+00:00"
+}

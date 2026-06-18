@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "KAREN enemy idle v3 copied from normalized pose idle v3 for announcement and versus views. Corrected photo-reference design: side-swept blonde bob, navy-purple puff-sleeve blouse, blue jeans, black shoes, bare hands.",
+  "prompt_version": "v5.0-karen-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "karen",
+  "width": 512,
+  "height": 512,
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "source_image": "assets/poses/karen/enemy_karen_idle_v3.png",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T04:20:53.740224+00:00"
+}

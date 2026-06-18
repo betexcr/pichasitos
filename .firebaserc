@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "pichasitos-arcade"
+    "default": "pichasitos",
+    "hosting": "pichasitos",
+    "database": "pichasitos-arcade"
   }
 }

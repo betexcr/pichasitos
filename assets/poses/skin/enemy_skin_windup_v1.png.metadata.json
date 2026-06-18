@@ -1,22 +1,29 @@
 {
   "project": "pichasitos",
-  "prompt": "(completely bald pale scalp stubble, huge flesh-tunnel ear plugs, dark gray ribbed tank top, black cargo pants, silver wallet chain, visible knuckle and forearm tattoos, slowly pulling massive fist back, cracking neck, measured violence:1.25), \"SKIN\" enemy, completely bald, huge ear gauges, dark gray tank top, black cargo pants, forearm tattoos, slowly pulling massive fist back, cracking neck, measured violence, BREAK, 1980s western cartoon arcade game art, SNES Punch-Out inspired proportions, bold black outlines, flat cel colors, exaggerated readable silhouette, non-anime face design, full body head to toe, plain solid background",
-  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, boxing ring, mouthguard, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt": "(SKIN enemy, warm peach skin, bald stern muscular bouncer, huge ear gauges, black ribbed tank top, black cargo pants, black combat boots, silver wallet chain, tattooed forearms and knuckles, bare naked fists only, no gloves:1.25), windup pose, one massive bare tattooed fist pulled back near ribs, torso twisted, full body head to toe, BREAK, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, gloves, wrapped fists, chain weapon, ice block, doorway, background prop, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
   "seed": 877632431,
   "parent_seed": null,
-  "prompt_version": "v4.3",
+  "prompt_version": "v4.4-bare-fists-consistency",
   "style": "pichasitos_western_cartoon",
   "asset_type": "pose",
   "pose_id": "windup",
   "fighter_slug": "skin",
   "steps": 30,
   "cfg_scale": 7.5,
-  "strength": 0.7,
-  "sampler": "PNDMScheduler",
+  "sampler": "GenerateImage",
   "width": 512,
   "height": 512,
-  "model": "westernAnimation_v1",
-  "reference_image": "enemy_skin_idle_v1.png",
-  "timestamp": "2026-04-11T06:54:11.815166+00:00",
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/enemies/enemy_skin_idle_v1.png",
+    "assets/portraits/portrait_skin_angry_v1.png"
+  ],
+  "character_canvas_size": {
+    "width": 281,
+    "height": 420
+  },
+  "notes": "Regenerated to keep full body visible, warm peach skin tone, and bare naked tattooed fists with no gloves or props.",
+  "timestamp": "2026-06-18T00:53:31.550354+00:00",
   "validated": false
 }

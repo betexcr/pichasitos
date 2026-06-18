@@ -181,8 +181,8 @@ const OPPONENT_DATA = [
     ],
     health: 95, damage: { jab: 15, power: 24, special: 34 },
     speed: 0.9, aggressiveness: 0.7, blockChance: 0.3, counterChance: 0.3,
-    build: 'stocky', skinColor: CONST.COLORS.SKIN_MEDIUM, hairColor: '#222',
-    hairStyle: 'buzzcut', shirtColor: '#8B0000', pantsColor: '#333', shoeColor: '#111', piercings: true,
+    build: 'stocky', skinColor: CONST.COLORS.SKIN_LIGHT, hairColor: '#D8B35A',
+    hairStyle: 'side_swept_blonde_bob', shirtColor: '#30274F', pantsColor: '#1F4E8C', shoeColor: '#111', piercings: true,
     accessories: [],
     patterns: [
       { type: 'jab', side: 'left', tellFrames: 10, attackFrames: 5, recoveryFrames: 11, damage: 15 },
@@ -374,7 +374,7 @@ const OPPONENT_DATA = [
 ];
 
 const TORO_DATA = {
-  id: 13, name: 'EL TORO', title: 'MALACRIANZA', circuit: 4,
+  id: 13, name: 'EL TORO MALACRIANZA', title: 'MALACRIANZA', circuit: 4,
   quotes: ['MUUUUUUUUUU!!!', 'MUUUUU... MUUUUUUUUUU!!!', '*RESOPLA FURIOSAMENTE*\nMUUUUUUUUUUUU!', '*PATEA EL SUELO*\n*OJOS ROJOS*\nMUUUUUU!', '*BAJA LOS CUERNOS*\n*RASPA LA TIERRA*\nMUUUUUUUUU!!!'],
   health: 180, damage: { jab: 18, power: 34, special: 48 },
   speed: 0.75, aggressiveness: 0.7, blockChance: 0, counterChance: 0.15,
@@ -397,7 +397,15 @@ const TORO_DATA = {
 
 class OpponentAI {
   constructor(data) {
-    this.data = data; this.health = data.health; this.maxHealth = data.health;
+    this.data = {
+      ...data,
+      patterns: (data.patterns || []).map((p) => ({ ...p })),
+      signatures: (data.signatures || []).map((s) => ({ ...s })),
+    };
+    this._tellBonusFrames = 0;
+    this._damageMult = 1;
+    this.health = data.health;
+    this.maxHealth = data.health;
     this.state = 'idle'; this.stateTimer = 0; this.currentPattern = null;
     this.patternIndex = 0; this.comboHitsLeft = 0; this.actionCooldown = 0;
     this.enraged = false; this.hasHealed = false;
@@ -406,6 +414,24 @@ class OpponentAI {
     this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
     this.signatureEffect = null; this.signatureEffectTimer = 0;
     this.lastSigUsedTick = -999;
+  }
+
+  applyDifficultyModifiers(mod) {
+    if (!mod) return;
+    const hm = mod.healthMult ?? 1;
+    const dm = mod.damageMult ?? 1;
+    const am = mod.aggressivenessMult ?? 1;
+    this._damageMult = dm;
+    this._tellBonusFrames = mod.tellBonusFrames || 0;
+    this.maxHealth = Math.max(1, Math.floor(this.data.health * hm));
+    this.health = this.maxHealth;
+    if (this.data.aggressiveness != null) this.data.aggressiveness *= am;
+    if (this.data.blockChance != null) {
+      this.data.blockChance *= am + (1 - am) * 0.5;
+    }
+    if (this.data.counterChance != null) {
+      this.data.counterChance *= am + (1 - am) * 0.5;
+    }
   }
 
   reset() {
@@ -434,7 +460,10 @@ class OpponentAI {
 
     if (this.data.healsOnce && !this.hasHealed && this.health < this.maxHealth * 0.3) {
       this.hasHealed = true;
-      this.health = Math.min(this.maxHealth, this.health + this.maxHealth * 0.3);
+      const healFrac = (typeof CONST !== 'undefined' && CONST.DIFFICULTY)
+        ? CONST.DIFFICULTY.HEAL_ONCE_FRACTION
+        : 0.2;
+      this.health = Math.min(this.maxHealth, this.health + this.maxHealth * healFrac);
       this.state = 'taunt'; this.stateTimer = 30; return;
     }
 
@@ -531,7 +560,7 @@ class OpponentAI {
       this.signaturePhrase = this.data.taunts[Math.floor(Math.random() * this.data.taunts.length)];
       this.signaturePhraseTimer = 35;
     }
-    this.state = 'tell'; this.stateTimer = this._adj(p.tellFrames);
+    this.state = 'tell'; this.stateTimer = this._adj(p.tellFrames + (this._tellBonusFrames || 0));
   }
 
   _startBlock() { this.state = 'block'; this.stateTimer = 12 + Math.floor(Math.random() * 8); }
@@ -539,6 +568,12 @@ class OpponentAI {
   _cd() { const b = this.enraged ? 6 : 14; return b + Math.floor(Math.random() * (this.enraged ? 10 : 22)); }
 
   takeHit(damage) {
+    if (typeof TestMode !== 'undefined' && TestMode.isActive()) {
+      this.health = 0;
+      this.state = 'ko';
+      this.stateTimer = 120;
+      return damage || 1;
+    }
     if (this.state === 'block') damage = Math.floor(damage * 0.2);
     if (this.data.superArmor && this.state === 'attack') damage = Math.floor(damage * 0.5);
     this.health = Math.max(0, this.health - damage);
@@ -548,7 +583,10 @@ class OpponentAI {
   }
 
   isAttacking() { return this.state === 'attack' && this.stateTimer > 0; }
-  getAttackDamage() { return this.currentPattern ? this.currentPattern.damage : 0; }
+  getAttackDamage() {
+    const raw = this.currentPattern ? this.currentPattern.damage : 0;
+    return Math.max(0, Math.floor(raw * (this._damageMult || 1)));
+  }
   isAttackUnblockable() { return this.currentPattern && this.currentPattern.unblockable; }
   isAttackStun() { return this.currentPattern && this.currentPattern.stun; }
   getAttackSide() { return this.currentPattern ? this.currentPattern.side : 'both'; }

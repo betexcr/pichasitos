@@ -1,0 +1,34 @@
+{
+  "project": "pichasitos",
+  "prompt": "(SKIN enemy, warm peach skin, bald stern muscular bouncer, huge ear gauges, black ribbed tank top, black cargo pants, black combat boots, silver wallet chain, tattooed forearms and knuckles, bare naked fists only, no gloves:1.25), falling backward defeated like a felled tree, full body head to toe, both feet visible, facing a shorter opponent, BREAK, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, boxing gloves, gloves, wrapped fists, weapon, chain weapon, doorway, background prop, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "seed": null,
+  "parent_seed": null,
+  "prompt_version": "v4.5-skin-v3-specials",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "ko",
+  "frame": 1,
+  "fighter_slug": "skin",
+  "special_move": null,
+  "steps": 30,
+  "cfg_scale": 7.5,
+  "sampler": "GenerateImage",
+  "width": 512,
+  "height": 512,
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/enemies/enemy_skin_idle_v1.png",
+    "assets/portraits/portrait_skin_angry_v1.png",
+    "assets/poses/skin/enemy_skin_idle_v1.png"
+  ],
+  "character_canvas_size": {
+    "width": 233,
+    "height": 278
+  },
+  "notes": "Skin v3: full body visible, warm peach skin, bare naked tattooed fists, no gloves. Specials use sig_attack frame 1 for TATUAJE DE DOLOR and frame 2 for PUNO MARCADO.",
+  "timestamp": "2026-06-18T02:17:11.162806+00:00",
+  "validated": false,
+  "scale_normalized": true,
+  "scale_reference": "humanoid enemies target ~278px standing height inside 512x512 canvas"
+}

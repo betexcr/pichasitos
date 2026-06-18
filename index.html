@@ -12,11 +12,11 @@
   <link rel="apple-touch-icon" href="favicon.png" />
 
   <meta property="og:type" content="website" />
-  <meta property="og:url" content="https://pichasitos.surge.sh/" />
+  <meta property="og:url" content="https://pichasitos.web.app/" />
   <meta property="og:title" content="PICHASITOS - Boxeo Arcade en las Fiestas de Santa Cruz" />
   <meta property="og:description" content="Juego arcade de boxeo estilo SNES ambientado en las Fiestas Patronales de Santa Cruz, Guanacaste. Eche la teja y demuestre quien manda en el redondel. Pura vida y pichazos!" />
-  <meta property="og:image" content="https://pichasitos.surge.sh/og-image.jpg" />
-  <meta property="og:image:secure_url" content="https://pichasitos.surge.sh/og-image.jpg" />
+  <meta property="og:image" content="https://pichasitos.web.app/og-image.jpg" />
+  <meta property="og:image:secure_url" content="https://pichasitos.web.app/og-image.jpg" />
   <meta property="og:image:type" content="image/jpeg" />
   <meta property="og:image:alt" content="PICHASITOS — boxeo arcade en las Fiestas de Santa Cruz" />
   <meta property="og:image:width" content="1200" />
@@ -25,9 +25,22 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="PICHASITOS - Boxeo Arcade en las Fiestas de Santa Cruz" />
   <meta name="twitter:description" content="Juego arcade de boxeo estilo SNES ambientado en las Fiestas Patronales de Santa Cruz, Guanacaste. Eche la teja y demuestre quien manda en el redondel. Pura vida y pichazos!" />
-  <meta name="twitter:image" content="https://pichasitos.surge.sh/og-image.jpg" />
+  <meta name="twitter:image" content="https://pichasitos.web.app/og-image.jpg" />
 
   <link rel="stylesheet" href="css/style.css" />
+  <script src="js/cache-version.js"></script>
+  <script>
+    (function () {
+      var v = '?v=' + PICHASITOS_CACHE_VERSION;
+      ['arena_pueblo.jpg', 'title_bg.png'].forEach(function (file) {
+        var link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = 'assets/ui_bg/' + file + v;
+        document.head.appendChild(link);
+      });
+    })();
+  </script>
 </head>
 <body>
   <div id="screen-wrap">
@@ -56,6 +69,7 @@
     </div>
   </div>
 
+  <script src="js/sw-register.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/constants.js"></script>
   <script src="js/asset-loader.js"></script>

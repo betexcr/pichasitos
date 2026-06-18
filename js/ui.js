@@ -194,7 +194,7 @@ class UIManager {
       const isBeaten = i < currentIndex;
       const isLocked = node.circuit > circuit;
 
-      const r = isCurrent ? 10 : 8;
+      const r = isCurrent ? 11 : 9;
 
       if (isLocked) {
         ctx.fillStyle = 'rgba(40,40,60,0.8)';
@@ -469,7 +469,7 @@ class UIManager {
           if (oppData) {
             var pImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name, 'intro');
             if (pImg) {
-              var pS = 14;
+              var pS = 16;
               ctx.save();
               ctx.beginPath();
               this._roundedRect(ctx, 72 - pS / 2, y + 6 - pS / 2, pS, pS, 2);
@@ -586,8 +586,13 @@ class UIManager {
 
       const thumbImg = this.r.assets && this.r.assets.getPortraitImage(entry.data.name, 'intro');
       if (thumbImg) {
-        const thumbS = 22;
+        const thumbS = 24;
+        ctx.save();
+        ctx.beginPath();
+        this._roundedRect(ctx, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, 3);
+        ctx.clip();
         this._drawPortraitCropped(ctx, thumbImg, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, entry.data.name);
+        ctx.restore();
       } else {
         this.r.sprites.drawOpponentHead(ctx, entry.data, frame, 24, y + 10, 1.3);
       }
@@ -844,7 +849,7 @@ class UIManager {
       const y = 66 + i * rowH;
       const portraitImg = this.r.assets && this.r.assets.getPortraitImage(opp.name, 'intro');
       if (portraitImg) {
-        const pS = 28;
+        const pS = 30;
         ctx.save();
         ctx.beginPath();
         this._roundedRect(ctx, 36 - pS / 2, y + 10 - pS / 2, pS, pS, 4);
@@ -878,10 +883,10 @@ class UIManager {
     const spriteAlpha = Math.min(1, stateTick / 15);
 
     if (portraitImg) {
-      const pW = 108;
-      const pH = 108;
-      const px = 10;
-      const py = 14;
+      const pW = 116;
+      const pH = 116;
+      const px = 6;
+      const py = 10;
 
       ctx.globalAlpha = spriteAlpha;
       ctx.save();
@@ -889,27 +894,7 @@ class UIManager {
       this._roundedRect(ctx, px, py, pW, pH, 6);
       ctx.clip();
 
-      const bgGrad = ctx.createLinearGradient(px, py, px, py + pH);
-      const portraitBgColors = {
-        'DON CARLOS': '#3a1a0a', 'GRINGO': '#1a2a3a', 'CLARISA': '#3a1a2a',
-        'PANZAEPERRA': '#2a2a0a', 'MICHIQUITO': '#3a1a2a', 'HITMENA': '#1a1a3a',
-        'KAREN': '#2a0a2a', 'CARRETASTAR': '#2a1a0a', 'PERSEFONE': '#1a0a2a',
-        'DON ALVARO': '#1a2a1a', 'ANAI': '#2a1a2a', 'SKIN': '#1a1a1a',
-        'EL INDIO': '#2a1a0a',
-      };
-      const pc = portraitBgColors[oppData.name] || '#2a1a3a';
-      bgGrad.addColorStop(0, pc);
-      bgGrad.addColorStop(1, '#0a0a18');
-      ctx.fillStyle = bgGrad;
-      ctx.fillRect(px, py, pW, pH);
-
-      const spotGrad = ctx.createRadialGradient(px + pW / 2, py + pH * 0.4, 0, px + pW / 2, py + pH * 0.4, pW * 0.6);
-      spotGrad.addColorStop(0, 'rgba(255,255,255,0.12)');
-      spotGrad.addColorStop(1, 'rgba(0,0,0,0)');
-      ctx.fillStyle = spotGrad;
-      ctx.fillRect(px, py, pW, pH);
-
-      this._drawPortraitCropped(ctx, portraitImg, px, py, pW, pH, oppData.name);
+      this._drawPortraitCropped(ctx, portraitImg, px, py, pW, pH, oppData.name, 'full');
       ctx.restore();
 
       ctx.globalAlpha = spriteAlpha;
@@ -934,7 +919,7 @@ class UIManager {
       ctx.globalAlpha = 1;
     }
 
-    const textX = W / 2 + 42;
+    const textX = W / 2 + 40;
     const nameAlpha = Math.min(1, stateTick / 20);
     ctx.globalAlpha = nameAlpha;
     ctx.fillStyle = CONST.COLORS.WHITE;
@@ -980,26 +965,23 @@ class UIManager {
     this.r.drawSarchiStripe(20, H - 20, W - 40);
   }
 
-  static PORTRAIT_CROPS = {
-    'DON CARLOS':   { top: 0.20, bottom: 0.0, left: 0.0, right: 0.0, alignX: 0.5, alignY: 1.0, fit: 'contain' },
-    'GRINGO':       { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'CLARISA':      { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
-    'PANZAEPERRA':  { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'MICHIQUITO':   { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
-    'HITMENA':      { top: 0.12, bottom: 0.44, left: 0.18, right: 0.18, fit: 'cover' },
-    'EL INDIO':     { top: 0.12, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'DON ALVARO':   { top: 0.12, bottom: 0.44, left: 0.20, right: 0.20, fit: 'cover' },
-    'ANAI':         { top: 0.12, bottom: 0.44, left: 0.20, right: 0.20, fit: 'cover' },
-    'PERSEFONE':    { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
-    'SKIN':         { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'KAREN':        { top: 0.14, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'CARRETASTAR':  { top: 0.12, bottom: 0.42, left: 0.18, right: 0.18, fit: 'cover' },
-    'EL TORO':      { top: 0.14, bottom: 0.40, left: 0.14, right: 0.14, fit: 'cover' },
-    'PLAYER':       { top: 0.14, bottom: 0.44, left: 0.22, right: 0.22, fit: 'cover' },
+  /** v3 portraits (200x200 bust, built-in background) — large containers. */
+  static PORTRAIT_CROPS_FULL = {
+    DEFAULT: { top: 0, bottom: 0, left: 0, right: 0, fit: 'contain', alignX: 0.5, alignY: 0.5 },
   };
 
-  _drawPortraitCropped(ctx, img, dx, dy, dw, dh, charName) {
-    const crop = (charName && UIManager.PORTRAIT_CROPS[charName]) || { top: 0.05, bottom: 0.30, left: 0.05, right: 0.05 };
+  /** Face-focused crop for map nodes, scoreboard thumbs, etc. */
+  static PORTRAIT_CROPS_THUMB = {
+    DEFAULT: { top: 0.06, bottom: 0.40, left: 0.10, right: 0.10, fit: 'cover', alignX: 0.5, alignY: 0.36 },
+    'DON CARLOS': { top: 0.04, bottom: 0.46, left: 0.08, right: 0.08, fit: 'cover', alignX: 0.5, alignY: 0.30 },
+    'PANZAEPERRA': { top: 0.04, bottom: 0.36, left: 0.12, right: 0.12, fit: 'cover', alignX: 0.5, alignY: 0.32 },
+    'EL TORO': { top: 0.02, bottom: 0.38, left: 0.06, right: 0.06, fit: 'cover', alignX: 0.5, alignY: 0.34 },
+  };
+
+  _drawPortraitCropped(ctx, img, dx, dy, dw, dh, charName, mode) {
+    const useThumb = mode === 'thumb' || (mode !== 'full' && Math.min(dw, dh) < 48);
+    const table = useThumb ? UIManager.PORTRAIT_CROPS_THUMB : UIManager.PORTRAIT_CROPS_FULL;
+    const crop = (charName && table[charName]) || table.DEFAULT;
     const sx = img.naturalWidth * crop.left;
     const sy = img.naturalHeight * crop.top;
     const sw = img.naturalWidth * (1 - crop.left - crop.right);
@@ -1189,12 +1171,17 @@ class UIManager {
 
       const defeatedPortrait = this.r.assets && this.r.assets.getPortraitImage(oppName, 'angry');
       if (defeatedPortrait) {
-        const pSize = 32;
+        const pSize = 40;
         ctx.globalAlpha = alpha;
-        this._drawPortraitCropped(ctx, defeatedPortrait, W / 2 - pSize / 2, 108, pSize, pSize, oppName);
+        ctx.save();
+        ctx.beginPath();
+        this._roundedRect(ctx, W / 2 - pSize / 2, 104, pSize, pSize, 4);
+        ctx.clip();
+        this._drawPortraitCropped(ctx, defeatedPortrait, W / 2 - pSize / 2, 104, pSize, pSize, oppName, 'full');
+        ctx.restore();
         ctx.globalAlpha = alpha;
         ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
-        this.r._drawText('"' + defeatQuote + '"', W / 2, 146, 'center', 0.9);
+        this.r._drawText('"' + defeatQuote + '"', W / 2, 152, 'center', 0.9);
       } else {
         ctx.fillStyle = CONST.COLORS.CREAM || '#F5DEB3';
         this.r._drawText('"' + defeatQuote + '"', W / 2, 122, 'center', 0.9);
@@ -1204,7 +1191,7 @@ class UIManager {
 
     if (score !== undefined) {
       ctx.fillStyle = CONST.COLORS.GOLD;
-      const scoreY = this.r.assets && this.r.assets.getPortraitImage(oppName, 'angry') ? 164 : 146;
+      const scoreY = this.r.assets && this.r.assets.getPortraitImage(oppName, 'angry') ? 170 : 146;
       this.r._drawText('PUNTOS: ' + score, W / 2, scoreY, 'center', 1.4);
     }
 

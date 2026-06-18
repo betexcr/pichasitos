@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "PERSEFONE enemy idle v3 copied from normalized pose idle v3 for announcement and versus views. Hot pink space buns, black rave outfit, fishnets, pink shoes, glow bracelets, pacifier necklace, bare hands.",
+  "prompt_version": "v5.0-persefone-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "persefone",
+  "width": 512,
+  "height": 512,
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "source_image": "assets/poses/persefone/enemy_persefone_idle_v3.png",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T05:05:51.014925+00:00"
+}

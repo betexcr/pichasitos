@@ -1,0 +1,19 @@
+{
+  "project": "pichasitos",
+  "prompt": "CLARISA angry portrait, spoiled fresa woman, long straight black hair, hot pink top, gold hoop earrings, pink phone, long pink acrylic nails, bare hands, no gloves, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime face design",
+  "negative_prompt": "photorealistic, photo, 3d render, watermark, text, logo, blurry, bad anatomy, extra people, duplicate, gloves, boxing gloves, black gloves, hand coverings, anime, manga, chibi, cropped face",
+  "prompt_version": "v4.7-clarisa-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "portrait",
+  "fighter_slug": "clarisa",
+  "variant": "angry",
+  "width": 200,
+  "height": 200,
+  "model": "cursor-generate-image",
+  "reference_images": [
+    "assets/poses/clarisa/enemy_clarisa_idle_v2.png",
+    "assets/portraits/portrait_clarisa_angry_v1.png"
+  ],
+  "validated": false,
+  "timestamp": "2026-06-18T02:14:13.711365+00:00"
+}

@@ -154,11 +154,14 @@ class Player {
   }
 
   takeHit(damage) {
+    if (typeof TestMode !== 'undefined' && TestMode.isActive()) return false;
     if (this.invincible) return false;
     if (this.state === 'dodge_left' || this.state === 'dodge_right' || this.state === 'duck') return false;
 
     // Getting hit during wind-up: take EXTRA damage (punished for committing)
-    if (this.punchPhase === 'windup') damage = Math.floor(damage * 1.25);
+    if (this.punchPhase === 'windup') {
+      damage = Math.floor(damage * (CONST.PLAYER.WINDUP_PUNISH_MULT || 1.12));
+    }
     if (this.state === 'block') damage = Math.floor(damage * CONST.PLAYER.BLOCK_DAMAGE_MULT);
     if (this.rampage) { damage = Math.floor(damage * 0.7); this.rampage = false; this.rampageTimer = 0; this.guaroOverflowHits = 0; this.guaro = 0; }
 

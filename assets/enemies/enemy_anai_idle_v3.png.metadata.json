@@ -1,0 +1,16 @@
+{
+  "project": "pichasitos",
+  "prompt": "anai enemy idle v3 copied from normalized pose idle v3. thin dark-skinned Rastafarian man, dreadlocks under red yellow green rasta tam beanie, dark green shirt, olive green pants, barefoot, Caribbean Limon style, bare hands, no gloves",
+  "prompt_version": "v5.0-anai-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "enemy",
+  "fighter_slug": "anai",
+  "width": 512,
+  "height": 512,
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "source_image": "assets/poses/anai/enemy_anai_idle_v3.png",
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:02:38.376380+00:00"
+}

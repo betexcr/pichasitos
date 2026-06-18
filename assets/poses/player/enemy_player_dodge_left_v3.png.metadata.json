@@ -1,0 +1,30 @@
+{
+  "project": "pichasitos",
+  "prompt": "Player back-view boxer, brown hair, green tank top, blue jeans, brown boots, bright red rounded boxing gloves, Punch-Out perspective, face not visible, dodge left with guard up, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines",
+  "negative_prompt": "front view, visible face, green gloves, hand wraps, bare hands, no gloves, black gloves, white gloves, text, logo, watermark, cropped body, missing feet, photorealistic, 3d render",
+  "prompt_version": "v5.0-player-red-gloves-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "fighter_slug": "player",
+  "pose_id": "dodge_left",
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 233,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 139,
+    "y": 117
+  },
+  "height_normalized": true,
+  "height_normalization_target": "visible alpha bbox height 278px inside 512x512 canvas",
+  "red_boxing_gloves_required": true,
+  "back_view_required": true,
+  "background_removed_by": "edge-connected light background flood fill",
+  "transparent_rgb_normalized": true,
+  "transparent_rgb_pixels_normalized": 678,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T06:25:15.307514+00:00"
+}

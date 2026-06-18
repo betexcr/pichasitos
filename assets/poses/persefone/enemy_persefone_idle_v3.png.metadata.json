@@ -1,0 +1,30 @@
+{
+  "project": "pichasitos",
+  "prompt": "PERSEFONE enemy, young rave woman, light skin, hot pink hair in two space buns, black crop top, short black biker shorts, fishnet leggings, chunky black shoes with hot pink soles, loose glow bracelets, pacifier necklace, bare hands, no gloves, idle bouncing rave fighter stance, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime western cartoon face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-persefone-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "idle",
+  "frame": 1,
+  "fighter_slug": "persefone",
+  "special_move": null,
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 157,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 177,
+    "y": 117
+  },
+  "height_normalized": true,
+  "height_normalization_target": "idle visible alpha bbox height exactly 278px inside 512x512 canvas",
+  "background_removed_by": "edge-connected light background flood fill",
+  "transparent_rgb_normalized": true,
+  "transparent_rgb_pixels_normalized": 694,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T05:04:35.293602+00:00"
+}

@@ -1,0 +1,44 @@
+{
+  "project": "pichasitos",
+  "prompt": "DON ALVARO enemy, fat metalhead, light skin, long black hair, full thick black beard, all-black outfit, black metal band shirt with patch graphics, torn black pants, black shoes, chain necklace and wallet chain, patches on clothes, bare hands, no gloves, knocked out on ground with chain loose, full body head to toe, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines, non-anime western cartoon face design",
+  "negative_prompt": "photorealistic, photo, realistic skin, 3d render, watermark, text, logo, blurry, bad anatomy, extra limbs, multiple people, duplicate, gloves, boxing gloves, hand wraps, wrist wraps, cropped, missing feet, bust only, anime, manga, chibi, kawaii, anime eyes, anime face, anime hair",
+  "prompt_version": "v5.0-don-alvaro-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "pose_id": "ko",
+  "frame": 1,
+  "fighter_slug": "don_alvaro",
+  "special_move": null,
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 407,
+    "height": 193
+  },
+  "character_canvas_position": {
+    "x": 52,
+    "y": 159
+  },
+  "height_normalized": false,
+  "height_normalization_target": null,
+  "background_removed_by": "edge-connected light background flood fill",
+  "transparent_rgb_normalized": true,
+  "transparent_rgb_pixels_normalized": 1436,
+  "model": "cursor-generate-image",
+  "validated": false,
+  "timestamp": "2026-06-18T05:34:35.084159+00:00",
+  "skin_color_normalized": true,
+  "skin_color_reference": "assets/poses/don_alvaro/enemy_don_alvaro_idle_v3.png",
+  "skin_color_mean_before": [
+    213.71,
+    145.66,
+    102.97
+  ],
+  "skin_color_mean_after": [
+    211.46,
+    145.29,
+    103.48
+  ],
+  "skin_color_pixels_adjusted": 4277,
+  "skin_color_normalized_at": "2026-06-18T05:35:16.817727+00:00"
+}
