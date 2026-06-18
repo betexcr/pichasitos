@@ -1,42 +1,43 @@
 {
-  "generatedAt": "2026-06-18T07:23:51.210817+00:00",
+  "generatedAt": "2026-06-18T20:21:09.166651+00:00",
   "fighters": {
     "anai": {
-      "idle": "assets/enemies/enemy_anai_idle_v1.png",
+      "idle": "assets/enemies/enemy_anai_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_anai_angry_v1.png"
+        "angry": "assets/portraits/portrait_anai_angry_v3.png",
+        "intro": "assets/portraits/portrait_anai_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/anai/enemy_anai_block_v2.png"
+          "assets/poses/anai/enemy_anai_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/anai/enemy_anai_hurt_v2.png"
+          "assets/poses/anai/enemy_anai_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/anai/enemy_anai_idle_v2.png"
+          "assets/poses/anai/enemy_anai_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/anai/enemy_anai_ko_v2.png"
+          "assets/poses/anai/enemy_anai_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/anai/enemy_anai_punch_left_v2.png"
+          "assets/poses/anai/enemy_anai_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/anai/enemy_anai_punch_right_v2.png"
+          "assets/poses/anai/enemy_anai_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/anai/enemy_anai_sig_attack_v2.png",
-          "assets/poses/anai/enemy_anai_sig_attack_v2_f2.png"
+          "assets/poses/anai/enemy_anai_sig_attack_v3.png",
+          "assets/poses/anai/enemy_anai_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/anai/enemy_anai_taunt_v2.png"
+          "assets/poses/anai/enemy_anai_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/anai/enemy_anai_victory_v2.png"
+          "assets/poses/anai/enemy_anai_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/anai/enemy_anai_windup_v2.png"
+          "assets/poses/anai/enemy_anai_windup_v3.png"
         ]
       }
     },
@@ -81,41 +82,42 @@
       }
     },
     "carretastar": {
-      "idle": "assets/enemies/enemy_carretastar_idle_v1.png",
+      "idle": "assets/enemies/enemy_carretastar_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_carretastar_angry_v1.png"
+        "angry": "assets/portraits/portrait_carretastar_angry_v3.png",
+        "intro": "assets/portraits/portrait_carretastar_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/carretastar/enemy_carretastar_block_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/carretastar/enemy_carretastar_hurt_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/carretastar/enemy_carretastar_idle_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/carretastar/enemy_carretastar_ko_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/carretastar/enemy_carretastar_punch_left_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/carretastar/enemy_carretastar_punch_right_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/carretastar/enemy_carretastar_sig_attack_v2.png",
-          "assets/poses/carretastar/enemy_carretastar_sig_attack_v2_f2.png"
+          "assets/poses/carretastar/enemy_carretastar_sig_attack_v3.png",
+          "assets/poses/carretastar/enemy_carretastar_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/carretastar/enemy_carretastar_taunt_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/carretastar/enemy_carretastar_victory_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/carretastar/enemy_carretastar_windup_v2.png"
+          "assets/poses/carretastar/enemy_carretastar_windup_v3.png"
         ]
       }
     },
@@ -160,41 +162,42 @@
       }
     },
     "don_alvaro": {
-      "idle": "assets/enemies/enemy_don_alvaro_idle_v1.png",
+      "idle": "assets/enemies/enemy_don_alvaro_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_don_alvaro_angry_v1.png"
+        "angry": "assets/portraits/portrait_don_alvaro_angry_v3.png",
+        "intro": "assets/portraits/portrait_don_alvaro_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_block_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_hurt_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_idle_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_ko_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_punch_left_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_punch_right_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_sig_attack_v2.png",
-          "assets/poses/don_alvaro/enemy_don_alvaro_sig_attack_v2_f2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_sig_attack_v3.png",
+          "assets/poses/don_alvaro/enemy_don_alvaro_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_taunt_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_victory_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/don_alvaro/enemy_don_alvaro_windup_v2.png"
+          "assets/poses/don_alvaro/enemy_don_alvaro_windup_v3.png"
         ]
       }
     },
@@ -239,41 +242,42 @@
       }
     },
     "el_indio": {
-      "idle": "assets/enemies/enemy_el_indio_idle_v1.png",
+      "idle": "assets/enemies/enemy_el_indio_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_el_indio_angry_v1.png"
+        "angry": "assets/portraits/portrait_el_indio_angry_v3.png",
+        "intro": "assets/portraits/portrait_el_indio_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/el_indio/enemy_el_indio_block_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/el_indio/enemy_el_indio_hurt_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/el_indio/enemy_el_indio_idle_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/el_indio/enemy_el_indio_ko_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/el_indio/enemy_el_indio_punch_left_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/el_indio/enemy_el_indio_punch_right_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/el_indio/enemy_el_indio_sig_attack_v2.png",
-          "assets/poses/el_indio/enemy_el_indio_sig_attack_v2_f2.png"
+          "assets/poses/el_indio/enemy_el_indio_sig_attack_v3.png",
+          "assets/poses/el_indio/enemy_el_indio_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/el_indio/enemy_el_indio_taunt_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/el_indio/enemy_el_indio_victory_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/el_indio/enemy_el_indio_windup_v2.png"
+          "assets/poses/el_indio/enemy_el_indio_windup_v3.png"
         ]
       }
     },
@@ -322,80 +326,82 @@
       }
     },
     "hitmena": {
-      "idle": "assets/enemies/enemy_hitmena_idle_v1.png",
+      "idle": "assets/enemies/enemy_hitmena_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_hitmena_angry_v1.png"
+        "angry": "assets/portraits/portrait_hitmena_angry_v3.png",
+        "intro": "assets/portraits/portrait_hitmena_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/hitmena/enemy_hitmena_block_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/hitmena/enemy_hitmena_hurt_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/hitmena/enemy_hitmena_idle_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/hitmena/enemy_hitmena_ko_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/hitmena/enemy_hitmena_punch_left_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/hitmena/enemy_hitmena_punch_right_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/hitmena/enemy_hitmena_sig_attack_v2.png",
-          "assets/poses/hitmena/enemy_hitmena_sig_attack_v2_f2.png"
+          "assets/poses/hitmena/enemy_hitmena_sig_attack_v3.png",
+          "assets/poses/hitmena/enemy_hitmena_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/hitmena/enemy_hitmena_taunt_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/hitmena/enemy_hitmena_victory_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/hitmena/enemy_hitmena_windup_v2.png"
+          "assets/poses/hitmena/enemy_hitmena_windup_v3.png"
         ]
       }
     },
     "karen": {
-      "idle": "assets/enemies/enemy_karen_idle_v1.png",
+      "idle": "assets/enemies/enemy_karen_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_karen_angry_v1.png"
+        "angry": "assets/portraits/portrait_karen_angry_v3.png",
+        "intro": "assets/portraits/portrait_karen_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/karen/enemy_karen_block_v2.png"
+          "assets/poses/karen/enemy_karen_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/karen/enemy_karen_hurt_v2.png"
+          "assets/poses/karen/enemy_karen_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/karen/enemy_karen_idle_v2.png"
+          "assets/poses/karen/enemy_karen_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/karen/enemy_karen_ko_v2.png"
+          "assets/poses/karen/enemy_karen_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/karen/enemy_karen_punch_left_v2.png"
+          "assets/poses/karen/enemy_karen_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/karen/enemy_karen_punch_right_v2.png"
+          "assets/poses/karen/enemy_karen_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/karen/enemy_karen_sig_attack_v2.png",
-          "assets/poses/karen/enemy_karen_sig_attack_v2_f2.png"
+          "assets/poses/karen/enemy_karen_sig_attack_v3.png",
+          "assets/poses/karen/enemy_karen_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/karen/enemy_karen_taunt_v2.png"
+          "assets/poses/karen/enemy_karen_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/karen/enemy_karen_victory_v2.png"
+          "assets/poses/karen/enemy_karen_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/karen/enemy_karen_windup_v2.png"
+          "assets/poses/karen/enemy_karen_windup_v3.png"
         ]
       }
     },
@@ -485,41 +491,42 @@
       }
     },
     "persefone": {
-      "idle": "assets/enemies/enemy_persefone_idle_v1.png",
+      "idle": "assets/enemies/enemy_persefone_idle_v3.png",
       "portraits": {
-        "angry": "assets/portraits/portrait_persefone_angry_v1.png"
+        "angry": "assets/portraits/portrait_persefone_angry_v3.png",
+        "intro": "assets/portraits/portrait_persefone_intro_v3.png"
       },
       "poses": {
         "block": [
-          "assets/poses/persefone/enemy_persefone_block_v2.png"
+          "assets/poses/persefone/enemy_persefone_block_v3.png"
         ],
         "hurt": [
-          "assets/poses/persefone/enemy_persefone_hurt_v2.png"
+          "assets/poses/persefone/enemy_persefone_hurt_v3.png"
         ],
         "idle": [
-          "assets/poses/persefone/enemy_persefone_idle_v2.png"
+          "assets/poses/persefone/enemy_persefone_idle_v3.png"
         ],
         "ko": [
-          "assets/poses/persefone/enemy_persefone_ko_v2.png"
+          "assets/poses/persefone/enemy_persefone_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/persefone/enemy_persefone_punch_left_v2.png"
+          "assets/poses/persefone/enemy_persefone_punch_left_v3.png"
         ],
         "punch_right": [
-          "assets/poses/persefone/enemy_persefone_punch_right_v2.png"
+          "assets/poses/persefone/enemy_persefone_punch_right_v3.png"
         ],
         "sig_attack": [
-          "assets/poses/persefone/enemy_persefone_sig_attack_v2.png",
-          "assets/poses/persefone/enemy_persefone_sig_attack_v2_f2.png"
+          "assets/poses/persefone/enemy_persefone_sig_attack_v3.png",
+          "assets/poses/persefone/enemy_persefone_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/persefone/enemy_persefone_taunt_v2.png"
+          "assets/poses/persefone/enemy_persefone_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/persefone/enemy_persefone_victory_v2.png"
+          "assets/poses/persefone/enemy_persefone_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/persefone/enemy_persefone_windup_v2.png"
+          "assets/poses/persefone/enemy_persefone_windup_v3.png"
         ]
       }
     },
