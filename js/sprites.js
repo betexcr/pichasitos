@@ -839,7 +839,7 @@ class SpriteSystem {
   static POSE_MAP = {
     'idle': 'idle', 'idle2': 'idle',
     'punch_left': 'punch_left', 'punch_right': 'punch_right',
-    'windup': 'windup', 'windup_left': 'idle', 'windup_right': 'idle',
+    'windup': 'windup', 'windup_left': 'windup', 'windup_right': 'windup',
     'hurt': 'hurt', 'block': 'block', 'ko': 'ko',
     'dodge_left': 'dodge_left', 'dodge_right': 'dodge_right',
     'dodge_back': 'dodge_back', 'duck': 'dodge_back',
@@ -852,21 +852,30 @@ class SpriteSystem {
   };
 
   static SIG_FRAME_HINT = {
-    'DON CARLOS':   { 'sig_rush': 0, 'sig_swing': 1 },
-    'GRINGO':       { 'sig_swing': 0, 'sig_throw': 1 },
+    'DON CARLOS':   { 'sig_swing': 0, 'sig_rush': 1 },
+    'GRINGO':       { 'sig_throw': 0, 'sig_swing': 1 },
     'CLARISA':      { 'sig_combo': 0, 'sig_throw': 1 },
-    'PANZAEPERRA':  { 'sig_rush': 0, 'sig_throw': 1 },
-    'MICHIQUITO':   { 'sig_throw': 0, 'sig_swing': 1 },
-    'HITMENA':      { 'sig_combo': 0, 'sig_ground': 1 },
-    'KAREN':        { 'sig_swing': 0, 'sig_combo': 1 },
+    'PANZAEPERRA':  { 'sig_throw': 0, 'sig_rush': 1 },
+    'MICHIQUITO':   { 'sig_swing': 0, 'sig_throw': 1 },
+    'HITMENA':      { 'sig_ground': 0, 'sig_combo': 1 },
+    'KAREN':        { 'sig_combo': 0, 'sig_swing': 1 },
     'CARRETASTAR':  { 'sig_grab': 0, 'sig_rush': 1 },
-    'PERSEFONE':    { 'sig_combo': 0, 'sig_ground': 1 },
+    'PERSEFONE':    { 'sig_ground': 0, 'sig_combo': 1 },
     'DON ALVARO':   { 'sig_swing': 0, 'sig_grab': 1 },
     'ANAI':         { 'sig_counter': 0, 'sig_ground': 1 },
-    'SKIN':         { 'sig_ground': 0, 'sig_combo': 1 },
+    'SKIN':         { 'sig_combo': 0, 'sig_ground': 1 },
     'EL INDIO':     { 'sig_rush': 0, 'sig_combo': 1 },
     'EL TORO':      { 'sig_rush': 0 },
+    'EL TORO MALACRIANZA': { 'sig_rush': 0 },
   };
+
+  static _playerPoseFrame(poseKey, frameCount, frame, tick) {
+    if (frameCount <= 1) return 0;
+    if (poseKey === 'idle') return Math.floor((tick || 0) / 60) % frameCount;
+    // v3 left punch f1 was generated with the wrong arm; f2 is the correct extension.
+    if (poseKey === 'punch_left') return frame % frameCount === 0 ? 1 : 0;
+    return frame % frameCount;
+  }
 
   static POSE_OFFSETS = {
     punch_left:  { dx: -6, dy: -2, scaleBoost: 0.06 },
@@ -1125,16 +1134,27 @@ class SpriteSystem {
     ctx.restore();
   }
 
-  drawOpponent(ctx, charData, anim, frame, x, y, scale) {
+  drawOpponent(ctx, charData, anim, frame, x, y, scale, sigAttackFrame = null) {
     this._advanceTick();
     if (this._assets && this._assets.hasPoses(charData.name)) {
       const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
       const ps = this._getPoseTransition(charData.name, poseKey);
       const frameCount = this._assets.getPoseFrameCount(charData.name, ps.current);
-      let poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
-      const charHints = SpriteSystem.SIG_FRAME_HINT[charData.name];
-      const sigHint = charHints && charHints[anim];
-      if (sigHint !== undefined && frameCount > sigHint) poseFrame = sigHint;
+      let poseFrame = 0;
+      if (frameCount > 1) {
+        if (sigAttackFrame != null && poseKey === 'sig_attack') {
+          poseFrame = Math.min(sigAttackFrame, frameCount - 1);
+        } else if (poseKey === 'idle') {
+          poseFrame = Math.floor((this._tick || 0) / 60) % frameCount;
+        } else {
+          poseFrame = frame % frameCount;
+        }
+      }
+      if (sigAttackFrame == null) {
+        const charHints = SpriteSystem.SIG_FRAME_HINT[charData.name];
+        const sigHint = charHints && charHints[anim];
+        if (sigHint !== undefined && frameCount > sigHint) poseFrame = sigHint;
+      }
       const curImg = this._assets.getPoseImage(charData.name, ps.current, poseFrame);
 
       if (curImg) {
@@ -1338,7 +1358,7 @@ class SpriteSystem {
       const poseKey = SpriteSystem.POSE_MAP[anim] || 'idle';
       const ps = this._getPoseTransition('__PLAYER__', poseKey);
       const frameCount = this._assets.getPoseFrameCount('PLAYER', ps.current);
-      const poseFrame = frameCount > 1 ? Math.floor((this._tick || 0) / 60) % frameCount : 0;
+      const poseFrame = SpriteSystem._playerPoseFrame(ps.current, frameCount, frame, this._tick);
       let curImg = this._assets.getPoseImage('PLAYER', ps.current, poseFrame);
       if (curImg && (!curImg.complete || curImg.naturalWidth < 1)) curImg = null;
       if (!curImg) curImg = this._assets.getPoseImage('PLAYER', 'idle', 0);

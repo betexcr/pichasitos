@@ -1517,14 +1517,15 @@ class Renderer {
     c.save();
     c.globalAlpha = 1;
     c.globalCompositeOperation = 'source-over';
-    this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
+    const sigAttackFrame = opponent.getSigAttackFrame();
+    this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale, sigAttackFrame);
     c.restore();
     if (this.oppHitFlashTimer > 0) {
       const flashT = this.oppHitFlashTimer / 8;
       c.save();
       c.globalAlpha = Math.min(0.9, flashT * 0.8);
       c.globalCompositeOperation = 'lighter';
-      this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale);
+      this.sprites.drawOpponent(c, oppData, oppAnim, opponent.animFrame, oppX, oppY, oppScale, sigAttackFrame);
       c.restore();
       this.oppHitFlashTimer--;
     }

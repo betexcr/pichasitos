@@ -1,7 +1,7 @@
 class AssetLoader {
   static ASSET_VERSION = typeof PICHASITOS_CACHE_VERSION !== 'undefined'
     ? PICHASITOS_CACHE_VERSION
-    : '20260618_manifest_v3_refresh';
+    : '20260618_sig_punch_frame_fix';
   static SLUGS = {
     'DON CARLOS':   'don_carlos',
     'GRINGO':       'gringo',

@@ -611,6 +611,14 @@ class OpponentAI {
     }
   }
 
+  /** sig_attack f1 = signature #1, f2 = signature #2 (matches asset pipeline). */
+  getSigAttackFrame() {
+    if (this.state !== 'attack' || !this.currentPattern || this.currentPattern.type !== 'signature') return null;
+    const sigs = this.data.signatures || [];
+    const idx = sigs.findIndex((s) => s.name === this.currentPattern.name);
+    return idx >= 0 ? idx : 0;
+  }
+
   recordPlayerDodge(type) {
     if (type === 'dodge_left') this.playerDodgeCount.left++;
     else if (type === 'dodge_right') this.playerDodgeCount.right++;

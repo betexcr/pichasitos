@@ -69,6 +69,8 @@ class Player {
       if (this.stateTimer <= 0 && this.punchPhase) {
         if (this.punchPhase === 'windup') {
           this.punchPhase = 'active';
+          this.animFrame = 0;
+          this.animTimer = 0;
           if (this._punchSide === 'special') {
             this.state = 'special';
             this.stateTimer = CONST.PLAYER.SPECIAL_ACTIVE;
@@ -144,6 +146,8 @@ class Player {
   _startPunch(side) {
     this._punchSide = side;
     this.punchPhase = 'windup';
+    this.animFrame = 0;
+    this.animTimer = 0;
     if (side === 'special') {
       this.state = 'windup_left';
       this.stateTimer = CONST.PLAYER.SPECIAL_WINDUP;
