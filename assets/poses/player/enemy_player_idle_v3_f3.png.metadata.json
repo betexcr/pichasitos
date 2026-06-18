@@ -1,0 +1,42 @@
+{
+  "project": "pichasitos",
+  "prompt": "Player back-view boxer, brown hair, green tank top, blue jeans, brown boots, bright red padded boxing gloves, Punch-Out perspective, face not visible, idle guard stance alternate settled frame, hand-painted arcade game sprite, rough textured brush strokes, slightly grainy flat colors, imperfect hand-drawn outlines, 1990s SNES game cartridge art quality, bold black outlines",
+  "negative_prompt": "front view, visible face, green gloves, hand wraps, bare hands, no gloves, black gloves, white gloves, text, logo, watermark, cropped body, missing feet, photorealistic, 3d render",
+  "prompt_version": "v5.1-player-full-red-gloves-v3",
+  "style": "pichasitos_western_cartoon",
+  "asset_type": "pose",
+  "fighter_slug": "player",
+  "pose_id": "idle_f3",
+  "width": 512,
+  "height": 512,
+  "character_canvas_size": {
+    "width": 174,
+    "height": 278
+  },
+  "character_canvas_position": {
+    "x": 169,
+    "y": 117
+  },
+  "height_normalized": true,
+  "height_normalization_target": "visible alpha bbox height 278px inside 512x512 canvas",
+  "red_gloves_required": true,
+  "back_view_required": true,
+  "background_removed_by": "edge-connected light/checker background flood fill",
+  "transparent_rgb_normalized": true,
+  "transparent_rgb_pixels_normalized": 661,
+  "model": "cursor-generate-image",
+  "timestamp": "2026-06-18T07:21:41.303777+00:00",
+  "validated": false,
+  "skin_color_normalized": true,
+  "skin_color_target_rgb": [
+    215.46,
+    133.25,
+    80.82
+  ],
+  "skin_color_source_rgb": [
+    214.4,
+    130.15,
+    76.92
+  ],
+  "skin_color_normalized_at": "2026-06-18T07:22:44.227765+00:00"
+}

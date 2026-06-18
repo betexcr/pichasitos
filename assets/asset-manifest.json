@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-06-18T06:31:37.783084+00:00",
+  "generatedAt": "2026-06-18T07:23:51.210817+00:00",
   "fighters": {
     "anai": {
       "idle": "assets/enemies/enemy_anai_idle_v1.png",
@@ -524,7 +524,7 @@
       }
     },
     "player": {
-      "idle": "assets/enemies/enemy_player_idle_v1.png",
+      "idle": "assets/enemies/enemy_player_idle_v3.png",
       "portraits": {
         "angry": "assets/portraits/portrait_player_angry_v1.png"
       },
@@ -542,37 +542,37 @@
           "assets/poses/player/enemy_player_dodge_right_v3.png"
         ],
         "hurt": [
-          "assets/poses/player/enemy_player_hurt_v1.png",
-          "assets/poses/player/enemy_player_hurt_v1_f2.png"
+          "assets/poses/player/enemy_player_hurt_v3.png",
+          "assets/poses/player/enemy_player_hurt_v3_f2.png"
         ],
         "idle": [
-          "assets/poses/player/enemy_player_idle_v1.png",
-          "assets/poses/player/enemy_player_idle_v1_f2.png",
-          "assets/poses/player/enemy_player_idle_v1_f3.png"
+          "assets/poses/player/enemy_player_idle_v3.png",
+          "assets/poses/player/enemy_player_idle_v3_f2.png",
+          "assets/poses/player/enemy_player_idle_v3_f3.png"
         ],
         "ko": [
-          "assets/poses/player/enemy_player_ko_v1.png"
+          "assets/poses/player/enemy_player_ko_v3.png"
         ],
         "punch_left": [
-          "assets/poses/player/enemy_player_punch_left_v1.png",
-          "assets/poses/player/enemy_player_punch_left_v1_f2.png"
+          "assets/poses/player/enemy_player_punch_left_v3.png",
+          "assets/poses/player/enemy_player_punch_left_v3_f2.png"
         ],
         "punch_right": [
-          "assets/poses/player/enemy_player_punch_right_v1.png",
-          "assets/poses/player/enemy_player_punch_right_v1_f2.png"
+          "assets/poses/player/enemy_player_punch_right_v3.png",
+          "assets/poses/player/enemy_player_punch_right_v3_f2.png"
         ],
         "sig_attack": [
-          "assets/poses/player/enemy_player_sig_attack_v1.png",
-          "assets/poses/player/enemy_player_sig_attack_v1_f2.png"
+          "assets/poses/player/enemy_player_sig_attack_v3.png",
+          "assets/poses/player/enemy_player_sig_attack_v3_f2.png"
         ],
         "taunt": [
-          "assets/poses/player/enemy_player_taunt_v1.png"
+          "assets/poses/player/enemy_player_taunt_v3.png"
         ],
         "victory": [
-          "assets/poses/player/enemy_player_victory_v1.png"
+          "assets/poses/player/enemy_player_victory_v3.png"
         ],
         "windup": [
-          "assets/poses/player/enemy_player_windup_v1.png"
+          "assets/poses/player/enemy_player_windup_v3.png"
         ]
       }
     },
