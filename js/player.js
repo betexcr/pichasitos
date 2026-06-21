@@ -233,12 +233,9 @@ class Player {
   getDrawOffset() {
     const ry = this.rampage ? this.rampageSway : 0;
     switch (this.state) {
-      case 'dodge_left': return { x: -20, y: ry };
-      case 'dodge_right': return { x: 20, y: ry };
-      case 'duck': return { x: 0, y: 15 };
       case 'windup_left': return { x: -2, y: ry };
       case 'windup_right': return { x: 2, y: ry };
-      default: return { x: this.swayOffset, y: ry };
+      default: return { x: 0, y: ry };
     }
   }
 

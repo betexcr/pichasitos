@@ -407,3 +407,8 @@ const CONST = {
     ],
   },
 };
+
+Object.freeze(CONST.COLORS);
+Object.freeze(CONST.KEYS);
+Object.freeze(CONST.STATES);
+Object.freeze(CONST);

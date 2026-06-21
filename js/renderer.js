@@ -1562,7 +1562,7 @@ class Renderer {
     }
 
     const pOffset = player.getDrawOffset();
-    const playerX = CONST.WIDTH / 2 + pOffset.x + player.swayOffset;
+    const playerX = CONST.WIDTH / 2 + player.swayOffset + pOffset.x;
     const playerY = 202 + pOffset.y;
     const playerScale = 2.8;
 
@@ -2540,8 +2540,11 @@ class Renderer {
   }
 
   isHitStopped() {
-    if (this.hitStop > 0) { this.hitStop--; return true; }
-    return false;
+    return this.hitStop > 0;
+  }
+
+  tickHitStop() {
+    if (this.hitStop > 0) this.hitStop--;
   }
 
   // ── Fireworks ──

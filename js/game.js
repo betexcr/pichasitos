@@ -9,7 +9,7 @@ class Game {
     this.ui = new UIManager(this.renderer);
 
     this.state = CONST.STATES.ATTRACT;
-    this.tick = 0; this.stateTick = 0; this.logicAccum = 0;
+    this.tick = 0; this.stateTick = 0;
     this.player = null; this.opponent = null;
     this.currentOpponentIndex = 0; this.currentCircuit = 0;
     this.round = 1; this.roundTime = CONST.ROUND_TIME;
@@ -46,7 +46,7 @@ class Game {
     this._pressedThisFrame = {};
     this._touchPressBuffer = {};
     this._setupInput();
-    this._loop();
+    requestAnimationFrame((t) => this._loop(t));
   }
 
   _setupInput() {
@@ -147,16 +147,25 @@ class Game {
     return OPPONENT_DATA[this.currentOpponentIndex - 1].name;
   }
 
-  _loop() {
+  _loop(now) {
+    now = now ?? performance.now();
     try {
-      this.tick++; this.stateTick++; this.logicAccum++;
-      if (this.renderer.isHitStopped()) {
-        this._render();
-        this.renderer.postProcess();
-        requestAnimationFrame(() => this._loop());
-        return;
+      const hitStopped = this.renderer.isHitStopped();
+      const { renderSteps, logicSteps } = GameClock.advance(now, { paused: hitStopped });
+
+      for (let i = 0; i < renderSteps; i++) {
+        this.tick++;
+        this.stateTick++;
+        if (this.renderer.isHitStopped()) this.renderer.tickHitStop();
       }
-      if (this.logicAccum >= 2) { this.logicAccum = 0; this._update(); this._pressedThisFrame = {}; }
+
+      if (!hitStopped) {
+        for (let i = 0; i < logicSteps; i++) {
+          this._update();
+          this._pressedThisFrame = {};
+        }
+      }
+
       this._render();
       this.renderer.postProcess();
     } catch (e) {
@@ -169,7 +178,7 @@ class Game {
       this.renderer.ctx.fillStyle = '#FFF';
       this.renderer.ctx.fillText('Check console (F12)', 10, 50);
     }
-    requestAnimationFrame(() => this._loop());
+    requestAnimationFrame((t) => this._loop(t));
   }
 
   _update() {
@@ -388,9 +397,11 @@ class Game {
       if (this.player.state==='dodge_left'||this.player.state==='dodge_right'||this.player.state==='duck') {
         this.opponent.recordPlayerDodge(this.player.state); this.audio.dodge();
         this._addScore(CONST.POINTS.DODGE);
-        const dodgeAnim = this.player.state === 'duck' ? 'dodge_back' : this.player.state;
-        this.renderer.setDodgeGhost(this.renderer.W/2, 170, dodgeAnim, 0);
-        this.renderer.addDodgeDust(this.renderer.W/2, 200, this.player.state === 'dodge_left' ? 'left' : 'right');
+        this.renderer.addDodgeDust(
+          this.renderer.W / 2 + this.player.swayOffset,
+          212,
+          this.player.state === 'dodge_left' ? 'left' : 'right'
+        );
       } else if (this.player.state==='block' && !unblockable) {
         if (typeof TestMode === 'undefined' || !TestMode.isActive()) {
           const dmg = Math.floor(this.opponent.getAttackDamage()*CONST.PLAYER.BLOCK_DAMAGE_MULT);
@@ -703,4 +714,6 @@ class Game {
   }
 }
 
-window.addEventListener('DOMContentLoaded', () => { window.game = new Game(); });
+(function () {
+  window.addEventListener('DOMContentLoaded', () => { new Game(); });
+})();

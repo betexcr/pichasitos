@@ -897,9 +897,9 @@ class SpriteSystem {
     hurt:        { dx:  0, dy:  4, scaleBoost: -0.04 },
     ko:          { dx:  0, dy:  6, scaleBoost: -0.06 },
     block:       { dx:  0, dy: -2, scaleBoost: 0.03 },
-    dodge_left:  { dx: -7, dy: -1, scaleBoost: 0.01 },
-    dodge_right: { dx:  7, dy: -1, scaleBoost: 0.01 },
-    dodge_back:  { dx:  0, dy:  4, scaleBoost: -0.04 },
+    dodge_left:  { dx: 0, dy: 0, scaleBoost: 0 },
+    dodge_right: { dx: 0, dy: 0, scaleBoost: 0 },
+    dodge_back:  { dx: 0, dy: 0, scaleBoost: 0 },
     taunt:       { dx:  0, dy: -1, scaleBoost: 0.04 },
     sig_attack:  { dx:  0, dy: -10, scaleBoost: 0.08 },
     victory:     { dx:  0, dy: -3, scaleBoost: 0.05 },
@@ -1371,7 +1371,7 @@ class SpriteSystem {
         const drawH = 110 * (s / 2);
         const aspect = curImg.naturalWidth / curImg.naturalHeight;
         const drawW = drawH * aspect;
-        const bPad = this._resolveBottomPad(curImg);
+        const bPad = SpriteSystem.KNOWN_BOTTOM_PAD.player ?? this._resolveBottomPad(curImg);
         const drawX = x + pDx - drawW / 2;
         const drawY = y + pDy - drawH * (1 - bPad) + 10;
         ctx.save();
