@@ -1,0 +1,33 @@
+{
+  "compilerOptions": {
+    "checkJs": true,
+    "strict": false,
+    "noImplicitAny": false,
+    "strictNullChecks": false,
+    "noEmit": true,
+    "target": "ES2020",
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "lib": ["ES2020", "DOM"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "maxNodeModuleJsDepth": 0
+  },
+  "include": [
+    "js/globals.d.ts",
+    "js/types.js",
+    "js/score-sanitize.js",
+    "js/fetch-retry.js",
+    "js/arcade.js",
+    "js/online-scoreboard.js",
+    "js/clock.js",
+    "js/asset-loader.js",
+    "js/firebase-config.js"
+  ],
+  "exclude": [
+    "node_modules",
+    "vendor",
+    "external",
+    "tools"
+  ]
+}

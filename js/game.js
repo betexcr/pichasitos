@@ -32,13 +32,12 @@ class Game {
     this.nameEntry = { chars: ['A','A','A'], pos: 0, done: false };
 
     this._continueBoost = false;
-    this._continueBoostRoundOnly = false;
     this._fightWinHandled = false;
 
     this.online = new OnlineScoreboard();
     this.online.init();
 
-    if (typeof TestMode !== 'undefined' && TestMode.isActive()) {
+    if (Runtime.isTestMode()) {
       this.arcade.credits = 99;
     }
 
@@ -56,16 +55,22 @@ class Game {
       [CONST.KEYS.START]:'start',[CONST.KEYS.COIN]:'coin',
     };
     document.addEventListener('keydown', (e) => {
-      e.preventDefault();
-      const action = keyMap[e.key];
-      if (action) { if (!this.input[action]) this._pressedThisFrame[action]=true; this.input[action]=true; this.idleTimer=0; }
-      if (e.key===CONST.KEYS.COIN && this.input.start) { this.operatorKeyTimer++; if (this.operatorKeyTimer>90) this._enterOperatorMode(); }
-      else if (e.key===CONST.KEYS.START && this.input.coin) { this.operatorKeyTimer++; if (this.operatorKeyTimer>90) this._enterOperatorMode(); }
+      const key = (e.key && e.key.length === 1) ? e.key.toLowerCase() : e.key;
+      const action = keyMap[key];
+      if (action) {
+        e.preventDefault();
+        if (!this.input[action]) this._pressedThisFrame[action]=true;
+        this.input[action]=true;
+        this.idleTimer=0;
+      }
+      if (key===CONST.KEYS.COIN && this.input.start) { this.operatorKeyTimer++; if (this.operatorKeyTimer>90) this._enterOperatorMode(); }
+      else if (key===CONST.KEYS.START && this.input.coin) { this.operatorKeyTimer++; if (this.operatorKeyTimer>90) this._enterOperatorMode(); }
     });
     document.addEventListener('keyup', (e) => {
-      const action = keyMap[e.key];
+      const key = (e.key && e.key.length === 1) ? e.key.toLowerCase() : e.key;
+      const action = keyMap[key];
       if (action) this.input[action]=false;
-      if (e.key===CONST.KEYS.COIN||e.key===CONST.KEYS.START) this.operatorKeyTimer=0;
+      if (key===CONST.KEYS.COIN||key===CONST.KEYS.START) this.operatorKeyTimer=0;
     });
 
     this._setupTouchInput();
@@ -147,6 +152,18 @@ class Game {
     return OPPONENT_DATA[this.currentOpponentIndex - 1].name;
   }
 
+  _isBullFight() {
+    return this.currentOpponentIndex >= OPPONENT_DATA.length;
+  }
+
+  _currentOpponentData() {
+    return this._isBullFight() ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+  }
+
+  _currentFightIndex() {
+    return this._isBullFight() ? CONST.BULL_FIGHT_INDEX : this.currentOpponentIndex;
+  }
+
   _loop(now) {
     now = now ?? performance.now();
     try {
@@ -161,15 +178,16 @@ class Game {
 
       if (!hitStopped) {
         for (let i = 0; i < logicSteps; i++) {
+          if (this.renderer.isHitStopped()) break;
           this._update();
-          this._pressedThisFrame = {};
         }
+        this._pressedThisFrame = {};
       }
 
       this._render();
       this.renderer.postProcess();
     } catch (e) {
-      console.error('PICHASITOS loop error:', e);
+      Logger.error(e, 'loop');
       this.renderer.ctx.fillStyle = '#000';
       this.renderer.ctx.fillRect(0, 0, CONST.WIDTH, CONST.HEIGHT);
       this.renderer.ctx.fillStyle = '#F00';
@@ -187,7 +205,11 @@ class Game {
     }
     this._touchPressBuffer = {};
     this.idleTimer++;
-    if (this._consumePress('coin')) { this.arcade.insertCoin(); this.audio.coinInsert(); }
+    // On continue screen, leave coin presses for _updateContinue (insert + continue).
+    if (this.state !== CONST.STATES.CONTINUE_SCREEN && this._consumePress('coin')) {
+      this.arcade.insertCoin();
+      this.audio.coinInsert();
+    }
     switch (this.state) {
       case CONST.STATES.ATTRACT: this._updateAttract(); break;
       case CONST.STATES.TITLE: this._updateTitle(); break;
@@ -205,7 +227,18 @@ class Game {
       case CONST.STATES.NAME_ENTRY: this._updateNameEntry(); break;
       case CONST.STATES.OPERATOR: this._updateOperator(); break;
     }
-    if (this.state===CONST.STATES.FIGHT && this.idleTimer>CONST.IDLE_TIMEOUT*30) { this._changeState(CONST.STATES.ATTRACT); this.audio.stopMusic(); }
+    if (this.state===CONST.STATES.FIGHT && this.idleTimer>CONST.IDLE_TIMEOUT*30) {
+      this._abandonFightToAttract();
+    }
+  }
+
+  _abandonFightToAttract() {
+    this.audio.stopMusic();
+    this.player = null;
+    this.opponent = null;
+    this.playerHitThisSwing = false;
+    this.opponentHitThisAttack = false;
+    this._changeState(CONST.STATES.ATTRACT);
   }
 
   _changeState(newState, transitionType) {
@@ -216,11 +249,37 @@ class Game {
       this.renderer.startTransition(transitionType, 30, () => {
         this.state = newState; this.stateTick = 0;
         if (this.online) this.online.updateState(newState, this.score);
+        this._announceA11y(newState);
       });
     } else {
       this.state = newState; this.stateTick = 0;
       if (this.online) this.online.updateState(newState, this.score);
+      this._announceA11y(newState);
     }
+  }
+
+  _announceA11y(state) {
+    const el = document.getElementById('a11y-live');
+    if (!el) return;
+    const labels = {
+      [CONST.STATES.ATTRACT]: 'Pantalla de atraccion. Inserte teja y pulse Start.',
+      [CONST.STATES.TITLE]: 'Titulo. Pulse Start.',
+      [CONST.STATES.INTRO]: 'Introduccion.',
+      [CONST.STATES.CIRCUIT_INTRO]: 'Nuevo circuito.',
+      [CONST.STATES.WORLD_MAP]: 'Mapa del mundo.',
+      [CONST.STATES.OPPONENT_INTRO]: 'Presentacion del oponente.',
+      [CONST.STATES.FIGHT]: 'Combate. Puntaje ' + this.score + '.',
+      [CONST.STATES.ROUND_END]: 'Fin de ronda.',
+      [CONST.STATES.FIGHT_WIN]: 'Victoria en el combate.',
+      [CONST.STATES.FIGHT_LOSE]: 'Derrota.',
+      [CONST.STATES.CONTINUE_SCREEN]: 'Continue. Tiempo ' + Math.ceil(this.continueTimeLeft || 0) + '. Inserte teja o Start.',
+      [CONST.STATES.GAME_OVER]: 'Game over.',
+      [CONST.STATES.VICTORY]: 'Campeon.',
+      [CONST.STATES.NAME_ENTRY]: 'Ingrese iniciales.',
+      [CONST.STATES.OPERATOR]: 'Modo operador.',
+    };
+    const msg = labels[state] || String(state || '');
+    if (msg && el.textContent !== msg) el.textContent = msg;
   }
 
   _updateAttract() {
@@ -262,8 +321,7 @@ class Game {
   }
 
   _updateOpponentIntro() {
-    const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-    const opp = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+    const opp = this._currentOpponentData();
     this.assets.preloadFighterBundle(opp.name);
     if (!this._oppIntroQuote) {
       this._oppIntroQuote = opp.quotes
@@ -278,17 +336,16 @@ class Game {
   }
 
   _startFight() {
-    const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-    const oppData = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+    const isBull = this._isBullFight();
+    const oppData = this._currentOpponentData();
     this.player = new Player();
     this.opponent = new OpponentAI(oppData);
-    const fightIdx = isBull ? 13 : this.currentOpponentIndex;
+    const fightIdx = this._currentFightIndex();
     if (CONST.DIFFICULTY) {
       this.opponent.applyDifficultyModifiers(CONST.DIFFICULTY.getFightModifiers(fightIdx));
     }
     if (this._continueBoost) {
       this.player.health = CONST.DIFFICULTY.CONTINUE_START_HEALTH;
-      this._continueBoostRoundOnly = true;
       this._continueBoost = false;
     }
     this.round = 1; this.roundTime = CONST.ROUND_TIME;
@@ -305,21 +362,53 @@ class Game {
 
   _updateFight() {
     if (!this.player || !this.opponent) return;
-    this.roundTime -= 1/CONST.LOGIC_FPS;
-    if (this.renderer.crowdExcitement > 0) this.renderer.crowdExcitement = Math.max(0, this.renderer.crowdExcitement - 0.003);
+    const fightOppName = this.opponent.data && this.opponent.data.name;
+    if (fightOppName && !this.assets.areFightAssetsReady(this.currentCircuit, fightOppName)) {
+      return;
+    }
+    this.roundTime -= 1 / CONST.LOGIC_FPS;
+    if (this.renderer.crowdExcitement > 0) {
+      this.renderer.crowdExcitement = Math.max(0, this.renderer.crowdExcitement - CONST.FX.CROWD_DECAY);
+    }
 
-    const pInput = {
-      left:this._consumePress('left'), right:this._consumePress('right'), up:this.input.up,
-      down:this._consumePress('down'), punchLeft:this._consumePress('punchLeft'),
-      punchRight:this._consumePress('punchRight'), special:this._consumePress('special') || this.input.special,
-    };
-    this.player.update(pInput);
+    this.player.update({
+      left: this._consumePress('left'),
+      right: this._consumePress('right'),
+      up: this.input.up,
+      down: this._consumePress('down'),
+      punchLeft: this._consumePress('punchLeft'),
+      punchRight: this._consumePress('punchRight'),
+      special: this._consumePress('special'),
+    });
     const playerStateForAI = this.player.isWindingUp() ? 'windup' : this.player.state;
     this.opponent.update(playerStateForAI, this.tick);
 
-    if (!this.player.isPunching()) this.playerHitThisSwing = false;
-    if (!this.opponent.isAttacking()) this.opponentHitThisAttack = false;
+    this._syncHitWindows();
+    this._tickOpponentVoiceAndSigSfx();
 
+    const wasRampage = this.player.rampage;
+    this._resolvePlayerSwingHit();
+    if (this.player.rampage && !wasRampage) {
+      this._addScore(CONST.POINTS.RAMPAGE_ACTIVATE);
+      this.audio.rampageStart();
+      this.audio.crowdCheer();
+      this.renderer.triggerScreenShake(6, 15);
+      this.renderer.triggerFlash();
+    }
+    if (!this.player.rampage && wasRampage && this.player.state !== 'hurt') this.audio.rampageEnd();
+
+    this._resolveOpponentAttackHit();
+    this._resolveRoundEndFromFight();
+  }
+
+  _syncHitWindows() {
+    if (this.player.consumeNewSwing()) this.playerHitThisSwing = false;
+    if (!this.player.isPunching()) this.playerHitThisSwing = false;
+    if (this.opponent.consumeNewHitWindow()) this.opponentHitThisAttack = false;
+    if (!this.opponent.isAttacking()) this.opponentHitThisAttack = false;
+  }
+
+  _tickOpponentVoiceAndSigSfx() {
     if (
       this.opponent.signaturePhrase &&
       !this.opponent._voicePlayed &&
@@ -329,136 +418,167 @@ class Game {
       this.audio.speakOpponent(this.opponent.signaturePhrase, this.opponent.data.name);
       this.opponent._voicePlayed = true;
     }
-    if (this.opponent.signatureEffect && this.opponent.signatureEffectTimer === this.opponent.currentPattern.attackFrames + 14) {
+    if (
+      this.opponent.signatureEffect &&
+      this.opponent.currentPattern &&
+      this.opponent.signatureEffectTimer === this.opponent.currentPattern.attackFrames + CONST.FX.SIG_SFX_OFFSET_FRAMES
+    ) {
       this.audio.signatureAttack(this.opponent.signatureEffect);
     }
+  }
 
-    const wasRampage = this.player.rampage;
-
-    if (this.player.isPunching() && !this.playerHitThisSwing) {
-      this.playerHitThisSwing = true;
-      const canPierce = this.player.state === 'special' || this.player.rampage;
-      if (!this.opponent.isBlocking() || canPierce) {
-        if (this.opponent.state !== 'ko') {
-          const dmg = this.player.getPunchDamage();
-          const actual = this.opponent.takeHit(dmg);
-          if (actual > 0) {
-            this.player.landedHit();
-            const isCombo = this.player.combo >= 3;
-            this._addScore(isCombo ? CONST.POINTS.COMBO_HIT : CONST.POINTS.HIT);
-            if (this.player.state === 'special') this._addScore(CONST.POINTS.SPECIAL_HIT);
-
-            this.renderer.oppHitFlashTimer = 8;
-            this.renderer.comboCount = this.player.combo;
-            this.renderer.comboTimer = 45;
-            this.renderer.crowdExcitement = Math.min(1, (this.renderer.crowdExcitement || 0) + 0.15);
-            this.renderer.addDamageNumber(this.renderer.W/2 + (Math.random()-0.5)*20, 80, actual, isCombo ? CONST.COLORS.GOLD : CONST.COLORS.WHITE);
-
-            const hitX = this.renderer.W / 2 + (this.player.state === 'punchLeft' ? -8 : 8) + (Math.random() - 0.5) * 10;
-            const hitY = 85 + (Math.random() - 0.5) * 16;
-
-            if (this.player.rampage) {
-              this.audio.rampageHit(); this.renderer.addHitParticles(hitX, hitY, 14);
-              this.renderer.triggerScreenShake(3, 5);
-              this.renderer.triggerHitStop(3);
-              this.renderer.triggerImpactStar(hitX, hitY, 22, 12);
-              this.renderer.triggerSweatDrops(this.renderer.W / 2, 75, 5);
-            } else {
-              this.audio.punchHit(); this.renderer.addHitParticles(hitX, hitY, actual > 15 ? 12 : 7);
-              this.renderer.triggerScreenShake(1.5, 3);
-              this.renderer.triggerHitStop(2);
-              this.renderer.triggerImpactStar(hitX, hitY, actual > 15 ? 18 : 14, 10);
-              this.renderer.triggerSweatDrops(this.renderer.W / 2, 75, actual > 15 ? 4 : 2);
-            }
-            if (this.player.state === 'special') {
-              this.audio.specialAttack(); this.renderer.triggerScreenShake(6, 12); this.renderer.triggerFlash();
-              this.audio.speakNarrator(CONST.TEXT.DEMASIADO_GUARO);
-              this.renderer.triggerHitStop(5);
-              this.renderer.triggerImpactFrame(8);
-              this.renderer.triggerGuaroSplash();
-              this.renderer.crowdExcitement = Math.min(1, (this.renderer.crowdExcitement || 0) + 0.4);
-            }
-          }
-        }
-      } else { this.audio.block(); }
+  _resolvePlayerSwingHit() {
+    if (!this.player.isPunching() || this.playerHitThisSwing) return;
+    this.playerHitThisSwing = true;
+    const canPierce = this.player.state === 'special' || this.player.rampage;
+    if (this.opponent.isBlocking() && !canPierce) {
+      this.audio.block();
+      return;
     }
+    if (this.opponent.state === 'ko') return;
 
-    if (this.player.rampage && !wasRampage) {
-      this._addScore(CONST.POINTS.RAMPAGE_ACTIVATE);
-      this.audio.rampageStart(); this.audio.crowdCheer(); this.renderer.triggerScreenShake(6, 15); this.renderer.triggerFlash();
+    const dmg = this.player.getPunchDamage();
+    const actual = this.opponent.takeHit(dmg);
+    if (actual <= 0) return;
+
+    this.player.landedHit();
+    this.player.openComboLink();
+    const isCombo = this.player.combo >= 3;
+    this._addScore(isCombo ? CONST.POINTS.COMBO_HIT : CONST.POINTS.HIT);
+    if (this.player.state === 'special') this._addScore(CONST.POINTS.SPECIAL_HIT);
+
+    this.renderer.oppHitFlashTimer = CONST.FX.OPP_HIT_FLASH_FRAMES;
+    this.renderer.comboCount = this.player.combo;
+    this.renderer.comboTimer = CONST.FX.COMBO_TIMER_FRAMES;
+    this.renderer.crowdExcitement = Math.min(1, (this.renderer.crowdExcitement || 0) + CONST.FX.CROWD_HIT_BUMP);
+    this.renderer.addDamageNumber(
+      this.renderer.W / 2 + (Math.random() - 0.5) * 20,
+      CONST.FX.DMG_NUM_OPP_Y,
+      actual,
+      isCombo ? CONST.COLORS.GOLD : CONST.COLORS.WHITE
+    );
+
+    const hitX = this.renderer.W / 2 + (this.player.state === 'punch_left' ? -8 : 8) + (Math.random() - 0.5) * 10;
+    const hitY = 85 + (Math.random() - 0.5) * 16;
+
+    if (this.player.rampage) {
+      this.audio.rampageHit();
+      this.renderer.addHitParticles(hitX, hitY, 14);
+      this.renderer.triggerScreenShake(3, 5);
+      this.renderer.triggerHitStop(3);
+      this.renderer.triggerImpactStar(hitX, hitY, 22, 12);
+      this.renderer.triggerSweatDrops(this.renderer.W / 2, 75, 5);
+    } else {
+      this.audio.punchHit();
+      this.renderer.addHitParticles(hitX, hitY, actual > 15 ? 12 : 7);
+      this.renderer.triggerScreenShake(1.5, 3);
+      this.renderer.triggerHitStop(2);
+      this.renderer.triggerImpactStar(hitX, hitY, actual > 15 ? 18 : 14, 10);
+      this.renderer.triggerSweatDrops(this.renderer.W / 2, 75, actual > 15 ? 4 : 2);
     }
-    if (!this.player.rampage && wasRampage && this.player.state !== 'hurt') this.audio.rampageEnd();
+    if (this.player.state === 'special') {
+      this.audio.specialAttack();
+      this.renderer.triggerScreenShake(6, 12);
+      this.renderer.triggerFlash();
+      this.audio.speakNarrator(CONST.TEXT.DEMASIADO_GUARO);
+      this.renderer.triggerHitStop(5);
+      this.renderer.triggerImpactFrame(8);
+      this.renderer.triggerGuaroSplash();
+      this.renderer.crowdExcitement = Math.min(1, (this.renderer.crowdExcitement || 0) + CONST.FX.CROWD_SPECIAL_BUMP);
+    }
+  }
 
+  _resolveOpponentAttackHit() {
     const playerWasRampage = this.player.rampage;
     const healthBefore = this.player.health;
-    if (this.opponent.isAttacking() && !this.opponentHitThisAttack) {
-      this.opponentHitThisAttack = true;
-      const unblockable = this.opponent.isAttackUnblockable();
-      if (this.player.state==='dodge_left'||this.player.state==='dodge_right'||this.player.state==='duck') {
-        this.opponent.recordPlayerDodge(this.player.state); this.audio.dodge();
-        this._addScore(CONST.POINTS.DODGE);
-        this.renderer.addDodgeDust(
-          this.renderer.W / 2 + this.player.swayOffset,
-          212,
-          this.player.state === 'dodge_left' ? 'left' : 'right'
+    if (!(this.opponent.isAttacking() && !this.opponentHitThisAttack)) {
+      this.roundDamageTaken += Math.max(0, healthBefore - this.player.health);
+      return;
+    }
+    this.opponentHitThisAttack = true;
+    const unblockable = this.opponent.isAttackUnblockable();
+    if (this.player.state === 'dodge_left' || this.player.state === 'dodge_right' || this.player.state === 'duck') {
+      this.opponent.recordPlayerDodge(this.player.state);
+      this.audio.dodge();
+      this._addScore(CONST.POINTS.DODGE);
+      this.renderer.addDodgeDust(
+        this.renderer.W / 2 + this.player.swayOffset,
+        212,
+        this.player.state === 'dodge_left' ? 'left' : 'right'
+      );
+    } else if (this.player.state === 'block' && !unblockable) {
+      const dmg = Math.floor(this.opponent.getAttackDamage() * CONST.PLAYER.BLOCK_DAMAGE_MULT);
+      this.player.takeChip(dmg);
+      this.audio.block();
+      this.renderer.addBlockParticles(this.renderer.W / 2, 170);
+      this._addScore(CONST.POINTS.BLOCK);
+    } else {
+      const hit = this.player.takeHit(this.opponent.getAttackDamage());
+      if (hit) {
+        this.audio.hurt();
+        this.renderer.addHitParticles(this.renderer.W / 2, 180, 5);
+        this.renderer.hitFlashTimer = CONST.FX.PLAYER_HIT_FLASH_FRAMES;
+        this.renderer.addDamageNumber(
+          this.renderer.W / 2 + (Math.random() - 0.5) * 20,
+          CONST.FX.DMG_NUM_PLAYER_Y,
+          this.opponent.getAttackDamage(),
+          CONST.COLORS.RED
         );
-      } else if (this.player.state==='block' && !unblockable) {
-        if (typeof TestMode === 'undefined' || !TestMode.isActive()) {
-          const dmg = Math.floor(this.opponent.getAttackDamage()*CONST.PLAYER.BLOCK_DAMAGE_MULT);
-          this.player.health = Math.max(0, this.player.health-dmg);
-          this.player.stamina = Math.max(0, this.player.stamina-(CONST.PLAYER.CHIP_STAMINA_DAMAGE||5));
-          if (this.player.health<=0) { this.player.state='ko'; this.player.stateTimer=90; }
+        if (this.opponent.isAttackStun()) this.player.stateTimer += 30;
+        const pattern = this.opponent.currentPattern;
+        if (pattern && pattern.screenShake) {
+          this.renderer.triggerScreenShake(6, 10);
+          this.renderer.addDustParticles(this.renderer.W / 2, 200);
+          this.renderer.triggerHitStop(3);
         }
-        this.audio.block(); this.renderer.addBlockParticles(this.renderer.W/2, 170);
-        this._addScore(CONST.POINTS.BLOCK);
-      } else {
-        const hit = this.player.takeHit(this.opponent.getAttackDamage());
-        if (hit) {
-          this.audio.hurt(); this.renderer.addHitParticles(this.renderer.W/2, 180, 5);
-          this.renderer.hitFlashTimer = 4;
-          this.renderer.addDamageNumber(this.renderer.W/2 + (Math.random()-0.5)*20, 170, this.opponent.getAttackDamage(), CONST.COLORS.RED);
-          if (this.opponent.isAttackStun()) this.player.stateTimer += 30;
-          const pattern = this.opponent.currentPattern;
-          if (pattern && pattern.screenShake) {
-            this.renderer.triggerScreenShake(6, 10); this.renderer.addDustParticles(this.renderer.W/2, 200);
-            this.renderer.triggerHitStop(3);
-          }
-          if (playerWasRampage && !this.player.rampage) this.audio.rampageEnd();
-        }
+        if (playerWasRampage && !this.player.rampage) this.audio.rampageEnd();
       }
     }
     this.roundDamageTaken += Math.max(0, healthBefore - this.player.health);
+  }
 
+  _resolveRoundEndFromFight() {
     if (this.opponent.isKO()) {
-      this.koLine = CONST.TEXT.KO_LINES[Math.floor(Math.random()*CONST.TEXT.KO_LINES.length)];
-      this.roundWinner = 'player'; this.playerRoundsWon++;
+      this.koLine = CONST.TEXT.KO_LINES[Math.floor(Math.random() * CONST.TEXT.KO_LINES.length)];
+      this.roundWinner = 'player';
+      this.playerRoundsWon++;
       this._addScore(CONST.POINTS.ROUND_KO);
       const timeBonus = Math.floor(Math.max(0, this.roundTime) * CONST.POINTS.TIME_BONUS_PER_SEC);
       this._addScore(timeBonus);
       if (this.roundDamageTaken === 0) this._addScore(CONST.POINTS.PERFECT_ROUND);
-      this.audio.ko(); this.audio.crowdCheer(); this.renderer.addKOBurst(this.renderer.W/2, 90); this.renderer.addDustParticles(this.renderer.W/2, 140);
-      this.renderer.addConfetti(this.renderer.W/2, 60, 30);
+      this.audio.ko();
+      this.audio.crowdCheer();
+      this.renderer.addKOBurst(this.renderer.W / 2, 90);
+      this.renderer.addDustParticles(this.renderer.W / 2, 140);
+      this.renderer.addConfetti(this.renderer.W / 2, 60, 30);
       this.renderer.crowdExcitement = 1;
       this.renderer.triggerHitStop(5);
       this.renderer.triggerImpactFrame(8);
       this.player.setVictory();
-      this._changeState(CONST.STATES.ROUND_END); return;
+      this._changeState(CONST.STATES.ROUND_END);
+      return;
     }
     if (this.player.isKO()) {
-      this.roundWinner = 'opponent'; this.opponentRoundsWon++;
+      this.roundWinner = 'opponent';
+      this.opponentRoundsWon++;
       this.opponent.setVictory();
-      this.audio.ko(); this._changeState(CONST.STATES.ROUND_END); return;
+      this.audio.ko();
+      this._changeState(CONST.STATES.ROUND_END);
+      return;
     }
     if (this.roundTime <= 0) {
       if (this.player.health >= this.opponent.health) {
-        this.roundWinner='player'; this.playerRoundsWon++;
+        this.roundWinner = 'player';
+        this.playerRoundsWon++;
         this._addScore(CONST.POINTS.ROUND_DECISION);
         this.player.setVictory();
       } else {
-        this.roundWinner='opponent'; this.opponentRoundsWon++;
+        this.roundWinner = 'opponent';
+        this.opponentRoundsWon++;
         this.opponent.setVictory();
       }
-      this.koLine = 'TIEMPO!'; this._changeState(CONST.STATES.ROUND_END);
+      this.koLine = 'TIEMPO!';
+      this._changeState(CONST.STATES.ROUND_END);
     }
   }
 
@@ -530,8 +650,13 @@ class Game {
     const prev = Math.ceil(this.continueTimeLeft+1/CONST.LOGIC_FPS);
     const curr = Math.ceil(this.continueTimeLeft);
     if (prev!==curr && this.continueTimeLeft>0) this.audio.countdown();
-    if (this.arcade.hasCredits() && (this._consumePress('start')||this._consumePress('coin'))) {
-      if (!this.arcade.hasCredits()) return;
+    const pressStart = this._consumePress('start');
+    const pressCoin = this._consumePress('coin');
+    if (pressCoin) {
+      this.arcade.insertCoin();
+      this.audio.coinInsert();
+    }
+    if (this.arcade.hasCredits() && (pressStart || pressCoin)) {
       this._continueBoost = true;
       this.arcade.spendCredit(); this.audio.menuConfirm(); this.audio.startMusic('fight'); this._startFight(); return;
     }
@@ -553,7 +678,7 @@ class Game {
       if (this.stateTick > 60) {
         const name = ne.chars.join('');
         const lastDefeated = this._getLastDefeatedName();
-        if (typeof TestMode === 'undefined' || !TestMode.isActive()) {
+        if (!Runtime.isTestMode()) {
           this.arcade.addHighScore(name, this.score, this.currentOpponentIndex, this.currentCircuit, lastDefeated);
           if (this.online) {
             this.online.setPlayerName(name);
@@ -637,15 +762,13 @@ class Game {
       case CONST.STATES.WORLD_MAP:
         this.ui.drawWorldMap(this.currentOpponentIndex, this.currentCircuit, this.stateTick, this.tick); break;
       case CONST.STATES.OPPONENT_INTRO: {
-        const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-        if (isBull) this.ui.drawBullIntro(this.stateTick);
-        else this.ui.drawOpponentIntro(OPPONENT_DATA[this.currentOpponentIndex], this.stateTick, this._oppIntroQuote);
+        if (this._isBullFight()) this.ui.drawBullIntro(this.stateTick);
+        else this.ui.drawOpponentIntro(this._currentOpponentData(), this.stateTick, this._oppIntroQuote);
         break;
       }
       case CONST.STATES.FIGHT:
         if (this.player && this.opponent) {
-          const isBullF = this.currentOpponentIndex >= OPPONENT_DATA.length;
-          const oppDF = isBullF ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          const oppDF = this._currentOpponentData();
           if (!this.assets.areFightAssetsReady(this.currentCircuit, oppDF.name)) {
             const ctx = this.renderer.ctx;
             ctx.fillStyle = CONST.COLORS.NIGHT_SKY;
@@ -670,8 +793,7 @@ class Game {
         break;
       case CONST.STATES.ROUND_END:
         if (this.player && this.opponent) {
-          const isBullR = this.currentOpponentIndex >= OPPONENT_DATA.length;
-          const oppDR = isBullR ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          const oppDR = this._currentOpponentData();
           if (this.assets.areFightAssetsReady(this.currentCircuit, oppDR.name)) {
             this.renderer.drawFightScene(this.player, this.opponent, this.tick);
             this.renderer.drawHUD(this.player, this.opponent, this.roundTime, this.round, this.currentCircuit, this.score);
@@ -680,15 +802,13 @@ class Game {
         }
         break;
       case CONST.STATES.FIGHT_WIN: {
-        const isBull = this.currentOpponentIndex >= OPPONENT_DATA.length;
-        const oppD = isBull ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+        const oppD = this._currentOpponentData();
         this.ui.drawFightWin(oppD.name, this.stateTick, this.score, this.winLine, this.koWinLine, this.defeatQuote);
         break;
       }
       case CONST.STATES.FIGHT_LOSE:
         if (this.player && this.opponent) {
-          const isBullL = this.currentOpponentIndex >= OPPONENT_DATA.length;
-          const oppDL = isBullL ? TORO_DATA : OPPONENT_DATA[this.currentOpponentIndex];
+          const oppDL = this._currentOpponentData();
           if (this.assets.areFightAssetsReady(this.currentCircuit, oppDL.name)) {
             this.renderer.drawFightScene(this.player, this.opponent, this.tick);
             this.renderer.ctx.fillStyle = 'rgba(0,0,0,0.5)';

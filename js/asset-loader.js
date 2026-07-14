@@ -2,6 +2,7 @@ class AssetLoader {
   static ASSET_VERSION = typeof PICHASITOS_CACHE_VERSION !== 'undefined'
     ? PICHASITOS_CACHE_VERSION
     : '20260618_sig_punch_frame_fix';
+  /** @type {Record<string, string>} */
   static SLUGS = {
     'DON CARLOS':   'don_carlos',
     'GRINGO':       'gringo',
@@ -21,7 +22,7 @@ class AssetLoader {
     'PLAYER':       'player',
   };
 
-  /** Fight order (matches OPPONENT_DATA + bull finale). */
+  /** Fight order (matches OPPONENT_DATA + bull finale). Last index = CONST.BULL_FIGHT_INDEX. */
   static FIGHT_SLUGS = [
     'don_carlos', 'gringo', 'clarisa', 'panzaeperra', 'michiquito', 'hitmena',
     'karen', 'carretastar', 'persefone', 'don_alvaro', 'anai', 'skin', 'el_indio', 'bull',
@@ -78,17 +79,28 @@ class AssetLoader {
     if (this._manifest) return this._manifest;
     const url = `${AssetLoader.MANIFEST_PATH}?v=${AssetLoader.ASSET_VERSION}`;
     try {
-      const res = await fetch(url, { cache: 'no-store' });
-      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const fetchFn = typeof fetchWithTimeout === 'function'
+        ? fetchWithTimeout
+        : (u, o) => fetch(u, { cache: (o && o.cache) || 'no-store' });
+      const res = await fetchFn(url, { timeoutMs: 12000, retries: 1, cache: 'no-store' });
       this._manifest = await res.json();
+      this._validateManifestSchema(this._manifest);
       return this._manifest;
     } catch (e) {
-      console.warn(
-        'AssetLoader: asset-manifest.json missing or unreadable. Run: python tools/generate_asset_manifest.py',
-        e
-      );
+      Logger.warn('asset-manifest missing/unreadable', e && e.message);
       this._manifest = { fighters: {}, backgrounds: {}, monsters: {} };
       return this._manifest;
+    }
+  }
+
+  _validateManifestSchema(manifest) {
+    if (this._manifestSchemaWarned) return;
+    const ok = manifest && typeof manifest === 'object'
+      && typeof manifest.fighters === 'object'
+      && typeof manifest.backgrounds === 'object';
+    if (!ok) {
+      this._manifestSchemaWarned = true;
+      Logger.warn('asset-manifest schema unexpected');
     }
   }
 
@@ -295,7 +307,7 @@ class AssetLoader {
         this._finalizePortraitFallbacks();
         this._priorityReady = true;
       } catch (e) {
-        console.error('AssetLoader.preload failed:', e);
+        Logger.error(e, 'asset-preload');
         this._finalizePortraitFallbacks();
         this._priorityReady = true;
       }
@@ -326,6 +338,11 @@ class AssetLoader {
     return this._fighterBundles.has(slug) || this.hasPoses(slug);
   }
 
+  /**
+   * @param {number} circuitIndex
+   * @param {string} opponentName
+   * @returns {boolean}
+   */
   areFightAssetsReady(circuitIndex, opponentName) {
     if (!this._priorityReady) return false;
     const bgKey = AssetLoader.CIRCUIT_ARENAS[circuitIndex];

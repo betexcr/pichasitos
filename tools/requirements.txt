@@ -1,0 +1,12 @@
+# Python tooling for asset pipeline (optional; not used by the game runtime)
+
+# Manifest / SD API helpers
+# (stdlib-only for generate_asset_manifest.py and sd_export.py)
+
+# Pose / portrait generators (optional local GPU workflows)
+Pillow>=10.0.0
+torch>=2.0.0
+diffusers>=0.27.0
+
+# Background removal helpers (if using tools/remove_bg.py)
+# rembg>=2.0.0

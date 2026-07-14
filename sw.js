@@ -8,15 +8,27 @@ function isSameOrigin(url) {
   return url.origin === self.location.origin;
 }
 
-function isCacheableAsset(pathname) {
-  return pathname.startsWith('/assets/');
+/** Shell-critical assets safe for long-lived cache-first (small / reused often). */
+function isBoundedCacheAsset(pathname) {
+  return pathname.startsWith('/assets/ui_bg/') ||
+    pathname.startsWith('/assets/enemies/') ||
+    pathname.startsWith('/assets/portraits/') ||
+    pathname.startsWith('/assets/map_nodes/') ||
+    pathname === '/assets/asset-manifest.json' ||
+    pathname.startsWith('/assets/asset-manifest.json');
+}
+
+/** Large pose packs — network-first, do not permanently grow the SW cache. */
+function isPoseAsset(pathname) {
+  return pathname.startsWith('/assets/poses/');
 }
 
 function isAppShell(pathname) {
   return pathname.endsWith('.js') ||
     pathname.endsWith('.css') ||
     pathname === '/' ||
-    pathname.endsWith('/index.html');
+    pathname.endsWith('/index.html') ||
+    pathname.endsWith('/health.html');
 }
 
 async function cacheFirst(request) {
@@ -31,6 +43,19 @@ async function cacheFirst(request) {
     }
     return response;
   } catch (err) {
+    if (cached) return cached;
+    throw err;
+  }
+}
+
+/** Network-first: prefer fresh poses; optionally keep last success for brief offline. */
+async function networkFirstNoStore(request) {
+  try {
+    const response = await fetch(request);
+    return response;
+  } catch (err) {
+    const cache = await caches.open(CACHE_NAME);
+    const cached = await cache.match(request);
     if (cached) return cached;
     throw err;
   }
@@ -77,12 +102,33 @@ self.addEventListener('fetch', (event) => {
   const url = new URL(event.request.url);
   if (!isSameOrigin(url)) return;
 
-  if (isCacheableAsset(url.pathname)) {
-    event.respondWith(cacheFirst(event.request));
+  const path = url.pathname;
+
+  if (isPoseAsset(path)) {
+    event.respondWith(networkFirstNoStore(event.request));
     return;
   }
 
-  if (isAppShell(url.pathname)) {
+  if (isBoundedCacheAsset(path) || (path.startsWith('/assets/') && !isPoseAsset(path))) {
+    // Other /assets/** (monsters, etc.): cache-first only if under bounded dirs above;
+    // unknown asset folders fall through to network-first without caching.
+    if (isBoundedCacheAsset(path)) {
+      event.respondWith(cacheFirst(event.request));
+    } else {
+      event.respondWith(networkFirstNoStore(event.request));
+    }
+    return;
+  }
+
+  if (isAppShell(path)) {
     event.respondWith(staleWhileRevalidate(event.request));
   }
+});
+
+self.addEventListener('error', function (event) {
+  console.warn('[PICHASITOS SW] error', event && event.message);
+});
+
+self.addEventListener('unhandledrejection', function (event) {
+  console.warn('[PICHASITOS SW] unhandledrejection', event && event.reason);
 });

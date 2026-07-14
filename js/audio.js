@@ -3,7 +3,26 @@ class AudioSystem {
     this.ctx = null;
     this.musicInterval = null;
     this.musicType = null;
+    /** @type {number[]} */
+    this._fanfareTimers = [];
     this._initOnInteraction();
+  }
+
+  _schedule(fn, delayMs) {
+    const id = setTimeout(() => {
+      const idx = this._fanfareTimers.indexOf(id);
+      if (idx >= 0) this._fanfareTimers.splice(idx, 1);
+      fn();
+    }, delayMs);
+    this._fanfareTimers.push(id);
+    return id;
+  }
+
+  clearScheduled() {
+    for (let i = 0; i < this._fanfareTimers.length; i++) {
+      clearTimeout(this._fanfareTimers[i]);
+    }
+    this._fanfareTimers = [];
   }
 
   _initOnInteraction() {
@@ -240,14 +259,14 @@ class AudioSystem {
   roundWin() {
     const notes = [523, 659, 784, 1047, 784, 1047];
     notes.forEach((n, i) => {
-      setTimeout(() => this._playTone(n, 0.15, 'square', 0.2), i * 100);
+      this._schedule(() => this._playTone(n, 0.15, 'square', 0.2), i * 100);
     });
   }
 
   roundLose() {
     const notes = [400, 350, 300, 250, 200];
     notes.forEach((n, i) => {
-      setTimeout(() => this._playTone(n, 0.2, 'sawtooth', 0.2), i * 150);
+      this._schedule(() => this._playTone(n, 0.2, 'sawtooth', 0.2), i * 150);
     });
   }
 
@@ -256,7 +275,7 @@ class AudioSystem {
     const durs =   [0.1, 0.1, 0.15,0.1, 0.15,0.1, 0.15,0.4];
     let t = 0;
     melody.forEach((n, i) => {
-      setTimeout(() => {
+      this._schedule(() => {
         this._playTone(n, durs[i], 'square', 0.25);
         this._playTone(n/2, durs[i]+0.05, 'triangle', 0.1);
       }, t);
@@ -378,6 +397,7 @@ class AudioSystem {
   }
 
   stopMusic() {
+    this.clearScheduled();
     if (this.musicInterval) {
       clearInterval(this.musicInterval);
       this.musicInterval = null;

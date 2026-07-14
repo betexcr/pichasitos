@@ -438,20 +438,36 @@ class OpponentAI {
   }
 
   reset() {
-    this.health = this.maxHealth; this.state = 'idle'; this.stateTimer = 0;
-    this.currentPattern = null; this.comboHitsLeft = 0; this.actionCooldown = 0;
-    this.enraged = false; this.hasHealed = false;
+    this.health = this.maxHealth;
+    this.state = 'idle';
+    this.stateTimer = 0;
+    this.currentPattern = null;
+    this.comboHitsLeft = 0;
+    this.actionCooldown = 0;
+    this.enraged = false;
+    this.hasHealed = false;
     this.playerDodgeCount = { left: 0, right: 0, duck: 0 };
-    this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
-    this.signatureEffect = null; this.signatureEffectTimer = 0; this.lastSigUsedTick = -999;
-    this._phraseVoiceStart = 0; this._voicePlayed = false;
+    this._clearSignatureState();
+    this.signatureEffect = null;
+    this.signatureEffectTimer = 0;
+    this.lastSigUsedTick = -999;
   }
 
   resetRound() {
-    this.health = this.maxHealth; this.state = 'idle'; this.stateTimer = 0;
-    this.currentPattern = null; this.comboHitsLeft = 0; this.actionCooldown = 15;
-    this.signaturePhrase = ''; this.signaturePhraseTimer = 0;
-    this._phraseVoiceStart = 0; this._voicePlayed = false;
+    this.health = this.maxHealth;
+    this.state = 'idle';
+    this.stateTimer = 0;
+    this.currentPattern = null;
+    this.comboHitsLeft = 0;
+    this.actionCooldown = 15;
+    this._clearSignatureState();
+  }
+
+  _clearSignatureState() {
+    this.signaturePhrase = '';
+    this.signaturePhraseTimer = 0;
+    this._phraseVoiceStart = 0;
+    this._voicePlayed = false;
   }
 
   update(playerState, tick) {
@@ -466,9 +482,7 @@ class OpponentAI {
 
     if (this.data.healsOnce && !this.hasHealed && this.health < this.maxHealth * 0.3) {
       this.hasHealed = true;
-      const healFrac = (typeof CONST !== 'undefined' && CONST.DIFFICULTY)
-        ? CONST.DIFFICULTY.HEAL_ONCE_FRACTION
-        : 0.2;
+      const healFrac = CONST.DIFFICULTY.HEAL_ONCE_FRACTION;
       this.health = Math.min(this.maxHealth, this.health + this.maxHealth * healFrac);
       this.state = 'taunt'; this.stateTimer = 30; return;
     }
@@ -477,7 +491,13 @@ class OpponentAI {
       this.stateTimer--;
       if (this.stateTimer <= 0) {
         if (this.state === 'ko') return;
-        if (this.state === 'attack' && this.comboHitsLeft > 0) { this.comboHitsLeft--; this.stateTimer = this.currentPattern.attackFrames; return; }
+        if (this.state === 'attack' && this.comboHitsLeft > 0) {
+          this.comboHitsLeft--;
+          this.stateTimer = this._adj(this.currentPattern.attackFrames);
+          // Each combo segment is a new hit window (game clears opponentHitThisAttack).
+          this._newHitWindow = true;
+          return;
+        }
         if (this.state === 'attack') { this.state = 'recovery'; this.stateTimer = this._adj(this.currentPattern.recoveryFrames); return; }
         if (this.state === 'tell') {
           this.state = 'attack'; this.stateTimer = this._adj(this.currentPattern.attackFrames);
@@ -583,7 +603,7 @@ class OpponentAI {
   _cd() { const b = this.enraged ? 6 : 14; return b + Math.floor(Math.random() * (this.enraged ? 10 : 22)); }
 
   takeHit(damage) {
-    if (typeof TestMode !== 'undefined' && TestMode.isActive()) {
+    if (Runtime.isTestMode()) {
       this.health = 0;
       this.state = 'ko';
       this.stateTimer = 120;
@@ -598,6 +618,13 @@ class OpponentAI {
   }
 
   isAttacking() { return this.state === 'attack' && this.stateTimer > 0; }
+
+  /** True once when a multi-hit combo starts a new swing segment. Consumed by Game. */
+  consumeNewHitWindow() {
+    if (!this._newHitWindow) return false;
+    this._newHitWindow = false;
+    return true;
+  }
   getAttackDamage() {
     const raw = this.currentPattern ? this.currentPattern.damage : 0;
     return Math.max(0, Math.floor(raw * (this._damageMult || 1)));

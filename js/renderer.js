@@ -58,6 +58,16 @@ class Renderer {
     this._transitionBuffer = null;
     this._currentCircuit = 0;
 
+    this._reducedMotion = false;
+    try {
+      this._reducedMotion = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+      if (window.matchMedia) {
+        window.matchMedia('(prefers-reduced-motion: reduce)').addEventListener('change', (e) => {
+          this._reducedMotion = !!e.matches;
+        });
+      }
+    } catch (e) { /* ignore */ }
+
     this._impactStar = null;
     this._sweatDrops = [];
 
@@ -1682,6 +1692,10 @@ class Renderer {
   }
 
   triggerGuaroSplash() {
+    if (this._reducedMotion) {
+      this._guaroSplash = Math.floor((this._guaroSplashMax || 20) / 2);
+      return;
+    }
     this._guaroSplash = this._guaroSplashMax;
     this.addConfetti(CONST.WIDTH / 2, CONST.HEIGHT / 2, 35);
     for (let i = 0; i < 20; i++) {
@@ -2132,16 +2146,23 @@ class Renderer {
   // ── Effects ──
 
   triggerScreenShake(intensity, duration) {
+    if (this._reducedMotion) return;
     this.screenShakeIntensity = intensity || 4;
     this.screenShakeTimer = duration || 12;
   }
 
   triggerFlash(color) {
+    if (this._reducedMotion) {
+      this.flashAlpha = 0.35;
+      this.flashColor = color || CONST.COLORS.WHITE;
+      return;
+    }
     this.flashAlpha = 0.8;
     this.flashColor = color || CONST.COLORS.WHITE;
   }
 
   triggerImpactStar(x, y, size, duration) {
+    if (this._reducedMotion) return;
     this._impactStar = {
       x, y,
       size: size || 18,
@@ -2151,6 +2172,7 @@ class Renderer {
   }
 
   triggerSweatDrops(x, y, count) {
+    if (this._reducedMotion) return;
     const n = count || 4;
     for (let i = 0; i < n; i++) {
       const angle = -Math.PI * 0.3 + Math.random() * Math.PI * 0.6 - Math.PI / 2;
@@ -2232,6 +2254,7 @@ class Renderer {
   }
 
   addHitParticles(x, y, count) {
+    if (this._reducedMotion) return;
     const colors = [CONST.COLORS.WHITE, CONST.COLORS.YELLOW, CONST.COLORS.GOLD];
     const n = count || 8;
     for (let i = 0; i < n; i++) {
@@ -2282,6 +2305,7 @@ class Renderer {
   }
 
   addBlockParticles(x, y) {
+    if (this._reducedMotion) return;
     for (let i = 0; i < 6; i++) {
       this.particles.push({
         x, y,

@@ -467,18 +467,7 @@ class UIManager {
         if (entry.lastDefeated) {
           var oppData = this._findOpponentData(entry.lastDefeated);
           if (oppData) {
-            var pImg = this.r.assets && this.r.assets.getPortraitImage(oppData.name, 'intro');
-            if (pImg) {
-              var pS = 16;
-              ctx.save();
-              ctx.beginPath();
-              this._roundedRect(ctx, 72 - pS / 2, y + 6 - pS / 2, pS, pS, 2);
-              ctx.clip();
-              this._drawPortraitCropped(ctx, pImg, 72 - pS / 2, y + 6 - pS / 2, pS, pS, oppData.name);
-              ctx.restore();
-            } else {
-              this.r.sprites.drawOpponentHead(ctx, oppData, frame, 72, y + 6, 0.8);
-            }
+            this._drawPortraitThumb(ctx, oppData, 72, y + 6, 16, 2, frame, 0.8);
           }
         }
         ctx.fillStyle = color;
@@ -584,18 +573,7 @@ class UIManager {
       const y = startY + row * rowH;
       const frame = Math.floor(tick / 12) % 2;
 
-      const thumbImg = this.r.assets && this.r.assets.getPortraitImage(entry.data.name, 'intro');
-      if (thumbImg) {
-        const thumbS = 24;
-        ctx.save();
-        ctx.beginPath();
-        this._roundedRect(ctx, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, 3);
-        ctx.clip();
-        this._drawPortraitCropped(ctx, thumbImg, 24 - thumbS / 2, y + 10 - thumbS / 2, thumbS, thumbS, entry.data.name);
-        ctx.restore();
-      } else {
-        this.r.sprites.drawOpponentHead(ctx, entry.data, frame, 24, y + 10, 1.3);
-      }
+      this._drawPortraitThumb(ctx, entry.data, 24, y + 10, 24, 3, frame, 1.3);
 
       ctx.fillStyle = entry.circuitColor;
       this.r._drawText(entry.data.name, 48, y, 'left', 1.1);
@@ -847,18 +825,7 @@ class UIManager {
       const a = Math.min(1, (stateTick - showAt) / 10);
       ctx.globalAlpha = a;
       const y = 66 + i * rowH;
-      const portraitImg = this.r.assets && this.r.assets.getPortraitImage(opp.name, 'intro');
-      if (portraitImg) {
-        const pS = 30;
-        ctx.save();
-        ctx.beginPath();
-        this._roundedRect(ctx, 36 - pS / 2, y + 10 - pS / 2, pS, pS, 4);
-        ctx.clip();
-        this._drawPortraitCropped(ctx, portraitImg, 36 - pS / 2, y + 10 - pS / 2, pS, pS, opp.name);
-        ctx.restore();
-      } else {
-        this.r.sprites.drawOpponentHead(ctx, opp, Math.floor(stateTick / 10) % 2, 36, y + 10, 1.2);
-      }
+      this._drawPortraitThumb(ctx, opp, 36, y + 10, 30, 4, Math.floor(stateTick / 10) % 2, 1.2);
       ctx.fillStyle = CONST.COLORS.WHITE;
       this.r._drawText(opp.name, 68, y, 'left', 1.2);
       ctx.fillStyle = CONST.COLORS.GRAY;
@@ -1035,6 +1002,35 @@ class UIManager {
     ctx.lineTo(x, y + r);
     ctx.arcTo(x, y, x + r, y, r);
     ctx.closePath();
+  }
+
+  /**
+   * Clip a rounded portrait thumb (or draw procedural head fallback).
+   * @param {CanvasRenderingContext2D} ctx
+   * @param {object} oppData
+   * @param {number} cx center x
+   * @param {number} cy center y
+   * @param {number} size outer box size
+   * @param {number} radius corner radius
+   * @param {number} frame anim frame for head fallback
+   * @param {number} [headScale]
+   * @param {string} [variant]
+   */
+  _drawPortraitThumb(ctx, oppData, cx, cy, size, radius, frame, headScale, variant) {
+    if (!oppData) return;
+    const img = this.r.assets && this.r.assets.getPortraitImage(oppData.name, variant || 'intro');
+    if (img) {
+      const x = cx - size / 2;
+      const y = cy - size / 2;
+      ctx.save();
+      ctx.beginPath();
+      this._roundedRect(ctx, x, y, size, size, radius);
+      ctx.clip();
+      this._drawPortraitCropped(ctx, img, x, y, size, size, oppData.name);
+      ctx.restore();
+      return;
+    }
+    this.r.sprites.drawOpponentHead(ctx, oppData, frame, cx, cy, headScale == null ? 1 : headScale);
   }
 
   _drawStatBar(ctx, label, fraction, x, y, w, color, animTick) {

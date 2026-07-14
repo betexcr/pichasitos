@@ -216,6 +216,39 @@ external/
 
 ---
 
+## Play locally / ops
+
+1. Serve the repo root over HTTP (any static server). Open `index.html`.
+2. **Do not** ship `test.html` or `preview.html` to production — they are ignored by Firebase Hosting.
+3. Manual combat QA checklist: [`test/MANUAL_QA.md`](test/MANUAL_QA.md)
+4. Unit tests / typecheck / hosting-ignore check (dev only — **no npm runtime deps** for the game):
+
+```bash
+npm ci
+npm test
+npm run typecheck
+npm run check:hosting-ignore
+```
+
+5. Online scoreboard requires **Anonymous Auth** on project `pichasitos-arcade`. Deploy with explicit projects:
+
+```bash
+firebase deploy --only database --project pichasitos-arcade
+firebase deploy --only hosting --project pichasitos
+```
+
+Uptime probe: `/health.html`. Pose sprites are network-first in the service worker (offline poses are best-effort).
+
+See [`SECURITY.md`](SECURITY.md) for threat model, headers, rollback, and monitoring checklist.
+
+Firebase JS SDK is vendored at `vendor/firebase/` (10.14.1: app, database, auth, app-check). Debug logs: `?debug=1` or `localStorage.pichasitos_debug=1`.
+
+Operator mode: hold **Enter + Space** (~3s). Continue screen: TEJA inserts credit and continues.
+
+---
+
 ## License
 
 Add your game license here. Third-party models (checkpoint, WebUI, sd-scripts) follow their respective licenses.
+
+**Runtime dependencies:** none via npm. Browser game is plain JS + self-hosted Firebase vendor scripts. `vitest` / `typescript` are CI-only devDependencies.

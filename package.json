@@ -1,0 +1,15 @@
+{
+  "name": "pichasitos",
+  "private": true,
+  "description": "PICHASITOS arcade game — unit tests only (no runtime npm deps)",
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p jsconfig.json --noEmit",
+    "check:hosting-ignore": "node scripts/check-hosting-ignore.js"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3",
+    "vitest": "^3.0.5"
+  }
+}

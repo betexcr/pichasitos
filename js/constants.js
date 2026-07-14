@@ -134,6 +134,8 @@ const CONST = {
     PUNCH_WINDUP: 7,
     PUNCH_ACTIVE: 5,
     PUNCH_RECOVERY: 9,
+    /** Logic frames to input opposite hand after a connecting jab (L→R or R→L). */
+    COMBO_LINK_FRAMES: 14,
     SPECIAL_WINDUP: 8,
     SPECIAL_ACTIVE: 6,
     SPECIAL_RECOVERY: 11,
@@ -147,16 +149,37 @@ const CONST = {
     RAMPAGE_DAMAGE_MULT: 1.5,
     RAMPAGE_STAMINA_COST_MULT: 0.5,
     RAMPAGE_SWAY_INTENSITY: 4,
+    /** Rampage punch phases (matches prior Math.max(2|3, base - delta) values). */
+    RAMPAGE_PUNCH_WINDUP: 5,
+    RAMPAGE_PUNCH_ACTIVE: 4,
+    RAMPAGE_PUNCH_RECOVERY: 7,
     WINDUP_PUNISH_MULT: 1.12,
   },
 
-  /** Progression tuning — fightIndex 0 = Don Carlos … 12 = El Indio; bull uses index 13. */
-  DIFFICULTY: {
+  /** Fight-index of El Toro (finale). Matches AssetLoader.FIGHT_SLUGS last entry. */
+  BULL_FIGHT_INDEX: 13,
+
+  /** Tunable fight FX — values preserved from prior inline literals. */
+  FX: {
+    CROWD_DECAY: 0.003,
+    CROWD_HIT_BUMP: 0.15,
+    CROWD_SPECIAL_BUMP: 0.4,
+    OPP_HIT_FLASH_FRAMES: 8,
+    PLAYER_HIT_FLASH_FRAMES: 4,
+    COMBO_TIMER_FRAMES: 45,
+    DMG_NUM_OPP_Y: 80,
+    DMG_NUM_PLAYER_Y: 170,
+    SIG_SFX_OFFSET_FRAMES: 14,
+  },
+
+  /** Progression tuning — fightIndex 0 = Don Carlos … 12 = El Indio; bull uses BULL_FIGHT_INDEX. */
+    DIFFICULTY: {
     CONTINUE_START_HEALTH: 70,
     HEAL_ONCE_FRACTION: 0.2,
     getFightModifiers(fightIndex) {
-      const idx = Math.max(0, Math.min(13, fightIndex | 0));
-      if (idx >= 13) {
+      const maxIdx = CONST.BULL_FIGHT_INDEX;
+      const idx = Math.max(0, Math.min(maxIdx, fightIndex | 0));
+      if (idx >= maxIdx) {
         return { healthMult: 1, damageMult: 1, aggressivenessMult: 1, tellBonusFrames: 0 };
       }
       if (idx <= 2) {

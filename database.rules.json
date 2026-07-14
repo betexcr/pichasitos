@@ -1,7 +1,45 @@
 {
-  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
   "rules": {
-    ".read": false,
-    ".write": false
+    "scores": {
+      ".read": true,
+      ".indexOn": ["score"],
+      "$scoreId": {
+        ".write": "auth != null && !data.exists() && newData.hasChildren(['name', 'score', 'opponents', 'circuit', 'lastDefeated', 'playerId', 'date'])",
+        ".validate": "newData.child('name').isString() && newData.child('name').val().length > 0 && newData.child('name').val().length <= 8 && newData.child('score').isNumber() && newData.child('score').val() >= 0 && newData.child('score').val() <= 9999999 && newData.child('opponents').isNumber() && newData.child('opponents').val() >= 0 && newData.child('opponents').val() <= 32 && newData.child('circuit').isNumber() && newData.child('circuit').val() >= 0 && newData.child('circuit').val() <= 8 && newData.child('lastDefeated').isString() && newData.child('lastDefeated').val().length <= 32 && newData.child('playerId').isString() && newData.child('playerId').val() === auth.uid && newData.child('playerId').val().length <= 128",
+        "name": { ".validate": "newData.isString()" },
+        "score": { ".validate": "newData.isNumber()" },
+        "opponents": { ".validate": "newData.isNumber()" },
+        "circuit": { ".validate": "newData.isNumber()" },
+        "lastDefeated": { ".validate": "newData.isString()" },
+        "playerId": { ".validate": "newData.isString()" },
+        "date": { ".validate": "newData.val() === now || newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+    "presence": {
+      ".read": true,
+      "$uid": {
+        ".write": "auth != null && auth.uid === $uid",
+        ".validate": "newData.hasChildren(['name', 'state', 'score', 'joinedAt', 'lastSeen']) || !newData.exists()",
+        "name": { ".validate": "newData.isString() && newData.val().length <= 8" },
+        "state": { ".validate": "newData.isString() && newData.val().length <= 32" },
+        "score": { ".validate": "newData.isNumber() && newData.val() >= 0 && newData.val() <= 9999999" },
+        "joinedAt": { ".validate": "newData.isNumber()" },
+        "lastSeen": { ".validate": "newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    },
+    "clientErrors": {
+      "$errorId": {
+        ".write": "auth != null && !data.exists() && newData.hasChildren(['message', 'stack', 'context', 'playerId', 'date'])",
+        ".validate": "newData.child('message').isString() && newData.child('message').val().length <= 200 && newData.child('stack').isString() && newData.child('stack').val().length <= 400 && newData.child('context').isString() && newData.child('context').val().length <= 32 && newData.child('playerId').isString() && newData.child('playerId').val() === auth.uid",
+        "message": { ".validate": "newData.isString()" },
+        "stack": { ".validate": "newData.isString()" },
+        "context": { ".validate": "newData.isString()" },
+        "playerId": { ".validate": "newData.isString()" },
+        "date": { ".validate": "newData.val() === now || newData.isNumber()" },
+        "$other": { ".validate": false }
+      }
+    }
   }
 }
